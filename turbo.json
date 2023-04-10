@@ -1,0 +1,25 @@
+{
+    "$schema": "https://turborepo.org/schema.json",
+    "pipeline": {
+        "build": {
+            "outputs": ["dist/**", ".next/**"]
+        },
+        "dev": {
+            "cache": false
+        },
+        "lint": {
+            "outputs": []
+        },
+        "typecheck": {
+            "outputs": []
+        },
+        "test": {
+            "outputs": []
+        }
+    },
+    "globalDependencies": [
+        "./packages/eslint-config-custom/index.cjs",
+        "./packages/tsconfig-custom"
+    ],
+    "globalEnv": []
+}

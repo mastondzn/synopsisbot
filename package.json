@@ -1,0 +1,43 @@
+{
+    "name": "@synopsis/root",
+    "version": "0.0.1",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/synopsisgg/bot"
+    },
+    "bugs": {
+        "url": "https://github.com/synopsisgg/bot/issues"
+    },
+    "author": {
+        "name": "mastondzn",
+        "url": "https://github.com/mastondzn"
+    },
+    "license": "GPL-3.0-or-later",
+    "workspaces": [
+        "bot",
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "clean": "rimraf node_modules .turbo .vercel dist",
+        "dev": "turbo run dev",
+        "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml}\"",
+        "format:check": "prettier -c \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml}\"",
+        "lint": "turbo run lint",
+        "lint:fix": "turbo run lint -- --fix",
+        "test": "turbo run test",
+        "typecheck": "turbo run typecheck"
+    },
+    "devDependencies": {
+        "@types/node": "18",
+        "prettier": "^2.8.7",
+        "rimraf": "^4.4.1",
+        "turbo": "^1.8.8",
+        "typescript": "^5.0.3"
+    },
+    "packageManager": "pnpm@8.1.1",
+    "engines": {
+        "node": ">=18"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "name": "@synopsis/bot",
+    "version": "0.0.1",
+    "private": true,
+    "main": "src/index.ts",
+    "scripts": {
+        "dev": "tsx src/index.ts --watch",
+        "start": "tsx src/index.ts",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@synopsis/eslint-config-custom": "workspace:*",
+        "@synopsis/tsconfig-custom": "workspace:*",
+        "@types/node": "18",
+        "drizzle-kit": "^0.17.4",
+        "eslint": "^8.28.0",
+        "eslint-define-config": "^1.17.0",
+        "tsx": "^3.12.6"
+    }
+}
