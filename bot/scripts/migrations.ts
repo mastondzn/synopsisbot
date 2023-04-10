@@ -1,4 +1,4 @@
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { migrate } from '@synopsis/db/migrator';
 
 import { type DatabaseScript } from '~/types/scripts';
 

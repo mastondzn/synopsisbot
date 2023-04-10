@@ -1,8 +1,7 @@
 import { RefreshingAuthProvider } from '@twurple/auth';
-import { eq } from 'drizzle-orm/expressions';
-import { type NodePgDatabase } from 'drizzle-orm/node-postgres';
 
-import { authedUsers, type UpdateAuthedUser } from './db/schema';
+import { authedUsers, eq, type NodePgDatabase, type UpdateAuthedUser } from '@synopsis/db';
+
 import { type Env } from './env';
 
 export const makeRefreshingAuthProvider = async ({
@@ -44,12 +43,15 @@ export const makeRefreshingAuthProvider = async ({
     });
 
     const expiresIn = botUser.expiresAt.getTime() - Date.now() / 1000;
-    await authProvider.addUserForToken(
+
+    authProvider.addUser(
+        botUser.twitchId,
         {
-            expiresIn,
-            obtainmentTimestamp: botUser.obtainedAt.getTime(),
+            accessToken: botUser.accessToken,
             refreshToken: botUser.refreshToken,
             scope: botUser.scopes,
+            expiresIn,
+            obtainmentTimestamp: botUser.obtainedAt.getTime(),
         },
         ['chat']
     );

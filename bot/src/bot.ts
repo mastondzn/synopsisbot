@@ -1,14 +1,14 @@
 import { ApiClient } from '@twurple/api';
 import { type RefreshingAuthProvider } from '@twurple/auth';
 import { ChatClient } from '@twurple/chat';
-import { type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { type Redis } from 'ioredis';
 import { LRUCache } from 'lru-cache';
 import { type Pool } from 'pg';
 
+import { makeDatabase, type NodePgDatabase } from '@synopsis/db';
+
 import { makeRefreshingAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
-import { makeDatabase } from './db';
 import { type Env, env } from './env';
 
 export class Bot {

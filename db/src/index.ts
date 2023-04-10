@@ -1,7 +1,7 @@
 import { drizzle, type DrizzleConfig } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 
-import { type Env } from '~/env';
+import { type Env } from '@synopsis/env';
 
 export const makeDatabase = (env: Env, config?: DrizzleConfig) => {
     const pool = new Pool({
@@ -13,3 +13,8 @@ export const makeDatabase = (env: Env, config?: DrizzleConfig) => {
 
     return { db: drizzle(pool, config), pool };
 };
+
+export * from './schema';
+export * from 'drizzle-orm/node-postgres';
+export * as ex from 'drizzle-orm/expressions';
+export * from 'drizzle-orm';

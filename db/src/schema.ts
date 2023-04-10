@@ -1,11 +1,6 @@
 import { type InferModel } from 'drizzle-orm';
 import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 
-export const kv = pgTable('kv', {
-    key: serial('key').primaryKey(),
-    value: varchar('value', { length: 256 }).notNull(),
-});
-
 export const authedUsers = pgTable('authed_users', {
     twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
     twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),

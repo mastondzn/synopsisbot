@@ -26,3 +26,17 @@ export const envSchema = z.object({
 });
 
 export type Env = z.infer<typeof envSchema>;
+
+export const parseEnv = (env: unknown): Env => {
+    const parsed = envSchema.safeParse(env);
+    if (!parsed.success) {
+        console.error(
+            Object.entries(parsed.error.flatten().fieldErrors)
+                .map(([key, errors]) => `${key}: ${errors.join(', ')}`)
+                .join('\n')
+        );
+        console.error('Failed to parse environment variables.');
+        throw new Error('Failed to parse environment variables.');
+    }
+    return parsed.data;
+};

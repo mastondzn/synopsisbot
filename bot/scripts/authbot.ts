@@ -1,7 +1,8 @@
 import inquirer from 'inquirer';
 import { z } from 'zod';
 
-import { authedUsers } from '~/db/schema';
+import { authedUsers } from '@synopsis/db';
+
 import { env } from '~/env';
 import { type DatabaseScript } from '~/types/scripts';
 

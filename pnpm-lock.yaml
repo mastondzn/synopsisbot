@@ -22,6 +22,12 @@ importers:
 
   bot:
     dependencies:
+      '@synopsis/db':
+        specifier: workspace:^
+        version: link:../db
+      '@synopsis/env':
+        specifier: workspace:^
+        version: link:../packages/env
       '@twurple/api':
         specifier: ^6.1.1
         version: 6.1.1(@twurple/auth@6.1.1)
@@ -34,9 +40,6 @@ importers:
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
-      drizzle-orm:
-        specifier: ^0.23.9
-        version: 0.23.9(@types/pg@8.6.6)(pg@8.10.0)
       ioredis:
         specifier: ^5.3.1
         version: 5.3.1
@@ -46,9 +49,6 @@ importers:
       lru-cache:
         specifier: ^9.0.0
         version: 9.0.0
-      pg:
-        specifier: ^8.10.0
-        version: 8.10.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -68,9 +68,6 @@ importers:
       '@types/pg':
         specifier: ^8.6.6
         version: 8.6.6
-      drizzle-kit:
-        specifier: ^0.17.4
-        version: 0.17.4
       eslint:
         specifier: ^8.28.0
         version: 8.37.0
@@ -87,7 +84,75 @@ importers:
         specifier: ^3.12.6
         version: 3.12.6
 
+  db:
+    dependencies:
+      '@synopsis/env':
+        specifier: workspace:*
+        version: link:../packages/env
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
+      drizzle-orm:
+        specifier: ^0.23.9
+        version: 0.23.9(@types/pg@8.6.6)(pg@8.10.0)
+      pg:
+        specifier: ^8.10.0
+        version: 8.10.0
+    devDependencies:
+      '@synopsis/eslint-config-custom':
+        specifier: workspace:*
+        version: link:../packages/eslint-config-custom
+      '@synopsis/tsconfig-custom':
+        specifier: workspace:*
+        version: link:../packages/tsconfig-custom
+      '@types/node':
+        specifier: '18'
+        version: 18.15.11
+      '@types/pg':
+        specifier: ^8.6.6
+        version: 8.6.6
+      drizzle-kit:
+        specifier: ^0.17.4
+        version: 0.17.4
+      eslint:
+        specifier: ^8.28.0
+        version: 8.37.0
+      eslint-define-config:
+        specifier: ^1.17.0
+        version: 1.17.0
+      tsx:
+        specifier: ^3.12.6
+        version: 3.12.6
+
   packages/countries:
+    devDependencies:
+      '@synopsis/eslint-config-custom':
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      '@synopsis/tsconfig-custom':
+        specifier: workspace:*
+        version: link:../tsconfig-custom
+      eslint:
+        specifier: ^8.28.0
+        version: 8.37.0
+      eslint-define-config:
+        specifier: ^1.17.0
+        version: 1.17.0
+
+  packages/env:
+    dependencies:
+      drizzle-orm:
+        specifier: ^0.23.9
+        version: 0.23.9(@types/pg@8.6.6)(pg@8.10.0)
+      is-docker:
+        specifier: '2'
+        version: 2.2.1
+      pg:
+        specifier: ^8.10.0
+        version: 8.10.0
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
     devDependencies:
       '@synopsis/eslint-config-custom':
         specifier: workspace:*

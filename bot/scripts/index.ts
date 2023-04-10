@@ -38,7 +38,7 @@ const main = async () => {
 
     switch (script.type) {
         case 'db': {
-            const { makeDatabase } = await import('~/db');
+            const { makeDatabase } = await import('@synopsis/db');
             const { env } = await import('~/env');
 
             const { db, pool } = makeDatabase(env, { logger: true });
@@ -53,9 +53,7 @@ const main = async () => {
             const bot = new Bot();
             await bot.initialize();
             await script.run({ bot });
-            bot.cache.disconnect();
-            void bot.pool.end();
-            bot.chat.quit();
+            await bot.stop();
             break;
         }
         case 'cache': {
@@ -77,6 +75,9 @@ const main = async () => {
         }
         case 'chat': {
             throw new Error('Not implemented yet!');
+        }
+        case 'standalone': {
+            await script.run();
         }
     }
 };

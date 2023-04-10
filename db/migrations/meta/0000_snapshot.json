@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "0220e17f-b7a5-41c3-afcf-f2649d6cf888",
-  "prevId": "951079fc-2000-48b8-870c-9e0fb19b67d1",
+  "id": "2ffb80af-87f4-4840-82bb-b239637f0323",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "authed_users": {
       "name": "authed_users",
@@ -47,27 +47,6 @@
         "obtained_at": {
           "name": "obtained_at",
           "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {}
-    },
-    "kv": {
-      "name": "kv",
-      "schema": "",
-      "columns": {
-        "key": {
-          "name": "key",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "value": {
-          "name": "value",
-          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
         }

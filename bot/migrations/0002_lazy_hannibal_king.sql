@@ -1,1 +1,0 @@
-ALTER TABLE "authed_users" ADD COLUMN "obtained_at" timestamp NOT NULL;

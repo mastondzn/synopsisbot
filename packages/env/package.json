@@ -1,0 +1,23 @@
+{
+    "name": "@synopsis/env",
+    "version": "0.0.1",
+    "private": true,
+    "main": "src/index.ts",
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@synopsis/eslint-config-custom": "workspace:*",
+        "@synopsis/tsconfig-custom": "workspace:*",
+        "eslint": "^8.28.0",
+        "eslint-define-config": "^1.17.0"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.23.9",
+        "is-docker": "2",
+        "pg": "^8.10.0",
+        "zod": "^3.21.4"
+    }
+}
