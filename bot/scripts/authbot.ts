@@ -41,7 +41,6 @@ export const script: DatabaseScript = {
         baseUrl.searchParams.set('scope', botScopes.join(' '));
         console.log('Open this URL in your browser:');
         console.log(baseUrl.toString());
-        //http://localhost:3000/?code=x0ddwecwv9c2rn647az6ges6vvu30c&scope=channel%3Amoderate+chat%3Aedit+chat%3Aread+whispers%3Aread+whispers%3Aedit+user%3Amanage%3Awhispers+moderation%3Aread+moderator%3Amanage%3Aannouncements+moderator%3Amanage%3Aautomod+moderator%3Aread%3Aautomod_settings+moderator%3Amanage%3Aautomod_settings+moderator%3Amanage%3Abanned_users+moderator%3Aread%3Ablocked_terms+moderator%3Amanage%3Ablocked_terms+moderator%3Amanage%3Achat_messages+moderator%3Aread%3Achat_settings+moderator%3Amanage%3Achat_settings+moderator%3Aread%3Achatters+moderator%3Aread%3Afollowers+moderator%3Aread%3Ashield_mode+moderator%3Amanage%3Ashield_mode
 
         const { url } = await inquirer.prompt<{ url: string }>({
             type: 'input',
