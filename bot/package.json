@@ -4,7 +4,7 @@
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "dev": "tsx src/index.ts --watch",
+        "dev": "tsx watch src/index.ts",
         "start": "tsx src/index.ts",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
