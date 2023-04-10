@@ -39,3 +39,5 @@ dist
 
 .dev.vars
 .wrangler
+.db
+.cache

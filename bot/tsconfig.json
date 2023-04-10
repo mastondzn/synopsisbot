@@ -1,5 +1,11 @@
 {
     "extends": "@synopsis/tsconfig-custom/node.json",
     "exclude": ["node_modules", "dist", "coverage"],
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "scripts/**/*"],
+    "compilerOptions": {
+        "baseUrl": "src",
+        "paths": {
+            "~/*": ["*"]
+        }
+    }
 }

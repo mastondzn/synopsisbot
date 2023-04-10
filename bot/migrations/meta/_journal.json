@@ -1,0 +1,24 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1681099503360,
+      "tag": "0000_wooden_the_twelve"
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1681102932314,
+      "tag": "0001_demonic_christian_walker"
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1681107706112,
+      "tag": "0002_lazy_hannibal_king"
+    }
+  ]
+}
