@@ -1,5 +1,5 @@
 import { type ApiClient } from '@twurple/api';
-import { type ChatClient } from '@twurple/chat/lib';
+import { type ChatClient } from '@twurple/chat';
 import { type Redis } from 'ioredis';
 
 import { type NodePgDatabase } from '@synopsis/db';

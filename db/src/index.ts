@@ -16,6 +16,5 @@ export const makeDatabase = (env: Env, config?: DrizzleConfig) => {
 
 export * from './schema';
 export * from 'drizzle-orm/node-postgres';
-export * as ex from 'drizzle-orm/expressions';
 export * from 'drizzle-orm';
 export { type Pool } from 'pg';
