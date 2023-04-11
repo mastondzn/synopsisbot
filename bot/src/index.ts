@@ -1,4 +1,4 @@
-import 'env';
+import 'utils/load-env';
 
 import { Bot } from './bot';
 

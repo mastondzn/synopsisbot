@@ -21,7 +21,7 @@ export const makeRefreshingAuthProvider = async ({
     const authProvider = new RefreshingAuthProvider({
         clientId: env.TWITCH_CLIENT_ID,
         clientSecret: env.TWITCH_CLIENT_SECRET,
-        onRefresh: (userId, token) => {
+        onRefresh: async (userId, token) => {
             const updateAuthedUser: UpdateAuthedUser = {
                 accessToken: token.accessToken,
                 scopes: token.scope,
@@ -33,7 +33,7 @@ export const makeRefreshingAuthProvider = async ({
                 updateAuthedUser.expiresAt = new Date(Date.now() + token.expiresIn * 1000);
             }
 
-            void db
+            await db
                 .update(authedUsers)
                 .set(updateAuthedUser)
                 .where(eq(authedUsers.twitchId, userId));
