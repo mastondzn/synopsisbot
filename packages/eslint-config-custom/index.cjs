@@ -121,6 +121,12 @@ module.exports = defineConfig({
                         fixStyle: 'inline-type-imports',
                     },
                 ],
+                '@typescript-eslint/no-misused-promises': [
+                    'error',
+                    {
+                        checksVoidReturn: false,
+                    },
+                ],
 
                 'unicorn/no-null': 'off',
                 'unicorn/prevent-abbreviations': 'off',
