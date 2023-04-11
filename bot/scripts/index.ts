@@ -1,3 +1,5 @@
+import '~/utils/load-env';
+
 import { readdir } from 'node:fs/promises';
 
 import inquirer from 'inquirer';
@@ -39,7 +41,8 @@ const main = async () => {
     switch (script.type) {
         case 'db': {
             const { makeDatabase } = await import('@synopsis/db');
-            const { env } = await import('~/env');
+            const { parseEnv } = await import('@synopsis/env');
+            const env = parseEnv(process.env);
 
             const { db, pool } = makeDatabase(env, { logger: true });
             await script.run({ db });
@@ -60,7 +63,8 @@ const main = async () => {
             throw new Error('Not implemented yet!');
         }
         case 'api': {
-            const { env } = await import('~/env');
+            const { parseEnv } = await import('@synopsis/env');
+            const env = parseEnv(process.env);
             const { ApiClient } = await import('@twurple/api');
             const { AppTokenAuthProvider } = await import('@twurple/auth');
 

@@ -3,13 +3,12 @@ import { type RefreshingAuthProvider } from '@twurple/auth';
 import { ChatClient } from '@twurple/chat';
 import { type Redis } from 'ioredis';
 import { LRUCache } from 'lru-cache';
-import { type Pool } from 'pg';
 
-import { makeDatabase, type NodePgDatabase } from '@synopsis/db';
+import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
+import { type Env, parseEnv } from '@synopsis/env';
 
 import { makeRefreshingAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
-import { type Env, env } from './env';
 
 export class Bot {
     chat!: ChatClient;
@@ -24,7 +23,7 @@ export class Bot {
     env: Env;
 
     constructor() {
-        this.env = env;
+        this.env = parseEnv(process.env);
         this.lru = new LRUCache<string, string>({ max: 1000 });
         const { db, pool } = makeDatabase(this.env);
         this.db = db;

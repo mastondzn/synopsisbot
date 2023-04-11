@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 
-import { type Env } from './env';
+import { type Env } from '@synopsis/env';
 
 export const makeCache = (env: Env): Redis => {
     return new Redis({

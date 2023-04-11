@@ -2,14 +2,16 @@ import inquirer from 'inquirer';
 import { z } from 'zod';
 
 import { authedUsers } from '@synopsis/db';
+import { parseEnv } from '@synopsis/env';
 
-import { env } from '~/env';
 import { type DatabaseScript } from '~/types/scripts';
 
 export const script: DatabaseScript = {
     description: 'get a new auth token for the bot',
     type: 'db',
     run: async ({ db }) => {
+        const env = parseEnv(process.env);
+
         const baseUrl = new URL('https://id.twitch.tv/oauth2/authorize');
         baseUrl.searchParams.set('client_id', env.TWITCH_CLIENT_ID);
         baseUrl.searchParams.set('redirect_uri', 'http://localhost:3000');

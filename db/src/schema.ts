@@ -1,5 +1,5 @@
 import { type InferModel } from 'drizzle-orm';
-import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const authedUsers = pgTable('authed_users', {
     twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),

@@ -1,8 +1,7 @@
 import { RefreshingAuthProvider } from '@twurple/auth';
 
 import { authedUsers, eq, type NodePgDatabase, type UpdateAuthedUser } from '@synopsis/db';
-
-import { type Env } from './env';
+import { type Env } from '@synopsis/env';
 
 export const makeRefreshingAuthProvider = async ({
     db,
