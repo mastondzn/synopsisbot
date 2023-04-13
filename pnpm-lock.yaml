@@ -139,8 +139,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3
       drizzle-orm:
-        specifier: ^0.23.9
-        version: 0.23.9(@types/pg@8.6.6)(pg@8.10.0)
+        specifier: ^0.23.11
+        version: 0.23.11(@types/pg@8.6.6)(pg@8.10.0)
       pg:
         specifier: ^8.10.0
         version: 8.10.0
@@ -192,7 +192,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: ^0.23.9
-        version: 0.23.9(@types/pg@8.6.6)(pg@8.10.0)
+        version: 0.23.9(pg@8.10.0)
       is-docker:
         specifier: '2'
         version: 2.2.1
@@ -1502,8 +1502,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.23.9(@types/pg@8.6.6)(pg@8.10.0):
-    resolution: {integrity: sha512-fp/VJkblGLJH1PJarl9PFb9s4pblYo0bYTK36ouF9J0csrpzpnzfkNim+7+j0t48HSxOH39pHLJgOMiyZCh2Dg==}
+  /drizzle-orm@0.23.11(@types/pg@8.6.6)(pg@8.10.0):
+    resolution: {integrity: sha512-uqebUff9QeDo0ZI+s5XurmHjFNDuQMbnNObWIClzotU+iI0RfA1RSEXbK3lSp1FNp/HeUy23yIv8lkYzU9278A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
@@ -1559,6 +1559,65 @@ packages:
         optional: true
     dependencies:
       '@types/pg': 8.6.6
+      pg: 8.10.0
+    dev: false
+
+  /drizzle-orm@0.23.9(pg@8.10.0):
+    resolution: {integrity: sha512-fp/VJkblGLJH1PJarl9PFb9s4pblYo0bYTK36ouF9J0csrpzpnzfkNim+7+j0t48HSxOH39pHLJgOMiyZCh2Dg==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@libsql/client': '*'
+      '@neondatabase/serverless': '>=0.1'
+      '@planetscale/database': '>=1'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
       pg: 8.10.0
     dev: false
 
