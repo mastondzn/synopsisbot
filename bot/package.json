@@ -13,7 +13,7 @@
     },
     "devDependencies": {
         "@synopsis/eslint-config-custom": "workspace:*",
-        "@synopsis/tsconfig-custom": "workspace:*",
+        "@synopsis/tsconfig": "workspace:*",
         "@types/inquirer": "^9.0.3",
         "@types/node": "18",
         "@types/pg": "^8.6.6",

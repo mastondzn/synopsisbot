@@ -1,5 +1,5 @@
 {
-    "extends": "@synopsis/tsconfig-custom/esm.json",
+    "extends": "@synopsis/tsconfig/esm.json",
     "exclude": ["node_modules", "dist", "coverage"],
     "include": ["src/**/*", "scripts/**/*"]
 }
