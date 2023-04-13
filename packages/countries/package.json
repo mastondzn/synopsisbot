@@ -10,7 +10,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/eslint-config-custom": "workspace:*",
+        "@synopsis/eslint-config": "workspace:*",
         "@synopsis/tsconfig": "workspace:*",
         "eslint": "^8.28.0",
         "eslint-define-config": "^1.17.0"

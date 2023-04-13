@@ -56,9 +56,9 @@ importers:
         specifier: ^3.21.4
         version: 3.21.4
     devDependencies:
-      '@synopsis/eslint-config-custom':
+      '@synopsis/eslint-config':
         specifier: workspace:*
-        version: link:../packages/eslint-config-custom
+        version: link:../packages/eslint-config
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -105,9 +105,9 @@ importers:
         specifier: ^8.10.0
         version: 8.10.0
     devDependencies:
-      '@synopsis/eslint-config-custom':
+      '@synopsis/eslint-config':
         specifier: workspace:*
-        version: link:../packages/eslint-config-custom
+        version: link:../packages/eslint-config
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -135,9 +135,9 @@ importers:
 
   packages/countries:
     devDependencies:
-      '@synopsis/eslint-config-custom':
+      '@synopsis/eslint-config':
         specifier: workspace:*
-        version: link:../eslint-config-custom
+        version: link:../eslint-config
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -163,9 +163,9 @@ importers:
         specifier: ^3.21.4
         version: 3.21.4
     devDependencies:
-      '@synopsis/eslint-config-custom':
+      '@synopsis/eslint-config':
         specifier: workspace:*
-        version: link:../eslint-config-custom
+        version: link:../eslint-config
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -176,7 +176,7 @@ importers:
         specifier: ^1.17.0
         version: 1.17.0
 
-  packages/eslint-config-custom:
+  packages/eslint-config:
     dependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.44.0

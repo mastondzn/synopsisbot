@@ -12,7 +12,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/eslint-config-custom": "workspace:*",
+        "@synopsis/eslint-config": "workspace:*",
         "@synopsis/tsconfig": "workspace:*",
         "@types/inquirer": "^9.0.3",
         "@types/node": "18",

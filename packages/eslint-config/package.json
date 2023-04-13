@@ -1,5 +1,5 @@
 {
-    "name": "@synopsis/eslint-config-custom",
+    "name": "@synopsis/eslint-config",
     "version": "0.0.1",
     "main": "index.cjs",
     "private": true,

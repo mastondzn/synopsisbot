@@ -6,8 +6,6 @@ const fs = require('node:fs');
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const hasReact = packageJson.dependencies?.react !== undefined;
 
-console.log(process.cwd());
-
 module.exports = defineConfig({
     extends: [
         'eslint:recommended',

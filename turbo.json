@@ -17,6 +17,6 @@
             "outputs": []
         }
     },
-    "globalDependencies": ["./packages/eslint-config-custom/index.cjs", "./packages/tsconfig"],
+    "globalDependencies": ["./packages/eslint-config/index.cjs", "./packages/tsconfig"],
     "globalEnv": []
 }
