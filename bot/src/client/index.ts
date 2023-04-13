@@ -34,7 +34,7 @@ export class ShardedChatClient {
         }
     }
 
-    createClient(options: ChatClientShardOptions = this.baseClientOptions): ChatClientShard {
+    spawnClient(options: ChatClientShardOptions = this.baseClientOptions): ChatClientShard {
         if (Array.isArray(options.channels)) options.channels = [];
         const client = new ChatClientShard(options);
         for (const event of this.events) {
@@ -55,19 +55,12 @@ export class ShardedChatClient {
 
     registerEventOnClient(client: ChatClientShard, eventToAdd: BaseEvent) {
         const { event, handler } = eventToAdd;
-        switch (event) {
-            case 'onMessage': {
-                client.onMessage(handler);
-                break;
-            }
-            case 'onJoin': {
-                client.onJoin(handler);
-                break;
-            }
-            default: {
-                throw new Error(`Event ${event} is not implemented`);
-            }
-        }
+
+        if (event === 'onMessage') {
+            client.onMessage(handler);
+        } else if (event === 'onJoin') {
+            client.onJoin(handler);
+        } else throw new Error(`Event ${event} is not implemented`);
     }
 
     getClientByChannel(channelName: string) {
@@ -76,29 +69,19 @@ export class ShardedChatClient {
         );
     }
 
-    async join(channel: string): Promise<ChatClientShard> {
-        const existing = this.getClientByChannel(channel);
-        if (existing) return existing;
-
-        const availableClient = this.clients.find((client) => client.currentChannels.length < 85);
-        if (availableClient) {
-            await availableClient.join(channel);
-            return availableClient;
-        }
-
-        const newClient = this.createClient();
-        await newClient.connect();
-        await newClient.join(channel);
-        return newClient;
-    }
-
-    async joinAll(channels: string[]): Promise<void> {
+    async join(
+        channels: string[] | string | (() => string[] | string) | (() => Promise<string[] | string>)
+    ): Promise<void> {
         const clientsWithAvailableSlots = this.clients
             .filter((client) => client.currentChannels.length < 85)
             .map((client) => ({
                 client,
                 slots: 85 - client.currentChannels.length,
             }));
+
+        // resolve channels
+        channels = typeof channels === 'function' ? await channels() : channels;
+        channels = Array.isArray(channels) ? channels : [channels];
 
         const promises: Promise<void>[] = [];
 
@@ -114,6 +97,12 @@ export class ShardedChatClient {
         const chunks: string[][] = [];
         for (let i = 0; i < channels.length; i += 85) {
             chunks.push(channels.slice(i, i + 85));
+        }
+
+        for (const chunk of chunks) {
+            const client = this.spawnClient();
+            await client.connect();
+            promises.push(...chunk.map((channel) => client.join(channel)));
         }
 
         await Promise.all(promises);

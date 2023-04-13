@@ -8,50 +8,31 @@ export const script: BotScript = {
     type: 'bot',
     run: async ({ bot }) => {
         const streams: string[] = [];
-        const firstCursor = await bot.api.streams
-            .getStreams({
-                limit: 100,
-            })
-            .then((res) => {
-                streams.push(...res.data.map((stream) => stream.userName));
-                return res.cursor;
-            });
 
-        if (!firstCursor) throw new Error('No cursor found');
+        let cursor: string | null = '';
+        let viewers = 0;
+        for (let i = 0; i < 5; i++) {
+            if (i !== 0 && !cursor) break;
+            const options = cursor ? { after: cursor, limit: 100 } : { limit: 100 };
+            const res = await bot.api.streams.getStreams(options);
+            cursor = res.cursor || null;
+            streams.push(...res.data.map((stream) => stream.userName));
+            viewers += res.data.reduce((acc, stream) => acc + stream.viewers, 0);
+        }
 
-        const secondCursor = await bot.api.streams
-            .getStreams({
-                limit: 100,
-                after: firstCursor,
-            })
-            .then((res) => {
-                streams.push(...res.data.map((stream) => stream.userName));
-                return res.cursor;
-            });
-
-        if (!secondCursor) throw new Error('No cursor found');
-
-        await bot.api.streams
-            .getStreams({
-                limit: 100,
-                after: secondCursor,
-            })
-            .then((res) => {
-                streams.push(...res.data.map((stream) => stream.userName));
-            });
-
+        console.log(`Total viewers: ${viewers}`);
         console.log(streams);
 
         bot.chat.registerEvent({
             event: 'onJoin',
             handler: (channel) => {
-                console.log(`Joined ${channel}`);
+                console.log(chalk.bgCyan(`Joined ${channel}`));
             },
         });
 
         bot.chat.registerEvent({
             event: 'onMessage',
-            handler: (channel, user, message, msg) => {
+            handler: (channel, user, message) => {
                 console.log(`[${chalk.blue(channel)}] ${user}: ${message}`);
             },
         });
@@ -64,7 +45,7 @@ export const script: BotScript = {
             );
         }, 500);
 
-        await bot.chat.joinAll(streams);
+        await bot.chat.join(streams);
         await wait(3 * 60 * 1000);
     },
 };
