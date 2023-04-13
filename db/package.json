@@ -6,7 +6,7 @@
     "scripts": {
         "generate": "drizzle-kit generate:pg",
         "check": "drizzle-kit check:pg",
-        "migrate": "tsx --tsconfig ./tsconfig.node.json -r tsconfig-paths/register scripts/migrate.ts ",
+        "migrate": "tsx -r tsconfig-paths/register scripts/migrate.ts ",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"
@@ -25,7 +25,7 @@
     "dependencies": {
         "@synopsis/env": "workspace:*",
         "dotenv": "^16.0.3",
-        "drizzle-orm": "^0.23.9",
+        "drizzle-orm": "^0.23.11",
         "pg": "^8.10.0"
     }
 }
