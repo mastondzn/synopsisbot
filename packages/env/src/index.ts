@@ -25,6 +25,12 @@ export const envSchema = z.object({
     REDIS_PASSWORD: z.string(),
 });
 
+export const publicEnvSchema = z.object({
+    NEXT_PUBLIC_TWITCH_CLIENT_ID: z.string(),
+    NEXT_PUBLIC_TWITCH_BOT_USERNAME: z.string(),
+    NEXT_PUBLIC_TWITCH_BOT_ID: z.string(),
+});
+
 export type Env = z.infer<typeof envSchema>;
 
 export const parseEnv = (env: unknown): Env => {

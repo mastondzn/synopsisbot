@@ -2,3 +2,4 @@ packages:
     - 'bot'
     - 'packages/*'
     - 'db'
+    - 'website'

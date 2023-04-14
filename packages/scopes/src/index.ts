@@ -34,7 +34,7 @@ export const scopes = {
     moderationRead: 'moderation:read',
     moderatorManageAnnouncements: 'moderator:manage:announcements',
     moderatorManageAutomod: 'moderator:manage:automod',
-    moderatorReadAutomodSetting: 'moderator:read:automod_setting',
+    moderatorReadAutomodSettings: 'moderator:read:automod_settings',
     moderatorManageAutomodSettings: 'moderator:manage:automod_settings',
     moderatorManageBannedUsers: 'moderator:manage:banned_users',
     moderatorReadBlockedTerms: 'moderator:read:blocked_terms',

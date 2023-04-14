@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { authedUsers } from '@synopsis/db';
 import { parseEnv } from '@synopsis/env';
+import { allScopes } from '@synopsis/scopes';
 
 import { type DatabaseScript } from '~/types/scripts';
 
@@ -17,31 +18,7 @@ export const script: DatabaseScript = {
         baseUrl.searchParams.set('redirect_uri', 'http://localhost:3000');
         baseUrl.searchParams.set('response_type', 'code');
 
-        const botScopes = [
-            'chat:edit',
-            'chat:read',
-            'whispers:read',
-            'whispers:edit',
-            'user:manage:whispers',
-            'channel:moderate',
-            'moderation:read',
-            'moderator:manage:announcements',
-            'moderator:manage:automod',
-            'moderator:read:automod_settings',
-            'moderator:manage:automod_settings',
-            'moderator:manage:banned_users',
-            'moderator:read:blocked_terms',
-            'moderator:manage:blocked_terms',
-            'moderator:manage:chat_messages',
-            'moderator:read:chat_settings',
-            'moderator:manage:chat_settings',
-            'moderator:read:chatters',
-            'moderator:read:followers',
-            'moderator:read:shield_mode',
-            'moderator:manage:shield_mode',
-        ];
-
-        baseUrl.searchParams.set('scope', botScopes.join(' '));
+        baseUrl.searchParams.set('scope', allScopes.join(' '));
         console.log('Open this URL in your browser:');
         console.log(baseUrl.toString());
 
@@ -74,6 +51,7 @@ export const script: DatabaseScript = {
         });
 
         const json = (await response.json()) as unknown;
+        console.log(json);
         const data = responseSchema.parse(json);
 
         const expiresAt = Date.now() + data.expires_in * 1000 - 60 * 1000;
