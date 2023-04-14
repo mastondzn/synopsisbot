@@ -22,7 +22,8 @@
         "eslint-define-config": "^1.17.0",
         "inquirer": "^9.1.5",
         "tsconfig-paths": "^4.2.0",
-        "tsx": "^3.12.6"
+        "tsx": "^3.12.6",
+        "typescript": "^5.0.4"
     },
     "dependencies": {
         "@discordjs/collection": "^1.5.0",

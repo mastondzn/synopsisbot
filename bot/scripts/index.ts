@@ -2,6 +2,7 @@ import '~/utils/load-env';
 
 import { readdir } from 'node:fs/promises';
 
+import { Collection } from '@discordjs/collection';
 import inquirer from 'inquirer';
 
 import { type Script } from '~/types/scripts';
@@ -53,7 +54,12 @@ const main = async () => {
         // eslint-disable-next-line no-fallthrough
         case 'bot': {
             const { Bot } = await import('~/bot');
-            const bot = new Bot();
+            const bot = new Bot({
+                events: new Collection(),
+                commands: new Collection(),
+                env: process.env,
+            });
+
             await bot.initialize();
             await script.run({ bot });
             await bot.stop();

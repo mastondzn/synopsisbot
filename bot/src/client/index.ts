@@ -1,18 +1,19 @@
 import { Collection } from '@discordjs/collection';
 import { type ChatSayMessageAttributes } from '@twurple/chat';
 
-import { type BaseEvent } from '~/types/client';
+import { type BasicEventHandler } from '~/types/client';
+import { type Resolvable } from '~/types/general';
 
 import { ChatClientShard, type ChatClientShardOptions } from './shard';
 
-export type ShardedChatClientOptions = {
+export type ShardedChatClientOptions = ChatClientShardOptions & {
     initialClients?: Collection<number, ChatClientShard>;
-    initialEvents?: BaseEvent[];
-} & ChatClientShardOptions;
+    channels?: Resolvable<string | string[]>;
+};
 
 export class ShardedChatClient {
     clients: Collection<number, ChatClientShard>;
-    events: BaseEvent[];
+    events: BasicEventHandler[] = [];
 
     options: ShardedChatClientOptions;
     baseClientOptions: ChatClientShardOptions;
@@ -28,10 +29,8 @@ export class ShardedChatClient {
             throw new Error('No channels provided');
         }
 
-        this.events = options.initialEvents ?? [];
-        for (const event of this.events) {
-            this.registerEvent(event);
-        }
+        const channels = this.options?.channels;
+        if (channels) void this.join(channels);
     }
 
     spawnClient(options: ChatClientShardOptions = this.baseClientOptions): ChatClientShard {
@@ -45,7 +44,7 @@ export class ShardedChatClient {
         return client;
     }
 
-    registerEvent(eventToAdd: BaseEvent) {
+    registerEvent(eventToAdd: BasicEventHandler) {
         this.events.push(eventToAdd);
 
         for (const [, client] of this.clients) {
@@ -53,13 +52,16 @@ export class ShardedChatClient {
         }
     }
 
-    registerEventOnClient(client: ChatClientShard, eventToAdd: BaseEvent) {
+    private registerEventOnClient(client: ChatClientShard, eventToAdd: BasicEventHandler) {
         const { event, handler } = eventToAdd;
 
+        // eslint-disable-next-line unicorn/prefer-switch
         if (event === 'onMessage') {
             client.onMessage(handler);
         } else if (event === 'onJoin') {
             client.onJoin(handler);
+        } else if (event === 'onConnect') {
+            client.onConnect(handler);
         } else throw new Error(`Event ${event} is not implemented`);
     }
 
@@ -69,9 +71,7 @@ export class ShardedChatClient {
         );
     }
 
-    async join(
-        channels: string[] | string | (() => string[] | string) | (() => Promise<string[] | string>)
-    ): Promise<void> {
+    async join(channels: Resolvable<string | string[]>): Promise<void> {
         const clientsWithAvailableSlots = this.clients
             .filter((client) => client.currentChannels.length < 85)
             .map((client) => ({
@@ -80,7 +80,8 @@ export class ShardedChatClient {
             }));
 
         // resolve channels
-        channels = typeof channels === 'function' ? await channels() : channels;
+        channels = typeof channels === 'function' ? channels() : channels;
+        channels = channels instanceof Promise ? await channels : channels;
         channels = Array.isArray(channels) ? channels : [channels];
 
         const promises: Promise<void>[] = [];
@@ -140,18 +141,18 @@ export class ShardedChatClient {
         await Promise.all(this.clients.map((client) => client.quit()));
     }
 
-    say(channel: string, text: string, attributes?: ChatSayMessageAttributes): Promise<void> {
+    async say(channel: string, text: string, attributes?: ChatSayMessageAttributes): Promise<void> {
         const client = this.getClientByChannel(channel);
         if (!client) throw new Error(`No client found for channel ${channel}`);
 
-        return client.say(channel, text, attributes);
+        return await client.say(channel, text, attributes);
     }
 
-    action(channel: string, text: string): Promise<void> {
+    async action(channel: string, text: string): Promise<void> {
         const client = this.getClientByChannel(channel);
         if (!client) throw new Error(`No client found for channel ${channel}`);
 
-        return client.action(channel, text);
+        return await client.action(channel, text);
     }
 
     get currentChannels(): string[] {
