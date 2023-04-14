@@ -55,14 +55,8 @@ export class ShardedChatClient {
     private registerEventOnClient(client: ChatClientShard, eventToAdd: BasicEventHandler) {
         const { event, handler } = eventToAdd;
 
-        // eslint-disable-next-line unicorn/prefer-switch
-        if (event === 'onMessage') {
-            client.onMessage(handler);
-        } else if (event === 'onJoin') {
-            client.onJoin(handler);
-        } else if (event === 'onConnect') {
-            client.onConnect(handler);
-        } else throw new Error(`Event ${event} is not implemented`);
+        // @ts-expect-error ts doesn't realize the handler is corresponding to the event
+        client[event](handler);
     }
 
     getClientByChannel(channelName: string) {
