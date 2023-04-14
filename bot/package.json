@@ -32,6 +32,7 @@
         "@twurple/api": "^6.1.1",
         "@twurple/auth": "^6.1.1",
         "@twurple/chat": "^6.1.1",
+        "@twurple/common": "^6.1.1",
         "dotenv": "^16.0.3",
         "ioredis": "^5.3.1",
         "is-docker": "2",

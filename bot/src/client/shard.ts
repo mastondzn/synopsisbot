@@ -8,17 +8,25 @@ export type ChatClientShardOptions = ChatClientOptions & ExtraOptions;
 // max 85 channels per shard
 
 export class ChatClientShard extends ChatClient {
-    shardId = clientShardId;
+    shardId: number;
+    latency: number | null;
 
     constructor(options?: ChatClientShardOptions) {
-        clientShardId++;
-
         super({
-            logger: {
-                name: `twurple:chat:client:${clientShardId}`,
-                minLevel: options?.isDev ? 'info' : 'error',
-            },
             ...options,
+            logger: {
+                name: `chat:${clientShardId}`,
+                minLevel: 'debug',
+                timestamps: false,
+                emoji: false,
+                colors: false,
+                ...options?.logger,
+            },
         });
+
+        this.shardId = clientShardId;
+        this.latency = null;
+        // TODO: snipe logger to add latency
+        clientShardId++;
     }
 }

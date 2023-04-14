@@ -1,15 +1,15 @@
 import { type Collection } from '@discordjs/collection';
 import { ApiClient } from '@twurple/api';
-import { type RefreshingAuthProvider } from '@twurple/auth';
 import { type Redis } from 'ioredis';
 
 import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
 import { type Env, parseEnv } from '@synopsis/env';
 
-import { makeRefreshingAuthProvider } from './auth-provider';
+import { BotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
 import { type BasicEventHandler, type BotCommand, type BotEventHandler } from './types/client';
+import { getAuthedUserById } from './utils/db';
 
 export type BotOptions = {
     events: Collection<string, BotEventHandler>;
@@ -25,7 +25,7 @@ export class Bot {
 
     chat!: ShardedChatClient;
     api!: ApiClient;
-    authProvider!: RefreshingAuthProvider;
+    authProvider!: BotAuthProvider;
 
     db: NodePgDatabase;
     pool: Pool;
@@ -45,11 +45,24 @@ export class Bot {
     }
 
     async initialize() {
-        this.authProvider = await makeRefreshingAuthProvider({
-            db: this.db,
-            env: this.env,
+        const bot = await getAuthedUserById(this.db, this.env.TWITCH_BOT_ID, {
+            throws: true,
         });
+
+        this.authProvider = new BotAuthProvider({
+            db: this.db,
+            clientId: this.env.TWITCH_CLIENT_ID,
+            clientSecret: this.env.TWITCH_CLIENT_SECRET,
+            botAccessToken: bot.accessToken,
+            botRefreshToken: bot.refreshToken,
+            botId: bot.twitchId,
+            botScopes: bot.scopes,
+            expiresIn: (bot.expiresAt.getTime() - Date.now()) / 1000,
+            obtainmentTimestamp: bot.obtainedAt.getTime(),
+        });
+
         this.api = new ApiClient({ authProvider: this.authProvider });
+
         this.chat = new ShardedChatClient({
             authProvider: this.authProvider,
             channels: [this.env.TWITCH_BOT_USERNAME],

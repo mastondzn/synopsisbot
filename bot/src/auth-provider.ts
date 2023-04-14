@@ -1,59 +1,49 @@
-import { RefreshingAuthProvider } from '@twurple/auth';
+import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 
-import { authedUsers, eq, type NodePgDatabase, type UpdateAuthedUser } from '@synopsis/db';
-import { type Env } from '@synopsis/env';
+import { type NodePgDatabase } from '@synopsis/db';
 
-export const makeRefreshingAuthProvider = async ({
-    db,
-    env,
-}: {
+import { updateAuthedUserById } from './utils/db';
+
+export type BotAuthProviderOptions = {
     db: NodePgDatabase;
-    env: Env;
-}): Promise<RefreshingAuthProvider> => {
-    const [botUser] = await db
-        .select()
-        .from(authedUsers)
-        .where(eq(authedUsers.twitchId, env.TWITCH_BOT_ID))
-        .limit(1);
+    clientId: string;
+    clientSecret: string;
+    botId: string;
+    botAccessToken: string;
+    botRefreshToken: string;
+    botScopes: string[];
+    expiresIn: number;
+    obtainmentTimestamp: number;
+};
 
-    if (!botUser) throw new Error('Bot user not found!');
-
-    const authProvider = new RefreshingAuthProvider({
-        clientId: env.TWITCH_CLIENT_ID,
-        clientSecret: env.TWITCH_CLIENT_SECRET,
-        onRefresh: async (userId, token) => {
-            const updateAuthedUser: UpdateAuthedUser = {
+export class BotAuthProvider extends RefreshingAuthProvider {
+    constructor(options: BotAuthProviderOptions) {
+        const onRefresh = async (userId: string, token: AccessToken) => {
+            await updateAuthedUserById(options.db, userId, {
                 accessToken: token.accessToken,
                 scopes: token.scope,
-            };
-            if (token.refreshToken) {
-                updateAuthedUser.refreshToken = token.refreshToken;
-            }
-            if (token.expiresIn) {
-                updateAuthedUser.expiresAt = new Date(Date.now() + token.expiresIn * 1000);
-            }
+                ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
+                ...(token.expiresIn
+                    ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) }
+                    : {}),
+            });
+        };
 
-            await db
-                .update(authedUsers)
-                .set(updateAuthedUser)
-                .where(eq(authedUsers.twitchId, userId));
-        },
-        appImpliedScopes: botUser.scopes,
-    });
+        super({
+            clientId: options.clientId,
+            clientSecret: options.clientSecret,
+            onRefresh,
+        });
 
-    const expiresIn = botUser.expiresAt.getTime() - Date.now() / 1000;
-
-    authProvider.addUser(
-        botUser.twitchId,
-        {
-            accessToken: botUser.accessToken,
-            refreshToken: botUser.refreshToken,
-            scope: botUser.scopes,
-            expiresIn,
-            obtainmentTimestamp: botUser.obtainedAt.getTime(),
-        },
-        ['chat']
-    );
-
-    return authProvider;
-};
+        this.addUser(
+            options.botId,
+            {
+                expiresIn: options.expiresIn,
+                obtainmentTimestamp: options.obtainmentTimestamp,
+                accessToken: options.botAccessToken,
+                refreshToken: options.botRefreshToken,
+            },
+            ['chat']
+        );
+    }
+}

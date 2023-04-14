@@ -36,8 +36,9 @@ export class ShardedChatClient {
     spawnClient(options: ChatClientShardOptions = this.baseClientOptions): ChatClientShard {
         if (Array.isArray(options.channels)) options.channels = [];
         const client = new ChatClientShard(options);
-        for (const event of this.events) {
-            this.registerEventOnClient(client, event);
+        for (const { event, handler } of this.events) {
+            // @ts-expect-error ts doesn't realize the handler is actually corresponding to the event
+            client[event](handler);
         }
 
         this.clients.set(client.shardId, client);
@@ -48,15 +49,11 @@ export class ShardedChatClient {
         this.events.push(eventToAdd);
 
         for (const [, client] of this.clients) {
-            this.registerEventOnClient(client, eventToAdd);
+            const { event, handler } = eventToAdd;
+
+            // @ts-expect-error ts doesn't realize the handler is actually corresponding to the event
+            client[event](handler);
         }
-    }
-
-    private registerEventOnClient(client: ChatClientShard, eventToAdd: BasicEventHandler) {
-        const { event, handler } = eventToAdd;
-
-        // @ts-expect-error ts doesn't realize the handler is corresponding to the event
-        client[event](handler);
     }
 
     getClientByChannel(channelName: string) {
@@ -124,9 +121,9 @@ export class ShardedChatClient {
                 channels.includes(channel)
             );
 
-            for (const channel of channelsToPart) {
-                client.part(channel);
-                channelsAlreadyLeft.add(channel);
+            for (const channelToPart of channelsToPart) {
+                client.part(channelToPart);
+                channelsAlreadyLeft.add(channelToPart);
             }
         }
     }
