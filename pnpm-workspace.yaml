@@ -1,5 +1,4 @@
 packages:
     - 'bot'
-    - 'packages/*'
-    - 'db'
     - 'website'
+    - 'packages/*'

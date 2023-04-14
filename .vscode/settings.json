@@ -16,6 +16,6 @@
     },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./db", "./website"],
+    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./website"],
     "eslint.codeActionsOnSave.mode": "all"
 }
