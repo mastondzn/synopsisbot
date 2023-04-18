@@ -9,7 +9,7 @@ services:
             - POSTGRES_PASSWORD=${DB_PASSWORD?err}
             - POSTGRES_DB=${DB_NAME?err}
         volumes:
-            - .db:/var/lib/postgresql/data
+            - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
 
     cache:
         image: redis:6-alpine
@@ -18,7 +18,7 @@ services:
         ports:
             - 6379:6379
         volumes:
-            - .cache:/data
+            - ~/volumes/synopsisbot/redis:/data
 
 networks:
     default:
