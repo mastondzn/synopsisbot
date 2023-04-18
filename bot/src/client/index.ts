@@ -37,8 +37,7 @@ export class ShardedChatClient {
         if (Array.isArray(options.channels)) options.channels = [];
         const client = new ChatClientShard(options);
         for (const { event, handler } of this.events) {
-            // @ts-expect-error ts doesn't realize the handler is actually corresponding to the event
-            client[event](handler);
+            client[event](handler as never);
         }
 
         this.clients.set(client.shardId, client);
@@ -50,9 +49,7 @@ export class ShardedChatClient {
 
         for (const [, client] of this.clients) {
             const { event, handler } = eventToAdd;
-
-            // @ts-expect-error ts doesn't realize the handler is actually corresponding to the event
-            client[event](handler);
+            client[event](handler as never);
         }
     }
 

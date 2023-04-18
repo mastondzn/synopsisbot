@@ -8,7 +8,7 @@ import { type Env, parseEnv } from '@synopsis/env';
 import { BotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
-import { type BasicEventHandler, type BotCommand, type BotEventHandler } from './types/client';
+import { type BotCommand, type BotEventHandler } from './types/client';
 import { getAuthedUserById } from './utils/db';
 
 export type BotOptions = {
@@ -70,8 +70,7 @@ export class Bot {
         });
 
         for (const [, { event, handler }] of this.events) {
-            // @ts-expect-error i believe actually trying to type this correctly breaks TS typechecking, this is safe though
-            const registrableEvent: BasicEventHandler = {
+            const registrableEvent = {
                 event,
                 handler: (...args: unknown[]) =>
                     void handler({
@@ -80,12 +79,11 @@ export class Bot {
                         commands: this.commands,
                         db: this.db,
                         client: this.chat,
-                        // @ts-expect-error see above
-                        params: args,
+                        params: args as never,
                     }),
             };
 
-            this.chat.registerEvent(registrableEvent);
+            this.chat.registerEvent(registrableEvent as never);
         }
     }
 
