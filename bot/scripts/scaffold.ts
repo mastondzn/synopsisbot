@@ -24,26 +24,15 @@ export const script: StandaloneScript = {
         });
 
         const getTypeName = (type: (typeof choices)[number]): string => {
-            switch (type) {
-                case 'standalone': {
-                    return 'StandaloneScript';
-                }
-                case 'bot': {
-                    return 'BotScript';
-                }
-                case 'db': {
-                    return 'DatabaseScript';
-                }
-                case 'cache': {
-                    return 'CacheScript';
-                }
-                case 'api': {
-                    return 'TwitchApiScript';
-                }
-                case 'chat': {
-                    return 'TwitchChatScript';
-                }
-            }
+            const typeMap: Record<(typeof choices)[number], string> = {
+                standalone: 'StandaloneScript',
+                bot: 'BotScript',
+                db: 'DatabaseScript',
+                cache: 'CacheScript',
+                api: 'TwitchApiScript',
+                chat: 'TwitchChatScript',
+            };
+            return typeMap[type];
         };
 
         const typeName = getTypeName(type);
