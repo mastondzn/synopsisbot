@@ -7,10 +7,19 @@ export const authedUsers = pgTable('authed_users', {
     scopes: varchar('scopes', { length: 256 }).array().notNull(),
     accessToken: varchar('access_token', { length: 256 }).notNull(),
     refreshToken: varchar('refresh_token', { length: 256 }).notNull(),
-    expiresAt: timestamp('expires_at', { mode: 'date' }).notNull(),
-    obtainedAt: timestamp('obtained_at', { mode: 'date' }).notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    obtainedAt: timestamp('obtained_at').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export type AuthedUser = InferModel<typeof authedUsers>;
 export type NewAuthedUser = InferModel<typeof authedUsers, 'insert'>;
 export type UpdateAuthedUser = Partial<AuthedUser>;
+
+export const states = pgTable('auth_states', {
+    state: varchar('state', { length: 64 }).primaryKey(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export type State = InferModel<typeof states>;
+export type NewState = InferModel<typeof states, 'insert'>;

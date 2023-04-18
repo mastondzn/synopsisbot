@@ -7,7 +7,7 @@ import { parseEnv } from '@synopsis/env';
 
 import { makeDatabase } from '~/index';
 
-config({ path: resolve(process.cwd(), '../.env') });
+config({ path: resolve(process.cwd(), '../../.env') });
 
 void (async () => {
     const env = parseEnv(process.env);

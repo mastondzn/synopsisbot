@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "566e62c4-1c8c-4d81-8b09-756e81c15d79",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "fbde24bd-091b-43c7-bfe1-b285282d0651",
+  "prevId": "566e62c4-1c8c-4d81-8b09-756e81c15d79",
   "tables": {
     "authed_users": {
       "name": "authed_users",
@@ -48,28 +48,6 @@
           "name": "obtained_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {}
-    },
-    "auth_nonces": {
-      "name": "auth_nonces",
-      "schema": "",
-      "columns": {
-        "nonce": {
-          "name": "nonce",
-          "type": "varchar(64)",
-          "primaryKey": true,
           "notNull": true
         },
         "created_at": {

@@ -16,16 +16,16 @@
         "@synopsis/tsconfig": "workspace:*",
         "@types/node": "18",
         "@types/pg": "^8.6.6",
-        "drizzle-kit": "^0.17.4",
-        "eslint": "^8.28.0",
-        "eslint-define-config": "^1.17.0",
+        "drizzle-kit": "^0.17.5",
+        "eslint": "^8.38.0",
+        "eslint-define-config": "^1.18.0",
         "tsconfig-paths": "^4.2.0",
         "tsx": "^3.12.6"
     },
     "dependencies": {
         "@synopsis/env": "workspace:*",
         "dotenv": "^16.0.3",
-        "drizzle-orm": "^0.23.11",
+        "drizzle-orm": "^0.24.0",
         "pg": "^8.10.0"
     }
 }
