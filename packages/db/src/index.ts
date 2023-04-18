@@ -1,17 +1,11 @@
 import { drizzle, type DrizzleConfig } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { Pool, type PoolConfig } from 'pg';
 
-import { type Env } from '@synopsis/env';
+export type MakeDatabaseOptions = DrizzleConfig & PoolConfig;
 
-export const makeDatabase = (env: Env, config?: DrizzleConfig) => {
-    const pool = new Pool({
-        host: env.DB_HOST,
-        user: env.DB_USERNAME,
-        password: env.DB_PASSWORD,
-        database: env.DB_NAME,
-    });
-
-    return { db: drizzle(pool, config), pool };
+export const makeDatabase = (options: MakeDatabaseOptions) => {
+    const pool = new Pool(options);
+    return { db: drizzle(pool, options), pool };
 };
 
 export * from './schema';

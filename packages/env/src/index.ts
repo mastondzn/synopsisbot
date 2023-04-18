@@ -1,7 +1,7 @@
 import isDocker from 'is-docker';
 import { z } from 'zod';
 
-export const envSchema = z.object({
+export const serverEnvSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']),
 
     TWITCH_CLIENT_ID: z.string(),
@@ -31,10 +31,11 @@ export const publicEnvSchema = z.object({
     NEXT_PUBLIC_TWITCH_BOT_ID: z.string(),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export type ServerEnv = z.infer<typeof serverEnvSchema>;
+export type PublicEnv = z.infer<typeof publicEnvSchema>;
 
-export const parseEnv = (env: unknown): Env => {
-    const parsed = envSchema.safeParse(env);
+export const parseEnv = (env: unknown): ServerEnv => {
+    const parsed = serverEnvSchema.safeParse(env);
     if (!parsed.success) {
         const errors = Object.entries(parsed.error.flatten().fieldErrors)
             .map(([key, errors]) => `${key}: ${errors.join(', ')}`)

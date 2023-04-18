@@ -11,7 +11,13 @@ config({ path: resolve(process.cwd(), '../../.env') });
 
 void (async () => {
     const env = parseEnv(process.env);
-    const { db, pool } = makeDatabase(env, { logger: true });
+    const { db, pool } = makeDatabase({
+        host: env.DB_HOST,
+        user: env.DB_USERNAME,
+        password: env.DB_PASSWORD,
+        database: env.DB_NAME,
+        logger: true,
+    });
     await migrate(db, {
         migrationsFolder: './migrations',
     });

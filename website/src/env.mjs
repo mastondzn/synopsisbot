@@ -1,13 +1,13 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { z } from 'zod';
-import { envSchema, publicEnvSchema } from '@synopsis/env';
+import { serverEnvSchema, publicEnvSchema } from '@synopsis/env';
 
 /**
  * Specify your server-side environment variables schema here. This way you can ensure the app isn't
  * built with invalid env vars.
  */
-const server = envSchema;
+const server = serverEnvSchema;
 
 /**
  * Specify your client-side environment variables schema here. This way you can ensure the app isn't
@@ -34,9 +34,9 @@ const processEnv = {
     TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID,
     TWITCH_CLIENT_SECRET: process.env.TWITCH_CLIENT_SECRET,
 
-    NEXT_PUBLIC_TWITCH_BOT_ID: process.env.TWITCH_BOT_ID,
-    NEXT_PUBLIC_TWITCH_BOT_USERNAME: process.env.TWITCH_BOT_USERNAME,
-    NEXT_PUBLIC_TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID,
+    NEXT_PUBLIC_TWITCH_BOT_ID: process.env.NEXT_PUBLIC_TWITCH_BOT_ID,
+    NEXT_PUBLIC_TWITCH_BOT_USERNAME: process.env.NEXT_PUBLIC_TWITCH_BOT_USERNAME,
+    NEXT_PUBLIC_TWITCH_CLIENT_ID: process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
 };
 
 // Don't touch the part below

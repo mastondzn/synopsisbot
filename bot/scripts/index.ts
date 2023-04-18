@@ -1,11 +1,10 @@
-import '~/utils/load-env';
-
 import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
 import inquirer from 'inquirer';
 
 import { type Script } from '~/types/scripts';
+import { env } from '~/utils/env';
 
 const main = async () => {
     const allFiles = await readdir('./scripts');
@@ -42,10 +41,14 @@ const main = async () => {
     switch (script.type) {
         case 'db': {
             const { makeDatabase } = await import('@synopsis/db');
-            const { parseEnv } = await import('@synopsis/env');
-            const env = parseEnv(process.env);
 
-            const { db, pool } = makeDatabase(env, { logger: true });
+            const { db, pool } = makeDatabase({
+                host: env.DB_HOST,
+                user: env.DB_USERNAME,
+                password: env.DB_PASSWORD,
+                database: env.DB_NAME,
+                logger: true,
+            });
             await script.run({ db });
             void pool.end();
             // eslint-disable-next-line unicorn/no-process-exit
@@ -57,7 +60,6 @@ const main = async () => {
             const bot = new Bot({
                 events: new Collection(),
                 commands: new Collection(),
-                env: process.env,
             });
 
             await bot.initialize();
@@ -69,8 +71,6 @@ const main = async () => {
             throw new Error('Not implemented yet!');
         }
         case 'api': {
-            const { parseEnv } = await import('@synopsis/env');
-            const env = parseEnv(process.env);
             const { ApiClient } = await import('@twurple/api');
             const { AppTokenAuthProvider } = await import('@twurple/auth');
 

@@ -3,7 +3,8 @@ import { ApiClient } from '@twurple/api';
 import { type Redis } from 'ioredis';
 
 import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
-import { type Env, parseEnv } from '@synopsis/env';
+
+import { env } from '~/utils/env';
 
 import { BotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
@@ -14,12 +15,9 @@ import { getAuthedUserById } from './utils/db';
 export type BotOptions = {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
-    env: unknown;
 };
 
 export class Bot {
-    readonly env: Env;
-
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
 
@@ -31,11 +29,14 @@ export class Bot {
     pool: Pool;
     cache: Redis;
 
-    constructor({ events, commands, env }: BotOptions) {
-        this.env = parseEnv(env);
-
-        const { db, pool } = makeDatabase(this.env);
-        const cache = makeCache(this.env);
+    constructor({ events, commands }: BotOptions) {
+        const { db, pool } = makeDatabase({
+            host: env.DB_HOST,
+            user: env.DB_USERNAME,
+            password: env.DB_PASSWORD,
+            database: env.DB_NAME,
+        });
+        const cache = makeCache(env);
         this.db = db;
         this.pool = pool;
         this.cache = cache;
@@ -45,14 +46,14 @@ export class Bot {
     }
 
     async initialize() {
-        const bot = await getAuthedUserById(this.db, this.env.TWITCH_BOT_ID, {
+        const bot = await getAuthedUserById(this.db, env.TWITCH_BOT_ID, {
             throws: true,
         });
 
         this.authProvider = new BotAuthProvider({
             db: this.db,
-            clientId: this.env.TWITCH_CLIENT_ID,
-            clientSecret: this.env.TWITCH_CLIENT_SECRET,
+            clientId: env.TWITCH_CLIENT_ID,
+            clientSecret: env.TWITCH_CLIENT_SECRET,
             botAccessToken: bot.accessToken,
             botRefreshToken: bot.refreshToken,
             botId: bot.twitchId,
@@ -65,8 +66,8 @@ export class Bot {
 
         this.chat = new ShardedChatClient({
             authProvider: this.authProvider,
-            channels: [this.env.TWITCH_BOT_USERNAME],
-            isDev: this.env.NODE_ENV === 'development',
+            channels: [env.TWITCH_BOT_USERNAME],
+            isDev: env.NODE_ENV === 'development',
         });
 
         for (const [, { event, handler }] of this.events) {
