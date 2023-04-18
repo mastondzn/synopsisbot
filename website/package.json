@@ -18,6 +18,8 @@
         "@trpc/next": "^10.18.0",
         "@trpc/react-query": "^10.18.0",
         "@trpc/server": "^10.18.0",
+        "@twurple/api": "^6.1.1",
+        "@twurple/auth": "^6.1.1",
         "next": "^13.2.4",
         "react": "18.2.0",
         "react-dom": "18.2.0",
@@ -37,7 +39,6 @@
         "eslint-define-config": "^1.17.0",
         "postcss": "^8.4.21",
         "tailwindcss": "^3.3.0",
-        "tsx": "^3.12.6",
         "typescript": "^5.0.2"
     }
 }
