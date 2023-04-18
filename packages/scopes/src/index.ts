@@ -1,6 +1,7 @@
 // https://dev.twitch.tv/docs/authentication/scopes/
 
 export const scopes = {
+    openId: 'openid',
     channelModerate: 'channel:moderate',
     chatEdit: 'chat:edit',
     chatRead: 'chat:read',
