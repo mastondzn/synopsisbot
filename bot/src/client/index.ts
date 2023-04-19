@@ -35,6 +35,9 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
     constructor(options: ShardedChatClientOptions) {
         super();
 
+        this.on('say', ({ shard, channel, text }) =>
+            console.log(`${logPrefix} said "${text}" in ${channel} on shard`, shard.shardId)
+        );
         this.on('spawn', (shard) => console.log(`${logPrefix} spawned new shard`, shard.shardId));
         this.on('join', ({ shard, channel }) =>
             console.log(`${logPrefix} joined channel ${channel}, on shard`, shard.shardId)
@@ -103,7 +106,7 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
     }
 
     async join(channels: Resolvable<string | string[]>): Promise<void> {
-        const clientsWithAvailableSlots = this.shards
+        const shardsWithAvailableSlots = this.shards
             .filter((shard) => shard.currentChannels.length < 85)
             .map((shard) => ({
                 shard,
@@ -117,7 +120,7 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
 
         const promises: Promise<void>[] = [];
 
-        for (const { shard, slots } of clientsWithAvailableSlots) {
+        for (const { shard, slots } of shardsWithAvailableSlots) {
             const channelsToJoin = channels.slice(0, slots);
             channels = channels.slice(slots);
             promises.push(

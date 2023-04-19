@@ -14,7 +14,7 @@ const logPrefix = chalk.bgCyan('[module:latency]');
 
 export const module: BotModule = {
     name: 'latency',
-    register: ({ client }) => {
+    register: ({ chat: client }) => {
         const chatClient = client.getShardById(0);
         if (!chatClient) {
             console.error(`${logPrefix} no initial client found.`);
@@ -31,11 +31,8 @@ export const module: BotModule = {
                 if (typeof rawMessage !== 'string') return;
                 if (message.params['message'] !== nowString) return;
 
-                if (!latency) {
-                    console.log(`${logPrefix} first latency is ${Date.now() - now}ms`);
-                }
-
                 latency = Date.now() - now;
+                console.log(`${logPrefix} received latency: ${latency}ms`);
                 chatClient.irc.removeListener(handler);
             });
 

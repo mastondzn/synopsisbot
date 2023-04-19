@@ -80,13 +80,7 @@ export class Bot {
                 event,
                 handler: (...args: unknown[]) => {
                     return void handler({
-                        api: this.api,
-                        cache: this.cache,
-                        commands: this.commands,
-                        db: this.db,
-                        client: this.chat,
-                        events: this.events,
-                        modules: this.modules,
+                        ...this,
                         params: args as never,
                     });
                 },
@@ -94,15 +88,7 @@ export class Bot {
         }
 
         for (const [, module] of this.modules) {
-            void module.register({
-                api: this.api,
-                cache: this.cache,
-                commands: this.commands,
-                db: this.db,
-                client: this.chat,
-                events: this.events,
-                modules: this.modules,
-            });
+            void module.register(this);
         }
     }
 

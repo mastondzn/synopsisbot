@@ -19,7 +19,7 @@ export type BasicEventHandler = ChatClientEvents extends infer T
     : never;
 
 export interface BotEventHandlerContext {
-    client: ShardedChatClient;
+    chat: ShardedChatClient;
     api: ApiClient;
     db: NodePgDatabase;
     cache: Redis;

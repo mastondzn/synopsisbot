@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { type BotEventHandler } from '~/types/client';
+import { type BotCommandContext, type BotEventHandler } from '~/types/client';
 import { CommandCooldownManager } from '~/utils/cooldown';
 
 const botPrefix = 'sb';
@@ -13,17 +13,10 @@ const logPrefix = chalk.bgBlue('[events:commands]');
 
 export const event: BotEventHandler = {
     event: 'onMessage',
-    handler: async ({
-        params: [channel, userName, text, msg],
-        db,
-        client,
-        cache,
-        api,
-        commands,
-        events,
-        modules,
-    }) => {
-        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+    handler: async (ctx) => {
+        const { params, chat, cache, commands } = ctx;
+        const [channel, userName, text, msg] = params;
+
         if (!commandExecutionRegex.test(text)) return;
 
         const commandIdentifier = (
@@ -51,7 +44,7 @@ export const event: BotEventHandler = {
         );
         console.log(`${logPrefix} message: ${userName}: "${text}"`);
 
-        const contextShard = client.getShardByChannel(channel);
+        const contextShard = chat.getShardByChannel(channel);
         if (!contextShard) {
             console.error(`${logPrefix} no client found for this command execution ${channel}`);
             return;
@@ -72,30 +65,24 @@ export const event: BotEventHandler = {
             return;
         }
 
-        const context = {
+        const commandContext: BotCommandContext = {
+            ...ctx,
             msg: Object.assign(msg, {
                 channel,
                 userName,
                 text,
             }),
-            api,
-            db,
-            client,
-            commands,
-            cache,
-            events,
-            modules,
         };
 
         try {
-            await command.run(context);
+            await command.run(commandContext);
             console.log(`${logPrefix} command ${command.name} executed successfully`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 `${logPrefix} error executing command ${command.name} from ${userName} in ${channel} ("${text}"): ${errorMessage}`
             );
-            await client
+            await chat
                 .say(
                     channel,
                     `@${msg.userInfo.displayName}, I failed to execute that command :/ (${errorMessage})`,
