@@ -42,13 +42,7 @@ export const event: BotEventHandler = {
         console.log(
             `${logPrefix} executing command ${command.name} from ${userName} in ${channel}`
         );
-        console.log(`${logPrefix} message: ${userName}: "${text}"`);
-
-        const contextShard = chat.getShardByChannel(channel);
-        if (!contextShard) {
-            console.error(`${logPrefix} no client found for this command execution ${channel}`);
-            return;
-        }
+        console.log(`${logPrefix} ${userName}: "${text}"`);
 
         if (!cooldownManager) {
             console.log(`${logPrefix} initializing cooldown manager`);
