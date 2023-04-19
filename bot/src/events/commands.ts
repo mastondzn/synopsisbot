@@ -2,7 +2,7 @@ import { type BotEventHandler } from '~/types/client';
 import { CommandCooldownManager } from '~/utils/cooldown';
 
 const botPrefix = 'sb';
-const hasSpaceAfterPrefix = true;
+const hasSpaceAfterPrefix = true as boolean;
 const commandExecutionRegex = new RegExp('^' + botPrefix + (hasSpaceAfterPrefix ? ' ' : ''));
 
 let cooldownManager: CommandCooldownManager | undefined;
@@ -17,6 +17,7 @@ export const event: BotEventHandler = {
         cache,
         api,
     }) => {
+        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
         if (!commandExecutionRegex.test(text)) return;
 
         const commandIdentifier = (
@@ -30,7 +31,7 @@ export const event: BotEventHandler = {
         if (!commandIdentifier) return;
 
         const command = commands.find(
-            (c) => c.name === commandIdentifier || c?.aliases?.includes(commandIdentifier)
+            (c) => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier)
         );
         if (!command) return;
 

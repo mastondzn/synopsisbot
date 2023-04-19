@@ -14,6 +14,7 @@ export const getCommands = async (): Promise<Collection<string, BotCommand>> => 
         files.map(async (file) => {
             const commandObj = (await import(`./${file}`)) as { command: BotCommand };
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!commandObj?.command?.run && typeof commandObj?.command?.run !== 'function') {
                 throw new TypeError(`Invalid command ${file}`);
             }

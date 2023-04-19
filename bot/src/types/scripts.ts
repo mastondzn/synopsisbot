@@ -6,9 +6,9 @@ import { type NodePgDatabase } from '@synopsis/db';
 
 import { type Bot } from '~/bot';
 
-type Base = {
+interface Base {
     description?: string;
-};
+}
 
 type ScriptFunction<K extends string, V> = V extends object
     ? (arg: Record<K, V>) => Promise<void> | void

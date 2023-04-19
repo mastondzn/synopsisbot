@@ -7,7 +7,6 @@ import { type Resolvable } from '~/types/general';
 import { ChatClientShard, type ChatClientShardOptions } from './shard';
 
 export type ShardedChatClientOptions = ChatClientShardOptions & {
-    initialClients?: Collection<number, ChatClientShard>;
     channels?: Resolvable<string | string[]>;
 };
 
@@ -20,16 +19,16 @@ export class ShardedChatClient {
 
     constructor(options: ShardedChatClientOptions) {
         this.options = options;
+        this.clients = new Collection();
 
         const baseClientOptions: ChatClientShardOptions = { ...options, channels: [] };
         this.baseClientOptions = baseClientOptions;
 
-        this.clients = options.initialClients ?? new Collection();
-        if (!options?.channels?.length || options?.channels?.length < 1) {
+        if (!options.channels?.length || options.channels.length === 0) {
             throw new Error('No channels provided');
         }
 
-        const channels = this.options?.channels;
+        const channels = this.options.channels;
         if (channels) void this.join(channels);
     }
 
@@ -105,7 +104,7 @@ export class ShardedChatClient {
     }
 
     partAll(channels: string[]) {
-        const channelsAlreadyLeft: Set<string> = new Set();
+        const channelsAlreadyLeft = new Set<string>();
 
         for (const channel of channels) {
             if (channelsAlreadyLeft.has(channel)) continue;

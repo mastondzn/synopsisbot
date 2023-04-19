@@ -14,7 +14,7 @@
     "devDependencies": {
         "@synopsis/eslint-config": "workspace:*",
         "@synopsis/tsconfig": "workspace:*",
-        "@types/node": "18",
+        "@types/node": "^18.15.11",
         "@types/pg": "^8.6.6",
         "drizzle-kit": "^0.17.5",
         "eslint": "^8.38.0",
@@ -25,7 +25,7 @@
     "dependencies": {
         "@synopsis/env": "workspace:*",
         "dotenv": "^16.0.3",
-        "drizzle-orm": "^0.24.0",
+        "drizzle-orm": "^0.24.2",
         "pg": "^8.10.0"
     }
 }

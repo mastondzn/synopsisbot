@@ -16,6 +16,7 @@ const main = async () => {
         files.map(async (file) => {
             const scriptObj = (await import(`./${file}`)) as { script: Script };
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (typeof scriptObj?.script?.run !== 'function') {
                 throw new TypeError(`Invalid script ${file}`);
             }
@@ -27,13 +28,14 @@ const main = async () => {
     const promptResults = await inquirer.prompt<{ script: string }>({
         type: 'list',
         choices: scripts.map((script) =>
-            `${script.file}${script?.description ? ` - ${script.description}` : ''}`.trim()
+            `${script.file}${script.description ? ` - ${script.description}` : ''}`.trim()
         ),
         name: 'script',
         message: 'Select a script to run!',
     });
 
-    const answer = promptResults.script.split(' - ')[0] as string;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const answer = promptResults.script.split(' - ')[0]!;
 
     const script = scripts.find((script) => script.file === answer);
     if (!script) throw new Error('?');

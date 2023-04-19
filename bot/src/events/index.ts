@@ -14,6 +14,7 @@ export const getEventHandlers = async (): Promise<Collection<string, BotEventHan
         files.map(async (file) => {
             const eventObj = (await import(`./${file}`)) as { event: BotEventHandler };
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!eventObj?.event?.event && typeof eventObj?.event?.handler !== 'function') {
                 throw new TypeError(`Invalid event ${file}`);
             }

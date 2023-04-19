@@ -2,11 +2,11 @@ import { type Redis } from 'ioredis';
 
 import { type BotCommand } from '~/types/client';
 
-export type CommandCooldownManagerCheckOptions = {
+export interface CommandCooldownManagerCheckOptions {
     command: BotCommand;
     channel: string;
     userName: string;
-};
+}
 
 const defaultUserCooldown = 10;
 const defaultGlobalCooldown = 3;
@@ -31,8 +31,8 @@ export class CommandCooldownManager {
         channel,
         userName,
     }: CommandCooldownManagerCheckOptions): Promise<{ isOnCooldown: boolean }> {
-        const userCooldown = command?.cooldown?.user ?? defaultUserCooldown;
-        const globalCooldown = command?.cooldown?.global ?? defaultGlobalCooldown;
+        const userCooldown = command.cooldown?.user ?? defaultUserCooldown;
+        const globalCooldown = command.cooldown?.global ?? defaultGlobalCooldown;
 
         const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
         const globalCooldownKey = makeGlobalCooldownKey({ command, channel });

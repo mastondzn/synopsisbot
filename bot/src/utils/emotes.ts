@@ -1,8 +1,8 @@
-export type EmotePosition = {
+export interface EmotePosition {
     name: string;
     position: number;
     length: number;
-};
+}
 
 export const findEmotePositions = (message: string, emotes: string[]): EmotePosition[] => {
     const result: EmotePosition[] = [];

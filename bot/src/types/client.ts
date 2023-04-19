@@ -19,13 +19,13 @@ export type BasicEventHandler = ChatClientEvents extends infer T
         : never
     : never;
 
-export type BotEventHandlerContext = {
+export interface BotEventHandlerContext {
     client: ShardedChatClient;
     api: ApiClient;
     db: NodePgDatabase;
     cache: Redis;
     commands: Collection<string, BotCommand>;
-};
+}
 
 export type BotEventHandler = ChatClientEvents extends infer T
     ? T extends ChatClientEvents
@@ -42,11 +42,11 @@ export type BotEventHandler = ChatClientEvents extends infer T
     : never;
 
 type OnMessageEventHandlerParams = Parameters<EventHandler<'onMessage'>>;
-type OnMessageEventHandlerParamsAsObject = {
+interface OnMessageEventHandlerParamsAsObject {
     channel: OnMessageEventHandlerParams[0];
     userName: OnMessageEventHandlerParams[1];
     text: OnMessageEventHandlerParams[2];
-};
+}
 
 export type BotCommandContext = Omit<BotEventHandlerContext, 'client'> & {
     msg: PrivateMessage & OnMessageEventHandlerParamsAsObject;
@@ -54,7 +54,7 @@ export type BotCommandContext = Omit<BotEventHandlerContext, 'client'> & {
     client: ChatClientShard;
 };
 
-export type BotCommand = {
+export interface BotCommand {
     name: string;
     description?: string;
     aliases?: string[];
@@ -63,4 +63,4 @@ export type BotCommand = {
         global: number; // seconds
     };
     run: (ctx: BotCommandContext) => Promise<void> | void;
-};
+}

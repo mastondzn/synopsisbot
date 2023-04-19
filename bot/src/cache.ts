@@ -1,10 +1,8 @@
 import { Redis } from 'ioredis';
 
-import { type ServerEnv } from '@synopsis/env';
-
-export const makeCache = (env: ServerEnv): Redis => {
+export const makeCache = ({ host, password }: { host: string; password: string }): Redis => {
     return new Redis({
-        host: env.REDIS_HOST,
-        password: env.REDIS_PASSWORD,
+        host,
+        password,
     });
 };

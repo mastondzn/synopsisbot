@@ -6,21 +6,17 @@ import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
 
 import { env } from '~/utils/env';
 
-import { BotAuthProvider } from './auth-provider';
+import { type BotAuthProvider, makeBotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
 import { type BotCommand, type BotEventHandler } from './types/client';
-import { getAuthedUserById } from './utils/db';
 
-export type BotOptions = {
+export interface BotOptions {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
-};
+}
 
 export class Bot {
-    events: Collection<string, BotEventHandler>;
-    commands: Collection<string, BotCommand>;
-
     chat!: ShardedChatClient;
     api!: ApiClient;
     authProvider!: BotAuthProvider;
@@ -29,6 +25,9 @@ export class Bot {
     pool: Pool;
     cache: Redis;
 
+    events: Collection<string, BotEventHandler>;
+    commands: Collection<string, BotCommand>;
+
     constructor({ events, commands }: BotOptions) {
         const { db, pool } = makeDatabase({
             host: env.DB_HOST,
@@ -36,30 +35,26 @@ export class Bot {
             password: env.DB_PASSWORD,
             database: env.DB_NAME,
         });
-        const cache = makeCache(env);
-        this.db = db;
-        this.pool = pool;
-        this.cache = cache;
+
+        const cache = makeCache({
+            host: env.REDIS_HOST,
+            password: env.REDIS_PASSWORD,
+        });
 
         this.events = events;
         this.commands = commands;
+
+        this.db = db;
+        this.pool = pool;
+        this.cache = cache;
     }
 
     async initialize() {
-        const bot = await getAuthedUserById(this.db, env.TWITCH_BOT_ID, {
-            throws: true,
-        });
-
-        this.authProvider = new BotAuthProvider({
+        this.authProvider = await makeBotAuthProvider({
             db: this.db,
+            botId: env.TWITCH_BOT_ID,
             clientId: env.TWITCH_CLIENT_ID,
             clientSecret: env.TWITCH_CLIENT_SECRET,
-            botAccessToken: bot.accessToken,
-            botRefreshToken: bot.refreshToken,
-            botId: bot.twitchId,
-            botScopes: bot.scopes,
-            expiresIn: (bot.expiresAt.getTime() - Date.now()) / 1000,
-            obtainmentTimestamp: bot.obtainedAt.getTime(),
         });
 
         this.api = new ApiClient({ authProvider: this.authProvider });
@@ -71,20 +66,19 @@ export class Bot {
         });
 
         for (const [, { event, handler }] of this.events) {
-            const registrableEvent = {
+            this.chat.registerEvent({
                 event,
-                handler: (...args: unknown[]) =>
-                    void handler({
+                handler: (...args: unknown[]) => {
+                    return void handler({
                         api: this.api,
                         cache: this.cache,
                         commands: this.commands,
                         db: this.db,
                         client: this.chat,
                         params: args as never,
-                    }),
-            };
-
-            this.chat.registerEvent(registrableEvent as never);
+                    });
+                },
+            } as never);
         }
     }
 
