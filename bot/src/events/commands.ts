@@ -58,7 +58,7 @@ export const event: BotEventHandler = {
         }
 
         if (!cooldownManager) {
-            console.log('${logPrefix} initializing cooldown manager');
+            console.log(`${logPrefix} initializing cooldown manager`);
             cooldownManager = new CommandCooldownManager({ cache });
         }
 
@@ -89,6 +89,7 @@ export const event: BotEventHandler = {
 
         try {
             await command.run(context);
+            console.log(`${logPrefix} command ${command.name} executed successfully`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
