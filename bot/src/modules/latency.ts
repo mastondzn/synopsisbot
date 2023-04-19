@@ -23,22 +23,19 @@ export const module: BotModule = {
 
         const pingCheck = () => {
             const now = Date.now();
-            const nowString = now.toString(10);
 
             const handler = shard.irc.onAnyMessage((message) => {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                if (message.params['message'] !== nowString) return;
-
+                if (message.params['message'] !== now.toString(10)) return;
                 latency = Date.now() - now;
                 console.log(`${logPrefix} received latency: ${latency}ms`);
                 shard.irc.removeListener(handler);
             });
 
-            shard.irc.sendRaw(`PING :${nowString}`);
+            shard.irc.sendRaw(`PING :${now}`);
         };
 
         shard.onAuthenticationSuccess(() => {
-            setTimeout(pingCheck, 1000 * 12);
+            setTimeout(pingCheck, 1000 * 8);
             timer = setInterval(pingCheck, 1000 * 60 * 5);
         });
     },
