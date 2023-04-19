@@ -18,11 +18,12 @@
         "@types/node": "18",
         "@types/pg": "^8.6.6",
         "chalk": "4",
-        "eslint": "^8.28.0",
-        "eslint-define-config": "^1.17.0",
+        "eslint": "^8.38.0",
+        "eslint-define-config": "^1.18.0",
         "inquirer": "^9.1.5",
         "tsconfig-paths": "^4.2.0",
         "tsx": "^3.12.6",
+        "typed-emitter": "^2.1.0",
         "typescript": "^5.0.4"
     },
     "dependencies": {
@@ -30,14 +31,15 @@
         "@synopsis/db": "workspace:*",
         "@synopsis/env": "workspace:*",
         "@synopsis/scopes": "workspace:*",
-        "@twurple/api": "^6.1.1",
-        "@twurple/auth": "^6.1.1",
-        "@twurple/chat": "^6.1.1",
-        "@twurple/common": "^6.1.1",
+        "@twurple/api": "^6.1.2",
+        "@twurple/auth": "^6.1.2",
+        "@twurple/chat": "^6.1.2",
+        "@twurple/common": "^6.1.2",
+        "@twurple/eventsub-ws": "^6.1.2",
         "dotenv": "^16.0.3",
-        "ioredis": "^5.3.1",
+        "ioredis": "^5.3.2",
         "is-docker": "2",
-        "lru-cache": "^9.0.0",
+        "lru-cache": "^9.1.0",
         "zod": "^3.21.4"
     }
 }

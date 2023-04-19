@@ -15,7 +15,7 @@ export const script: BotScript = {
             if (i !== 0 && !cursor) break;
             const options = cursor ? { after: cursor, limit: 100 } : { limit: 100 };
             const res = await bot.api.streams.getStreams(options);
-            cursor = res.cursor || null;
+            cursor = res.cursor ?? null;
             streams.push(...res.data.map((stream) => stream.userName));
             viewers += res.data.reduce((acc, stream) => acc + stream.viewers, 0);
         }
@@ -40,7 +40,7 @@ export const script: BotScript = {
         setInterval(() => {
             console.log(
                 chalk.yellow(
-                    `CURRENTLY JOINED TO ${bot.chat.currentChannels.length} CHANNELS WITH ${bot.chat.clients.size} SHARDS`
+                    `CURRENTLY JOINED TO ${bot.chat.currentChannels.length} CHANNELS WITH ${bot.chat.shardCount} SHARDS`
                 )
             );
         }, 500);

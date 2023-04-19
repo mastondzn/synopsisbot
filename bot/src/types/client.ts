@@ -6,7 +6,6 @@ import { type Redis } from 'ioredis';
 import { type NodePgDatabase } from '@synopsis/db';
 
 import { type ShardedChatClient } from '~/client';
-import { type ChatClientShard } from '~/client/shard';
 
 export type ChatClientEvents = Exclude<Extract<keyof ChatClient, `on${string}`>, 'on'>;
 
@@ -25,6 +24,8 @@ export interface BotEventHandlerContext {
     db: NodePgDatabase;
     cache: Redis;
     commands: Collection<string, BotCommand>;
+    events: Collection<string, BotEventHandler>;
+    modules: Collection<string, BotModule>;
 }
 
 export type BotEventHandler = ChatClientEvents extends infer T
@@ -48,10 +49,8 @@ interface OnMessageEventHandlerParamsAsObject {
     text: OnMessageEventHandlerParams[2];
 }
 
-export type BotCommandContext = Omit<BotEventHandlerContext, 'client'> & {
+export type BotCommandContext = BotEventHandlerContext & {
     msg: PrivateMessage & OnMessageEventHandlerParamsAsObject;
-    shardedClient: ShardedChatClient;
-    client: ChatClientShard;
 };
 
 export interface BotCommand {
@@ -63,4 +62,10 @@ export interface BotCommand {
         global: number; // seconds
     };
     run: (ctx: BotCommandContext) => Promise<void> | void;
+}
+
+export interface BotModule {
+    name: string;
+    description?: string;
+    register: (ctx: BotEventHandlerContext) => Promise<void> | void;
 }

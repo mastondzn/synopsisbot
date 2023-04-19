@@ -13,9 +13,11 @@ export const event: BotEventHandler = {
         params: [channel, userName, text, msg],
         db,
         client,
-        commands,
         cache,
         api,
+        commands,
+        events,
+        modules,
     }) => {
         // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
         if (!commandExecutionRegex.test(text)) return;
@@ -35,9 +37,9 @@ export const event: BotEventHandler = {
         );
         if (!command) return;
 
-        const contextClient = client.getClientByChannel(channel);
+        const contextShard = client.getShardByChannel(channel);
         // TODO: do something better if this client is not found
-        if (!contextClient) return;
+        if (!contextShard) return;
 
         if (!cooldownManager) cooldownManager = new CommandCooldownManager({ cache });
 
@@ -54,12 +56,13 @@ export const event: BotEventHandler = {
                 userName,
                 text,
             }),
-            client: contextClient,
             api,
             db,
-            shardedClient: client,
+            client,
             commands,
             cache,
+            events,
+            modules,
         };
 
         await command.run(commandExecutionContext);

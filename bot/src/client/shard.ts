@@ -14,6 +14,7 @@ export class ChatClientShard extends ChatClient {
             ...options,
             logger: {
                 name: `chat:${clientShardId}`,
+                minLevel: options?.isDev ? 'debug' : 'warn',
                 ...options?.logger,
             },
         });

@@ -35,29 +35,32 @@ importers:
         specifier: workspace:*
         version: link:../packages/scopes
       '@twurple/api':
-        specifier: ^6.1.1
-        version: 6.1.1(@twurple/auth@6.1.1)
+        specifier: ^6.1.2
+        version: 6.1.2(@twurple/auth@6.1.2)
       '@twurple/auth':
-        specifier: ^6.1.1
-        version: 6.1.1
+        specifier: ^6.1.2
+        version: 6.1.2
       '@twurple/chat':
-        specifier: ^6.1.1
-        version: 6.1.1(@twurple/auth@6.1.1)
+        specifier: ^6.1.2
+        version: 6.1.2(@twurple/auth@6.1.2)
       '@twurple/common':
-        specifier: ^6.1.1
-        version: 6.1.1
+        specifier: ^6.1.2
+        version: 6.1.2
+      '@twurple/eventsub-ws':
+        specifier: ^6.1.2
+        version: 6.1.2(@twurple/api@6.1.2)
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
       ioredis:
-        specifier: ^5.3.1
-        version: 5.3.1
+        specifier: ^5.3.2
+        version: 5.3.2
       is-docker:
         specifier: '2'
         version: 2.2.1
       lru-cache:
-        specifier: ^9.0.0
-        version: 9.0.0
+        specifier: ^9.1.0
+        version: 9.1.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -81,11 +84,11 @@ importers:
         specifier: '4'
         version: 4.1.2
       eslint:
-        specifier: ^8.28.0
-        version: 8.37.0
+        specifier: ^8.38.0
+        version: 8.38.0
       eslint-define-config:
-        specifier: ^1.17.0
-        version: 1.17.0
+        specifier: ^1.18.0
+        version: 1.18.0
       inquirer:
         specifier: ^9.1.5
         version: 9.1.5
@@ -95,6 +98,9 @@ importers:
       tsx:
         specifier: ^3.12.6
         version: 3.12.6
+      typed-emitter:
+        specifier: ^2.1.0
+        version: 2.1.0
       typescript:
         specifier: ^5.0.4
         version: 5.0.4
@@ -1021,6 +1027,19 @@ packages:
       - encoding
     dev: false
 
+  /@twurple/api-call@6.1.2:
+    resolution: {integrity: sha512-0qY4uCaBYX9kmL7TQ413oz0lTzg82Yu06rIcsQbzVwWbzKW5EpPDFmM8atjrDndwzB2Qv+zfrWY6w9UFaaKegg==}
+    dependencies:
+      '@d-fischer/cross-fetch': 4.1.0
+      '@d-fischer/qs': 7.0.2
+      '@d-fischer/shared-utils': 3.5.1
+      '@twurple/common': 6.1.2
+      '@types/node-fetch': 2.6.3
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@twurple/api@6.1.1(@twurple/auth@6.1.1):
     resolution: {integrity: sha512-UlaAJMxI0v3s1WA9VJpNc60tBjubXbnQuZa2igNVj2+NaM2Q58gI+KA1JY90YdkKjjjJUlRagcPykjagRCWQJQ==}
     peerDependencies:
@@ -1040,6 +1059,25 @@ packages:
       - encoding
     dev: false
 
+  /@twurple/api@6.1.2(@twurple/auth@6.1.2):
+    resolution: {integrity: sha512-idI9atxSJSDAqbXODETSdbPU0fruCVqckxahlF26LqU6PtQZmFL4GzegCaeEkq0lLEGR8AEayOj2LfqX9R3Osw==}
+    peerDependencies:
+      '@twurple/auth': 6.1.2
+    dependencies:
+      '@d-fischer/cache-decorators': 3.0.2
+      '@d-fischer/detect-node': 3.0.1
+      '@d-fischer/logger': 4.2.2
+      '@d-fischer/rate-limiter': 0.7.4
+      '@d-fischer/shared-utils': 3.5.1
+      '@twurple/api-call': 6.1.2
+      '@twurple/auth': 6.1.2
+      '@twurple/common': 6.1.2
+      retry: 0.13.1
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@twurple/auth@6.1.1:
     resolution: {integrity: sha512-mIkSfCDvWO6WdXJMysvr1XAs0es1Ni3hD74sekOhnBCgtQ7WEG+7NA/X1M5USJjtEk4GYLuUdk7WWTsBHfQ7sw==}
     dependencies:
@@ -1052,10 +1090,22 @@ packages:
       - encoding
     dev: false
 
-  /@twurple/chat@6.1.1(@twurple/auth@6.1.1):
-    resolution: {integrity: sha512-PdllWpuBugxGtw40KtyFB3pR0RBTf+Rd3673cLbnnX9AN1b+Ja2zXMP7MztslcmTKLrkLCj5RUOpgTNyXP/IPw==}
+  /@twurple/auth@6.1.2:
+    resolution: {integrity: sha512-B85a595O6d8Bb3TuynW9u0yslO80Bktal2RVDqsTKGQ9ANPGCrjvv+OgtfAx0UZNXHmxZLt97hBPla6sneo4Eg==}
+    dependencies:
+      '@d-fischer/logger': 4.2.2
+      '@d-fischer/shared-utils': 3.5.1
+      '@twurple/api-call': 6.1.2
+      '@twurple/common': 6.1.2
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@twurple/chat@6.1.2(@twurple/auth@6.1.2):
+    resolution: {integrity: sha512-WM4rEC7J2fSDTdnqY+TT2w9ydsRsPgpbQ86ju7fO468b9tYkCf6mOoxNfLajRjm8T0YB/qkv3KjyHPP4YUN2xQ==}
     peerDependencies:
-      '@twurple/auth': 6.1.1
+      '@twurple/auth': 6.1.2
     dependencies:
       '@d-fischer/cache-decorators': 3.0.2
       '@d-fischer/deprecate': 2.0.2
@@ -1063,8 +1113,8 @@ packages:
       '@d-fischer/rate-limiter': 0.7.4
       '@d-fischer/shared-utils': 3.5.1
       '@d-fischer/typed-event-emitter': 3.3.1
-      '@twurple/auth': 6.1.1
-      '@twurple/common': 6.1.1
+      '@twurple/auth': 6.1.2
+      '@twurple/common': 6.1.2
       ircv3: 0.31.6
       tslib: 2.5.0
     transitivePeerDependencies:
@@ -1078,6 +1128,48 @@ packages:
       '@d-fischer/shared-utils': 3.5.1
       klona: 2.0.6
       tslib: 2.5.0
+    dev: false
+
+  /@twurple/common@6.1.2:
+    resolution: {integrity: sha512-bG7TJbqXnA0VKtx9sZJ6FONRhF0oiLpCRZ3F6xtmz8e9pV0/qQAaaXtwP8wFN60DLqsx8GQsMDclhz/ogguRFQ==}
+    dependencies:
+      '@d-fischer/shared-utils': 3.5.1
+      klona: 2.0.6
+      tslib: 2.5.0
+    dev: false
+
+  /@twurple/eventsub-base@6.1.2:
+    resolution: {integrity: sha512-MYmcKAtgNf34HGCeFdcAVDQNdcZbnlVmUXsY5dfAzup8a5kXvIiCquW40DknSRfz8pxK5w2uZjmVHV4Uy8iOIg==}
+    dependencies:
+      '@d-fischer/logger': 4.2.2
+      '@d-fischer/shared-utils': 3.5.1
+      '@d-fischer/typed-event-emitter': 3.3.1
+      '@twurple/api': 6.1.2(@twurple/auth@6.1.2)
+      '@twurple/auth': 6.1.2
+      '@twurple/common': 6.1.2
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@twurple/eventsub-ws@6.1.2(@twurple/api@6.1.2):
+    resolution: {integrity: sha512-yAZMz/kPlr1EcIn3nXJZ5etkRFEEUYnPRVZ1h0RSUwbjsGhqjELJTlWLJoCbF+XwLYuED5q5rpelwqV76pAHXA==}
+    peerDependencies:
+      '@twurple/api': 6.1.2
+    dependencies:
+      '@d-fischer/connection': 8.0.3
+      '@d-fischer/logger': 4.2.2
+      '@d-fischer/shared-utils': 3.5.1
+      '@d-fischer/typed-event-emitter': 3.3.1
+      '@twurple/api': 6.1.2(@twurple/auth@6.1.2)
+      '@twurple/auth': 6.1.2
+      '@twurple/common': 6.1.2
+      '@twurple/eventsub-base': 6.1.2
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
     dev: false
 
   /@types/eslint@8.37.0:
@@ -2682,14 +2774,6 @@ packages:
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
-  /eslint-scope@7.2.0:
-    resolution: {integrity: sha512-DYj5deGlHBfMt15J7rdtyKNq/Nqlv5KfU4iodrQ019XESsRnwXH9KAE0y3cwtUHDo2ob7CypAnCqefh6vioWRw==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dependencies:
-      esrecurse: 4.3.0
-      estraverse: 5.3.0
-    dev: true
-
   /eslint-visitor-keys@3.4.0:
     resolution: {integrity: sha512-HPpKPUBQcAsZOsHAFwTtIKcYlCje62XB7SEAcxjtmW6TD1WVpkS6i6/hOVtTZIl4zGj/mBqpFVGvaDneik+VoQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -2760,7 +2844,7 @@ packages:
       debug: 4.3.4
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
-      eslint-scope: 7.2.0
+      eslint-scope: 7.1.1
       eslint-visitor-keys: 3.4.0
       espree: 9.5.1
       esquery: 1.5.0
@@ -3212,8 +3296,8 @@ packages:
       has: 1.0.3
       side-channel: 1.0.4
 
-  /ioredis@5.3.1:
-    resolution: {integrity: sha512-C+IBcMysM6v52pTLItYMeV4Hz7uriGtoJdz7SSBDX6u+zwSYGirLdQh3L7t/OItWITcw3gTFMjJReYUwS4zihg==}
+  /ioredis@5.3.2:
+    resolution: {integrity: sha512-1DKMMzlIHM02eBBVOFQ1+AolGjs6+xEcM4PDL7NqOS6szq7H9jSaEkIUH6/a5Hl241LzW6JLSiAbNvTQjUupUA==}
     engines: {node: '>=12.22.0'}
     dependencies:
       '@ioredis/commands': 1.2.0
@@ -3587,9 +3671,9 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /lru-cache@9.0.0:
-    resolution: {integrity: sha512-9AEKXzvOZc4BMacFnYiTOlDH/197LNnQIK9wZ6iMB5NXPzuv4bWR/Msv7iUMplkiMQ1qQL+KSv/JF1mZAB5Lrg==}
-    engines: {node: '>=16.14'}
+  /lru-cache@9.1.0:
+    resolution: {integrity: sha512-qFXQEwchrZcMVen2uIDceR8Tii6kCJak5rzDStfEM0qA3YLMswaxIEZO0DhIbJ3aqaJiDjt+3crlplOb0tDtKQ==}
+    engines: {node: 14 || >=16.14}
     dev: false
 
   /lru-queue@0.1.0:
@@ -4866,6 +4950,12 @@ packages:
       call-bind: 1.0.2
       for-each: 0.3.3
       is-typed-array: 1.1.10
+
+  /typed-emitter@2.1.0:
+    resolution: {integrity: sha512-g/KzbYKbH5C2vPkaXGu8DJlHrGKHLsM25Zg9WuC9pMGfuvT+X25tZQWo5fK1BjBm8+UrVE9LDCvaY0CQk+fXDA==}
+    optionalDependencies:
+      rxjs: 7.8.0
+    dev: true
 
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}

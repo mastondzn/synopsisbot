@@ -1,5 +1,8 @@
+import { EventEmitter } from 'node:events';
+
 import { Collection } from '@discordjs/collection';
 import { type ChatSayMessageAttributes } from '@twurple/chat';
+import type TypedEmitter from 'typed-emitter';
 
 import { type BasicEventHandler } from '~/types/client';
 import { type Resolvable } from '~/types/general';
@@ -10,19 +13,39 @@ export type ShardedChatClientOptions = ChatClientShardOptions & {
     channels?: Resolvable<string | string[]>;
 };
 
-export class ShardedChatClient {
-    clients: Collection<number, ChatClientShard>;
-    events: BasicEventHandler[] = [];
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type ShardedChatClientEvents = {
+    spawn: (shard: ChatClientShard) => void;
+    join: (eventContext: { shard: ChatClientShard; channel: string }) => void;
+    part: (eventContext: { shard: ChatClientShard; channel: string }) => void;
+    say: (eventContext: { shard: ChatClientShard; channel: string; text: string }) => void;
+};
 
-    options: ShardedChatClientOptions;
-    baseClientOptions: ChatClientShardOptions;
+export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<ShardedChatClientEvents>) {
+    private shards: Collection<number, ChatClientShard>;
+    private events: BasicEventHandler[] = [];
+
+    private options: ShardedChatClientOptions;
+    private baseShardOptions: ChatClientShardOptions;
 
     constructor(options: ShardedChatClientOptions) {
+        super();
+
+        this.on('spawn', (shard) =>
+            console.log('[sharded-client] spawned new shard', shard.shardId)
+        );
+        this.on('join', ({ shard, channel }) =>
+            console.log(`[sharded-client] joined channel ${channel}, on shard`, shard.shardId)
+        );
+        this.on('part', ({ shard, channel }) =>
+            console.log(`[sharded-client] parted channel ${channel}, on shard`, shard.shardId)
+        );
+
         this.options = options;
-        this.clients = new Collection();
+        this.shards = new Collection();
 
         const baseClientOptions: ChatClientShardOptions = { ...options, channels: [] };
-        this.baseClientOptions = baseClientOptions;
+        this.baseShardOptions = baseClientOptions;
 
         if (!options.channels?.length || options.channels.length === 0) {
             throw new Error('No channels provided');
@@ -32,38 +55,43 @@ export class ShardedChatClient {
         if (channels) void this.join(channels);
     }
 
-    spawnClient(options: ChatClientShardOptions = this.baseClientOptions): ChatClientShard {
+    spawnShard(options: ChatClientShardOptions = this.baseShardOptions): ChatClientShard {
         if (Array.isArray(options.channels)) options.channels = [];
         const client = new ChatClientShard(options);
         for (const { event, handler } of this.events) {
             client[event](handler as never);
         }
 
-        this.clients.set(client.shardId, client);
+        this.shards.set(client.shardId, client);
+        this.emit('spawn', client);
         return client;
     }
 
     registerEvent(eventToAdd: BasicEventHandler) {
         this.events.push(eventToAdd);
 
-        for (const [, client] of this.clients) {
+        for (const [, client] of this.shards) {
             const { event, handler } = eventToAdd;
             client[event](handler as never);
         }
     }
 
-    getClientByChannel(channelName: string) {
-        return this.clients.find((client) =>
+    getShardById(id: number) {
+        return this.shards.get(id);
+    }
+
+    getShardByChannel(channelName: string) {
+        return this.shards.find((client) =>
             client.currentChannels.includes(`#${channelName}`.replace(/^#+/, '#'))
         );
     }
 
     async join(channels: Resolvable<string | string[]>): Promise<void> {
-        const clientsWithAvailableSlots = this.clients
-            .filter((client) => client.currentChannels.length < 85)
-            .map((client) => ({
-                client,
-                slots: 85 - client.currentChannels.length,
+        const clientsWithAvailableSlots = this.shards
+            .filter((shard) => shard.currentChannels.length < 85)
+            .map((shard) => ({
+                shard,
+                slots: 85 - shard.currentChannels.length,
             }));
 
         // resolve channels
@@ -73,10 +101,15 @@ export class ShardedChatClient {
 
         const promises: Promise<void>[] = [];
 
-        for (const { client, slots } of clientsWithAvailableSlots) {
+        for (const { shard, slots } of clientsWithAvailableSlots) {
             const channelsToJoin = channels.slice(0, slots);
             channels = channels.slice(slots);
-            promises.push(...channelsToJoin.map((channel) => client.join(channel)));
+            promises.push(
+                ...channelsToJoin.map(async (channel) => {
+                    this.emit('join', { shard, channel });
+                    await shard.join(channel);
+                })
+            );
         }
 
         if (channels.length === 0) return;
@@ -88,55 +121,62 @@ export class ShardedChatClient {
         }
 
         for (const chunk of chunks) {
-            const client = this.spawnClient();
-            await client.connect();
-            promises.push(...chunk.map((channel) => client.join(channel)));
+            const shard = this.spawnShard();
+            await shard.connect();
+            promises.push(
+                ...chunk.map(async (channel) => {
+                    this.emit('join', { shard, channel });
+                    await shard.join(channel);
+                })
+            );
         }
 
         await Promise.all(promises);
     }
 
-    part(channel: string) {
-        const client = this.getClientByChannel(channel);
-        if (!client) throw new Error(`No client found for channel ${channel}`);
+    async part(channels: Resolvable<string[] | string>): Promise<void> {
+        // resolve channels
+        channels = typeof channels === 'function' ? channels() : channels;
+        channels = channels instanceof Promise ? await channels : channels;
+        channels = Array.isArray(channels) ? channels : [channels];
 
-        client.part(channel);
-    }
-
-    partAll(channels: string[]) {
         const channelsAlreadyLeft = new Set<string>();
 
         for (const channel of channels) {
             if (channelsAlreadyLeft.has(channel)) continue;
 
-            const client = this.getClientByChannel(channel);
-            if (!client) throw new Error(`No client found for channel ${channel}`);
+            const shard = this.getShardByChannel(channel);
+            if (!shard) throw new Error(`No shard found for channel ${channel}`);
 
+            // broken ts workaround
+            const _channels = channels;
             // check if this client has multiple of the wanted channels
-            const channelsToPart = client.currentChannels.filter((channel) =>
-                channels.includes(channel)
-            );
+            const channelsToPart = shard.currentChannels.filter((channel) => {
+                return _channels.includes(channel);
+            });
 
             for (const channelToPart of channelsToPart) {
-                client.part(channelToPart);
+                this.emit('part', { shard, channel: channelToPart });
+                shard.part(channelToPart);
                 channelsAlreadyLeft.add(channelToPart);
             }
         }
     }
 
     async destroy(): Promise<void> {
-        await Promise.all(this.clients.map((client) => client.quit()));
+        await Promise.all(this.shards.map((client) => client.quit()));
     }
 
     async say(channel: string, text: string, attributes?: ChatSayMessageAttributes): Promise<void> {
-        const client = this.getClientByChannel(channel);
-        if (!client) throw new Error(`No client found for channel ${channel}`);
+        const shard = this.getShardByChannel(channel);
+        if (!shard) throw new Error(`No client found for channel ${channel}`);
 
-        return await client.say(channel, text, attributes);
+        this.emit('say', { shard, channel, text });
+        return await shard.say(channel, text, attributes);
     }
 
     async action(channel: string, text: string): Promise<void> {
-        const client = this.getClientByChannel(channel);
+        const client = this.getShardByChannel(channel);
         if (!client) throw new Error(`No client found for channel ${channel}`);
 
         return await client.action(channel, text);
@@ -144,9 +184,13 @@ export class ShardedChatClient {
 
     get currentChannels(): string[] {
         // eslint-disable-next-line unicorn/no-array-reduce
-        return this.clients.reduce<string[]>(
+        return this.shards.reduce<string[]>(
             (acc, client) => [...acc, ...client.currentChannels],
             []
         );
+    }
+
+    get shardCount() {
+        return this.shards.size;
     }
 }

@@ -1,5 +1,6 @@
 import { type Collection } from '@discordjs/collection';
 import { ApiClient } from '@twurple/api';
+import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { type Redis } from 'ioredis';
 
 import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
@@ -9,26 +10,30 @@ import { env } from '~/utils/env';
 import { type BotAuthProvider, makeBotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
-import { type BotCommand, type BotEventHandler } from './types/client';
+import { type BotCommand, type BotEventHandler, type BotModule } from './types/client';
 
 export interface BotOptions {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
+    modules: Collection<string, BotModule>;
 }
 
 export class Bot {
     chat!: ShardedChatClient;
     api!: ApiClient;
     authProvider!: BotAuthProvider;
+    eventSub!: EventSubWsListener;
 
     db: NodePgDatabase;
     pool: Pool;
+
     cache: Redis;
 
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
+    modules: Collection<string, BotModule>;
 
-    constructor({ events, commands }: BotOptions) {
+    constructor({ events, commands, modules }: BotOptions) {
         const { db, pool } = makeDatabase({
             host: env.DB_HOST,
             user: env.DB_USERNAME,
@@ -43,6 +48,7 @@ export class Bot {
 
         this.events = events;
         this.commands = commands;
+        this.modules = modules;
 
         this.db = db;
         this.pool = pool;
@@ -65,6 +71,10 @@ export class Bot {
             isDev: env.NODE_ENV === 'development',
         });
 
+        this.eventSub = new EventSubWsListener({
+            apiClient: this.api,
+        });
+
         for (const [, { event, handler }] of this.events) {
             this.chat.registerEvent({
                 event,
@@ -75,10 +85,24 @@ export class Bot {
                         commands: this.commands,
                         db: this.db,
                         client: this.chat,
+                        events: this.events,
+                        modules: this.modules,
                         params: args as never,
                     });
                 },
             } as never);
+        }
+
+        for (const [, module] of this.modules) {
+            void module.register({
+                api: this.api,
+                cache: this.cache,
+                commands: this.commands,
+                db: this.db,
+                client: this.chat,
+                events: this.events,
+                modules: this.modules,
+            });
         }
     }
 

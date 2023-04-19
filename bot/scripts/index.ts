@@ -3,6 +3,7 @@ import { readdir } from 'node:fs/promises';
 import { Collection } from '@discordjs/collection';
 import inquirer from 'inquirer';
 
+import { getModules } from '~/modules';
 import { type Script } from '~/types/scripts';
 import { env } from '~/utils/env';
 
@@ -62,6 +63,7 @@ const main = async () => {
             const bot = new Bot({
                 events: new Collection(),
                 commands: new Collection(),
+                modules: await getModules(),
             });
 
             await bot.initialize();
