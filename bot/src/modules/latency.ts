@@ -27,8 +27,6 @@ export const module: BotModule = {
 
             const handler = shard.irc.onAnyMessage((message) => {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                const rawMessage = (message as unknown as Record<string, unknown>)?.['_raw'];
-                if (typeof rawMessage !== 'string') return;
                 if (message.params['message'] !== nowString) return;
 
                 latency = Date.now() - now;
