@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import { type BotModule } from '~/types/client';
 
 let latency: number | null = null;
@@ -5,15 +7,17 @@ export const getLatency = (): number | null => latency;
 
 let timer: NodeJS.Timer | null = null;
 export const clearTimer = (): void => {
-    if (timer) timer.unref();
+    if (timer) clearInterval(timer);
 };
+
+const logPrefix = chalk.bgCyan('[module:latency]');
 
 export const module: BotModule = {
     name: 'latency',
     register: ({ client }) => {
         const chatClient = client.getShardById(0);
         if (!chatClient) {
-            console.warn('[module:latency]: no initial client found.');
+            console.error(`${logPrefix} no initial client found.`);
             return;
         }
 
@@ -28,10 +32,9 @@ export const module: BotModule = {
                 if (message.params['message'] !== nowString) return;
 
                 if (!latency) {
-                    console.log(
-                        `[module:latency]: Reported first latency of ${Date.now() - now}ms`
-                    );
+                    console.log(`${logPrefix} first latency is ${Date.now() - now}ms`);
                 }
+
                 latency = Date.now() - now;
                 chatClient.irc.removeListener(handler);
             });

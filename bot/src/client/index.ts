@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events';
 
 import { Collection } from '@discordjs/collection';
 import { type ChatSayMessageAttributes } from '@twurple/chat';
+import chalk from 'chalk';
 import type TypedEmitter from 'typed-emitter';
 
 import { type BasicEventHandler } from '~/types/client';
@@ -13,9 +14,12 @@ export type ShardedChatClientOptions = ChatClientShardOptions & {
     channels?: Resolvable<string | string[]>;
 };
 
+const logPrefix = chalk.bgGreen('[sharded-client]');
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type ShardedChatClientEvents = {
     spawn: (shard: ChatClientShard) => void;
+    kill: (shardId: number) => void;
     join: (eventContext: { shard: ChatClientShard; channel: string }) => void;
     part: (eventContext: { shard: ChatClientShard; channel: string }) => void;
     say: (eventContext: { shard: ChatClientShard; channel: string; text: string }) => void;
@@ -31,15 +35,14 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
     constructor(options: ShardedChatClientOptions) {
         super();
 
-        this.on('spawn', (shard) =>
-            console.log('[sharded-client] spawned new shard', shard.shardId)
-        );
+        this.on('spawn', (shard) => console.log(`${logPrefix} spawned new shard`, shard.shardId));
         this.on('join', ({ shard, channel }) =>
-            console.log(`[sharded-client] joined channel ${channel}, on shard`, shard.shardId)
+            console.log(`${logPrefix} joined channel ${channel}, on shard`, shard.shardId)
         );
         this.on('part', ({ shard, channel }) =>
-            console.log(`[sharded-client] parted channel ${channel}, on shard`, shard.shardId)
+            console.log(`${logPrefix} parted channel ${channel}, on shard`, shard.shardId)
         );
+        this.on('kill', (shardId) => console.log(`${logPrefix} killed shard`, shardId));
 
         this.options = options;
         this.shards = new Collection();
@@ -65,6 +68,19 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         this.shards.set(client.shardId, client);
         this.emit('spawn', client);
         return client;
+    }
+
+    killShard(options: { shard: ChatClientShard } | { shardId: number }) {
+        if ('shard' in options) {
+            const shard = options.shard;
+            shard.quit();
+            this.shards.delete(shard.shardId);
+        } else {
+            const shard = this.shards.get(options.shardId);
+            if (!shard) return;
+            shard.quit();
+            this.shards.delete(shard.shardId);
+        }
     }
 
     registerEvent(eventToAdd: BasicEventHandler) {
