@@ -14,9 +14,9 @@ const logPrefix = chalk.bgCyan('[module:latency]');
 
 export const module: BotModule = {
     name: 'latency',
-    register: ({ chat: client }) => {
-        const chatClient = client.getShardById(0);
-        if (!chatClient) {
+    register: ({ chat }) => {
+        const shard = chat.getShardById(0);
+        if (!shard) {
             console.error(`${logPrefix} no initial client found.`);
             return;
         }
@@ -25,7 +25,7 @@ export const module: BotModule = {
             const now = Date.now();
             const nowString = now.toString(10);
 
-            const handler = chatClient.irc.onAnyMessage((message) => {
+            const handler = shard.irc.onAnyMessage((message) => {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 const rawMessage = (message as unknown as Record<string, unknown>)?.['_raw'];
                 if (typeof rawMessage !== 'string') return;
@@ -33,13 +33,13 @@ export const module: BotModule = {
 
                 latency = Date.now() - now;
                 console.log(`${logPrefix} received latency: ${latency}ms`);
-                chatClient.irc.removeListener(handler);
+                shard.irc.removeListener(handler);
             });
 
-            chatClient.irc.sendRaw(`PING :${nowString}`);
+            shard.irc.sendRaw(`PING :${nowString}`);
         };
 
-        chatClient.onAuthenticationSuccess(() => {
+        shard.onAuthenticationSuccess(() => {
             setTimeout(pingCheck, 1000 * 12);
             timer = setInterval(pingCheck, 1000 * 60 * 5);
         });
