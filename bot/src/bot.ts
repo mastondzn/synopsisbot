@@ -1,6 +1,7 @@
 import { type Collection } from '@discordjs/collection';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
+import chalk from 'chalk';
 import { type Redis } from 'ioredis';
 
 import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
@@ -11,6 +12,8 @@ import { type BotAuthProvider, makeBotAuthProvider } from './auth-provider';
 import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
 import { type BotCommand, type BotEventHandler, type BotModule } from './types/client';
+
+const logPrefix = chalk.bgCyanBright('[bot]');
 
 export interface BotOptions {
     events: Collection<string, BotEventHandler>;
@@ -40,11 +43,13 @@ export class Bot {
             password: env.DB_PASSWORD,
             database: env.DB_NAME,
         });
+        console.log(`${logPrefix} database connection created`);
 
         const cache = makeCache({
             host: env.REDIS_HOST,
             password: env.REDIS_PASSWORD,
         });
+        console.log(`${logPrefix} cache connection created`);
 
         this.events = events;
         this.commands = commands;
@@ -62,18 +67,22 @@ export class Bot {
             clientId: env.TWITCH_CLIENT_ID,
             clientSecret: env.TWITCH_CLIENT_SECRET,
         });
+        console.log(`${logPrefix} auth provider initialized`);
 
         this.api = new ApiClient({ authProvider: this.authProvider });
+        console.log(`${logPrefix} api client initialized`);
 
         this.chat = new ShardedChatClient({
             authProvider: this.authProvider,
             channels: [env.TWITCH_BOT_USERNAME],
             isDev: env.NODE_ENV === 'development',
         });
+        console.log(`${logPrefix} chat client initialized`);
 
         this.eventSub = new EventSubWsListener({
             apiClient: this.api,
         });
+        console.log(`${logPrefix} eventsub client initialized`);
 
         for (const [, { event, handler }] of this.events) {
             this.chat.registerEvent({
@@ -89,6 +98,7 @@ export class Bot {
 
         for (const [, module] of this.modules) {
             void module.register(this);
+            console.log(`${logPrefix} module ${chalk.cyanBright(module.name)} registered`);
         }
     }
 
