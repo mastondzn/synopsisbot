@@ -5,11 +5,6 @@ import { type BotModule } from '~/types/client';
 let latency: number | null = null;
 export const getLatency = (): number | null => latency;
 
-let timer: NodeJS.Timer | null = null;
-export const clearTimer = (): void => {
-    if (timer) clearInterval(timer);
-};
-
 const logPrefix = chalk.bgCyan('[module:latency]');
 
 export const module: BotModule = {
@@ -21,7 +16,7 @@ export const module: BotModule = {
             return;
         }
 
-        const pingCheck = () => {
+        const ping = () => {
             const now = Date.now();
 
             const handler = shard.irc.onAnyMessage((message) => {
@@ -35,8 +30,8 @@ export const module: BotModule = {
         };
 
         shard.onAuthenticationSuccess(() => {
-            setTimeout(pingCheck, 1000 * 8);
-            timer = setInterval(pingCheck, 1000 * 60 * 5);
+            setTimeout(ping, 1000 * 8);
+            setInterval(ping, 1000 * 60 * 5);
         });
     },
 };
