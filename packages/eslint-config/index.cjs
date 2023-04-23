@@ -20,20 +20,6 @@ module.exports = defineConfig({
     },
     overrides: [
         {
-            // Jest
-            files: ['**/*.test.ts'],
-            settings: {
-                jest: {
-                    version: 28,
-                },
-            },
-            env: {
-                jest: true,
-            },
-            plugins: ['jest'],
-            extends: ['plugin:jest/recommended', 'plugin:jest/style'],
-        },
-        {
             // TS files
             files: ['*.ts', '*.tsx'],
             parser: '@typescript-eslint/parser',
@@ -131,37 +117,6 @@ module.exports = defineConfig({
                 'unicorn/prevent-abbreviations': 'off',
                 'unicorn/prefer-module': 'off',
                 'unicorn/prefer-top-level-await': 'off',
-
-                'no-restricted-globals': (() => {
-                    const message = 'Do not use jest globals in non-test files.';
-
-                    // https://jestjs.io/docs/api
-                    const jestGlobals = [
-                        'beforeAll',
-                        'beforeEach',
-                        'afterAll',
-                        'afterEach',
-                        'describe',
-                        'fdescribe',
-                        'xdescribe',
-                        'it',
-                        'fit',
-                        'xit',
-                        'test',
-                        'xtest',
-                        'expect',
-                        'jasmine',
-                    ];
-
-                    return ['error', ...jestGlobals.map((global) => ({ name: global, message }))];
-                })(),
-            },
-        },
-        {
-            // Jest again to overload previous no-restricted-globals
-            files: ['**/*.test.ts'],
-            rules: {
-                'no-restricted-globals': 'off',
             },
         },
         {
