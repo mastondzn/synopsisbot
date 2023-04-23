@@ -2,16 +2,22 @@ import { type Collection } from '@discordjs/collection';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
-import { type Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 
 import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
 
 import { env } from '~/utils/env';
 
 import { type BotAuthProvider, makeBotAuthProvider } from './auth-provider';
-import { makeCache } from './cache';
 import { ShardedChatClient } from './client';
-import { type BotCommand, type BotEventHandler, type BotModule } from './types/client';
+import {
+    type BotCommand,
+    type BotEventHandler,
+    type BotModule,
+    type BotUtils,
+} from './types/client';
+import { CommandCooldownManager } from './utils/cooldown';
+import { LiveStatusManager } from './utils/live-manager';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
 
@@ -35,6 +41,7 @@ export class Bot {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
     modules: Collection<string, BotModule>;
+    utils!: BotUtils;
 
     constructor({ events, commands, modules }: BotOptions) {
         const { db, pool } = makeDatabase({
@@ -45,7 +52,7 @@ export class Bot {
         });
         console.log(`${logPrefix} database connection created`);
 
-        const cache = makeCache({
+        this.cache = new Redis({
             host: env.REDIS_HOST,
             password: env.REDIS_PASSWORD,
         });
@@ -57,7 +64,6 @@ export class Bot {
 
         this.db = db;
         this.pool = pool;
-        this.cache = cache;
     }
 
     async initialize() {
@@ -74,7 +80,6 @@ export class Bot {
 
         this.chat = new ShardedChatClient({
             authProvider: this.authProvider,
-            channels: [env.TWITCH_BOT_USERNAME],
             isDev: env.NODE_ENV === 'development',
         });
         console.log(`${logPrefix} chat client initialized`);
@@ -83,6 +88,12 @@ export class Bot {
             apiClient: this.api,
         });
         console.log(`${logPrefix} eventsub client initialized`);
+
+        this.utils = {
+            cooldownManager: new CommandCooldownManager(this.cache),
+            statusManager: new LiveStatusManager(this.api, this.cache),
+        };
+        console.log(`${logPrefix} utils initialized`);
 
         for (const [, { event, handler }] of this.events) {
             this.chat.registerEvent({

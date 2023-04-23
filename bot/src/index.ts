@@ -14,12 +14,7 @@ void (async () => {
     const modules = await getModules();
     console.log(`${logPrefix} ${modules.size} module files loaded`);
 
-    const bot = new Bot({
-        commands,
-        events,
-        modules,
-    });
-
+    const bot = new Bot({ commands, events, modules });
     await bot.initialize();
     console.log(`${logPrefix} bot initialized`);
 })();

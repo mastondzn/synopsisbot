@@ -22,15 +22,17 @@ const makeGlobalCooldownKey = ({
 export class CommandCooldownManager {
     cache: Redis;
 
-    constructor({ cache }: { cache: Redis }) {
+    constructor(cache: Redis) {
         this.cache = cache;
     }
 
-    async check({
+    // returns true if user is on cooldown
+    // returns false if user is ok
+    async isOnCooldown({
         command,
         channel,
         userName,
-    }: CommandCooldownManagerCheckOptions): Promise<{ isOnCooldown: boolean }> {
+    }: CommandCooldownManagerCheckOptions): Promise<boolean> {
         const userCooldown = command.cooldown?.user ?? defaultUserCooldown;
         const globalCooldown = command.cooldown?.global ?? defaultGlobalCooldown;
 
@@ -42,13 +44,13 @@ export class CommandCooldownManager {
             this.cache.exists(globalCooldownKey),
         ]);
 
-        if (existingUserEntry || existingGlobalEntry) return { isOnCooldown: true };
+        if (existingUserEntry || existingGlobalEntry) return true;
 
         await Promise.all([
             this.cache.set(userCooldownKey, '1', 'EX', userCooldown),
             this.cache.set(globalCooldownKey, '1', 'EX', globalCooldown),
         ]);
 
-        return { isOnCooldown: false };
+        return false;
     }
 }

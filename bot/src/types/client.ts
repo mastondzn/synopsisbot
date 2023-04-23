@@ -1,11 +1,14 @@
 import { type Collection } from '@discordjs/collection';
 import { type ApiClient } from '@twurple/api';
 import { type ChatClient, type PrivateMessage } from '@twurple/chat';
+import { type EventSubWsListener } from '@twurple/eventsub-ws';
 import { type Redis } from 'ioredis';
 
 import { type NodePgDatabase } from '@synopsis/db';
 
 import { type ShardedChatClient } from '~/client';
+import { type CommandCooldownManager } from '~/utils/cooldown';
+import { type LiveStatusManager } from '~/utils/live-manager';
 
 export type ChatClientEvents = Exclude<Extract<keyof ChatClient, `on${string}`>, 'on'>;
 
@@ -18,14 +21,16 @@ export type BasicEventHandler = ChatClientEvents extends infer T
         : never
     : never;
 
-export interface BotEventHandlerContext {
+export interface BotContext {
     chat: ShardedChatClient;
     api: ApiClient;
     db: NodePgDatabase;
     cache: Redis;
+    eventSub: EventSubWsListener;
     commands: Collection<string, BotCommand>;
     events: Collection<string, BotEventHandler>;
     modules: Collection<string, BotModule>;
+    utils: BotUtils;
 }
 
 export type BotEventHandler = ChatClientEvents extends infer T
@@ -34,7 +39,7 @@ export type BotEventHandler = ChatClientEvents extends infer T
               event: T;
               description?: string;
               handler: (
-                  ctx: BotEventHandlerContext & {
+                  ctx: BotContext & {
                       params: EventHandlerParams<T>;
                   }
               ) => Promise<void> | void;
@@ -49,7 +54,7 @@ interface OnMessageEventHandlerParamsAsObject {
     text: OnMessageEventHandlerParams[2];
 }
 
-export type BotCommandContext = BotEventHandlerContext & {
+export type BotCommandContext = BotContext & {
     msg: PrivateMessage & OnMessageEventHandlerParamsAsObject;
 };
 
@@ -67,5 +72,10 @@ export interface BotCommand {
 export interface BotModule {
     name: string;
     description?: string;
-    register: (ctx: BotEventHandlerContext) => Promise<void> | void;
+    register: (ctx: BotContext) => Promise<void> | void;
+}
+
+export interface BotUtils {
+    cooldownManager: CommandCooldownManager;
+    statusManager: LiveStatusManager;
 }

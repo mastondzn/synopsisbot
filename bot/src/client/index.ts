@@ -53,10 +53,6 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         const baseClientOptions: ChatClientShardOptions = { ...options, channels: [] };
         this.baseShardOptions = baseClientOptions;
 
-        if (!options.channels?.length || options.channels.length === 0) {
-            throw new Error('No channels provided');
-        }
-
         const channels = this.options.channels;
         if (channels) void this.join(channels);
     }
@@ -117,6 +113,7 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         channels = typeof channels === 'function' ? channels() : channels;
         channels = channels instanceof Promise ? await channels : channels;
         channels = Array.isArray(channels) ? channels : [channels];
+        channels = channels.filter((channel) => !this.currentChannels.includes(channel));
 
         const promises: Promise<void>[] = [];
 
@@ -158,26 +155,18 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         channels = typeof channels === 'function' ? channels() : channels;
         channels = channels instanceof Promise ? await channels : channels;
         channels = Array.isArray(channels) ? channels : [channels];
+        channels = channels.map((channel) => `#${channel}`.replace(/^#+/, '#'));
 
-        const channelsAlreadyLeft = new Set<string>();
+        const _channels = channels;
 
-        for (const channel of channels) {
-            if (channelsAlreadyLeft.has(channel)) continue;
-
-            const shard = this.getShardByChannel(channel);
-            if (!shard) throw new Error(`No shard found for channel ${channel}`);
-
-            // broken ts workaround
-            const _channels = channels;
-            // check if this client has multiple of the wanted channels
+        for (const [, shard] of this.shards) {
             const channelsToPart = shard.currentChannels.filter((channel) => {
-                return _channels.includes(channel);
+                return _channels.includes(`#${channel}`) || _channels.includes(channel);
             });
 
             for (const channelToPart of channelsToPart) {
                 this.emit('part', { shard, channel: channelToPart });
                 shard.part(channelToPart);
-                channelsAlreadyLeft.add(channelToPart);
             }
         }
     }
@@ -203,10 +192,7 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
 
     get currentChannels(): string[] {
         // eslint-disable-next-line unicorn/no-array-reduce
-        return this.shards.reduce<string[]>(
-            (acc, client) => [...acc, ...client.currentChannels],
-            []
-        );
+        return this.shards.reduce<string[]>((acc, shard) => [...acc, ...shard.currentChannels], []);
     }
 
     get shardCount() {
