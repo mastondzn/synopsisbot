@@ -5,17 +5,18 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
 import { parseEnv } from '@synopsis/env';
 
-import { makeDatabaseClient } from '~/index';
+import { makeDatabase } from '~/index';
 
 config({ path: resolve(process.cwd(), '../../.env') });
 
 void (async () => {
     const env = parseEnv(process.env);
-    const { db, client } = makeDatabaseClient({
+    const { db, pool } = makeDatabase({
         host: env.DB_HOST,
         user: env.DB_USERNAME,
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
+        logger: true,
     });
 
     console.log('Migrating...');
@@ -23,6 +24,6 @@ void (async () => {
         migrationsFolder: './migrations',
     });
     console.log('Migrations complete!');
-    await client.end();
+    await pool.end();
     console.log('Client connection ended!');
 })();

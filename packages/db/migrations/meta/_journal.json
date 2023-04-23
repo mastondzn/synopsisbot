@@ -13,6 +13,12 @@
       "version": "5",
       "when": 1681836582967,
       "tag": "0001_bouncy_pet_avengers"
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1682191072660,
+      "tag": "0002_far_spiral"
     }
   ]
 }

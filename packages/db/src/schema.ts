@@ -23,3 +23,24 @@ export const states = pgTable('auth_states', {
 
 export type State = InferModel<typeof states>;
 export type NewState = InferModel<typeof states, 'insert'>;
+
+export const channels = pgTable('channels', {
+    twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
+    twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    mode: varchar('mode', { length: 256, enum: ['readonly', 'offline-only', 'all'] }).notNull(),
+});
+
+export type Channel = InferModel<typeof channels>;
+export type NewChannel = InferModel<typeof channels, 'insert'>;
+export type UpdateChannel = Partial<Channel>;
+export type ChannelMode = Channel['mode'];
+
+// export const ambassadors = pgTable('ambassadors', {
+// twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
+// twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
+// createdAt: timestamp('created_at').notNull().defaultNow(),
+// channelId: varchar('channel_id', { length: 256 })
+// .notNull()
+// .references(() => channels.twitchId, { onDelete: 'cascade' }),
+// });

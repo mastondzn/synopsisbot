@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { type NodePgDatabase } from 'drizzle-orm/node-postgres';
 
-import { type AuthedUser, authedUsers, type UpdateAuthedUser } from './schema';
+import { type AuthedUser, authedUsers, channels, type UpdateAuthedUser } from './schema';
 
 export const getAuthedUserById = async (
     db: NodePgDatabase,
@@ -42,4 +42,9 @@ export const updateAuthedUserByIdThrows = async (
     const updatedUser = await updateAuthedUserById(db, id, fieldsToUpdate);
     if (!updatedUser) throw new Error(`User with ID ${id} not found in database`);
     return updatedUser;
+};
+
+export const getChannelModeByLogin = async (db: NodePgDatabase, login: string) => {
+    const result = await db.select().from(channels).where(eq(channels.twitchLogin, login)).limit(1);
+    return result[0]?.mode ?? null;
 };
