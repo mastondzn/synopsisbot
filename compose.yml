@@ -1,7 +1,142 @@
 services:
+    traefik:
+        image: traefik:v2.9
+        container_name: traefik
+        restart: unless-stopped
+        environment:
+            - CF_API_EMAIL=${CF_API_EMAIL?err}
+            - CF_API_KEY=${CF_API_KEY?err}
+        command:
+            # Use docker provider and don't expose other containers by default
+            - --providers.docker=true
+            - --providers.docker.exposedbydefault=false
+            # Make use of logs (we can comment this out as needed)
+            # - --log.level=DEBUG
+            # Add 2 entrypoints, and redirect the HTTP one to HTTPS
+            - --entrypoints.websecure.address=:443
+            - --entrypoints.web.address=:80
+            - --entrypoints.web.http.redirections.entrypoint.to=websecure
+            # Set up cloudflare dns challenge
+            - --certificatesresolvers.myresolver.acme.dnschallenge=true
+            - --certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare
+            - --certificatesresolvers.myresolver.acme.email=${CF_API_EMAIL?err}
+            - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+            # Make use of the traefik dashboard
+            - --api.dashboard=true
+            - --api.insecure=false
+            # Prometheus metrics
+            - --metrics.prometheus=true
+            - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
+        labels:
+            # Secure traefik dashboard
+            - traefik.enable=true
+            - traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN_NAME?err}`)
+            - traefik.http.routers.dashboard.service=api@internal
+            - traefik.http.routers.dashboard.entrypoints=websecure
+            - traefik.http.routers.dashboard.tls.certResolver=myresolver
+            # Use basic auth for traefik dashboard and pull credentials from env variables
+            - traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_CREDENTIALS?err}
+            - traefik.http.routers.dashboard.middlewares=auth
+        ports:
+            - 80:80
+            - 443:443
+            - 8080:8080
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ~/volumes/synopsisbot/letsencrypt:/letsencrypt
+
+    grafana:
+        image: grafana/grafana:9.2.2
+        container_name: grafana
+        restart: unless-stopped
+        ports:
+            # Expose locally
+            - 3000:3000
+        depends_on:
+            - prometheus
+        user: '1000'
+        volumes:
+            - ~/volumes/synopsisbot/grafana:/var/lib/grafana
+        labels:
+            - traefik.enable=true
+            # We dont want to expose grafana's built in prometheus metrics for no reason
+            - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN_NAME?err}`) && !PathPrefix(`/metrics`)
+            - traefik.http.routers.grafana.entrypoints=websecure
+            - traefik.http.routers.grafana.tls.certResolver=myresolver
+            - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+    prometheus:
+        image: prom/prometheus:v2.39.1
+        container_name: prometheus
+        restart: unless-stopped
+        ports:
+            - 9090:9090
+        volumes:
+            - ~/volumes/synopsisbot/prometheus:/etc/prometheus
+            - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN_NAME?err}`)
+            - traefik.http.routers.prometheus.entrypoints=websecure
+            - traefik.http.routers.prometheus.tls.certResolver=myresolver
+            - traefik.http.services.prometheus.loadbalancer.server.port=9090
+            - traefik.http.routers.prometheus.middlewares=auth
+
+    node_exporter:
+        image: prom/node-exporter:v1.4.0
+        container_name: node_exporter
+        restart: unless-stopped
+        ports:
+            - 9100:9100
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /:/rootfs:ro
+        command:
+            - --path.procfs=/host/proc
+            - --path.rootfs=/rootfs
+            - --path.sysfs=/host/sys
+            - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+        labels:
+            - traefik.enable=false
+
+    loki:
+        image: grafana/loki:2.6.1
+        container_name: loki
+        restart: unless-stopped
+        ports:
+            - 3100:3100
+        volumes:
+            - ./configs/loki.yml:/mnt/config/loki.yml
+        command: -config.file=/mnt/config/loki.yml
+        labels:
+            - traefik.enable=false
+
+    promtail:
+        image: grafana/promtail:2.6.1
+        container_name: promtail
+        restart: unless-stopped
+        volumes:
+            - ./configs/promtail.yml:/mnt/config/promtail.yml
+            - /var/log:/var/log
+        command: -config.file=/mnt/config/promtail.yml
+        labels:
+            - traefik.enable=false
+
+    whoami:
+        image: traefik/whoami
+        container_name: whoami
+        restart: unless-stopped
+        labels:
+            # Expose to traefik and use websecure entrypoint
+            - traefik.enable=true
+            - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN_NAME?err}`)
+            - traefik.http.routers.whoami.entrypoints=websecure
+            - traefik.http.routers.whoami.tls.certResolver=myresolver
+
     db:
         image: postgres:15-alpine
-        restart: on-failure:10
+        restart: unless-stopped
         ports:
             - 5432:5432
         environment:
@@ -10,15 +145,19 @@ services:
             - POSTGRES_DB=${DB_NAME?err}
         volumes:
             - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
+        labels:
+            - traefik.enable=false
 
     cache:
         image: redis:7-alpine
-        restart: on-failure:10
-        command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
+        restart: unless-stopped
+        command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD?err}"
         ports:
             - 6379:6379
         volumes:
             - ~/volumes/synopsisbot/redis:/data
+        labels:
+            - traefik.enable=false
 
 networks:
     default:

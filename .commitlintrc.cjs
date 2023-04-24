@@ -10,10 +10,10 @@ const config = {
             const scopes = [
                 ...packages,
                 'bot/commands',
-                'bot/commands',
                 'bot/modules',
+                'bot',
                 'website',
-                'pkgs',
+                'packages',
                 'apps',
                 'monorepo',
                 'deps',
