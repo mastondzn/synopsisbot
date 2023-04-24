@@ -5,10 +5,9 @@ import { type ChatSayMessageAttributes } from '@twurple/chat';
 import chalk from 'chalk';
 import type TypedEmitter from 'typed-emitter';
 
+import { ChatClientShard, type ChatClientShardOptions } from './shard';
 import { type BasicEventHandler } from '~/types/client';
 import { type Resolvable } from '~/types/general';
-
-import { ChatClientShard, type ChatClientShardOptions } from './shard';
 
 export type ShardedChatClientOptions = ChatClientShardOptions & {
     channels?: Resolvable<string | string[]>;
