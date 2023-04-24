@@ -41,5 +41,10 @@
         "rimraf": "^5.0.0",
         "turbo": "^1.8.8",
         "typescript": "^5.0.4"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.6.1",
+        "@commitlint/config-conventional": "^17.6.1",
+        "@commitlint/types": "^17.4.4"
     }
 }
