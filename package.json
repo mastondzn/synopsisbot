@@ -30,15 +30,16 @@
         "lint:fix": "turbo run lint -- --fix",
         "typecheck": "turbo run typecheck"
     },
-    "devDependencies": {
-        "@types/node": "18",
+    "packageManager": "pnpm@8.1.1",
+    "engines": {
+        "node": ">=18"
+    },
+    "dependencies": {
+        "@manypkg/cli": "^0.20.0",
+        "@types/node": "^18.15.11",
         "prettier": "^2.8.7",
         "rimraf": "^4.4.1",
         "turbo": "^1.8.8",
         "typescript": "^5.0.4"
-    },
-    "packageManager": "pnpm@8.1.1",
-    "engines": {
-        "node": ">=18"
     }
 }

@@ -9,13 +9,13 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/eslint-config": "workspace:*",
-        "@synopsis/tsconfig": "workspace:*",
+        "@synopsis/eslint-config": "0.0.1",
+        "@synopsis/tsconfig": "0.0.1",
         "eslint": "^8.28.0",
         "eslint-define-config": "^1.17.0"
     },
     "dependencies": {
-        "drizzle-orm": "^0.23.9",
+        "drizzle-orm": "^0.24.2",
         "is-docker": "2",
         "pg": "^8.10.0",
         "zod": "^3.21.4"

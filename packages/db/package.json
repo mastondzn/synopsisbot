@@ -12,18 +12,18 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/eslint-config": "workspace:*",
-        "@synopsis/tsconfig": "workspace:*",
+        "@synopsis/eslint-config": "0.0.1",
+        "@synopsis/tsconfig": "0.0.1",
         "@types/node": "^18.15.11",
         "@types/pg": "^8.6.6",
         "drizzle-kit": "^0.17.5",
-        "eslint": "^8.38.0",
-        "eslint-define-config": "^1.18.0",
+        "eslint": "^8.28.0",
+        "eslint-define-config": "^1.17.0",
         "tsconfig-paths": "^4.2.0",
         "tsx": "^3.12.6"
     },
     "dependencies": {
-        "@synopsis/env": "workspace:*",
+        "@synopsis/env": "0.0.1",
         "dotenv": "^16.0.3",
         "drizzle-orm": "^0.24.2",
         "pg": "^8.10.0"

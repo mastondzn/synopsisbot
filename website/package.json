@@ -10,16 +10,16 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@synopsis/db": "workspace:*",
-        "@synopsis/env": "workspace:*",
-        "@synopsis/scopes": "workspace:*",
+        "@synopsis/db": "0.0.1",
+        "@synopsis/env": "0.0.1",
+        "@synopsis/scopes": "0.0.1",
         "@tanstack/react-query": "^4.28.0",
         "@trpc/client": "^10.18.0",
         "@trpc/next": "^10.18.0",
         "@trpc/react-query": "^10.18.0",
         "@trpc/server": "^10.18.0",
-        "@twurple/api": "^6.1.1",
-        "@twurple/auth": "^6.1.1",
+        "@twurple/api": "^6.1.2",
+        "@twurple/auth": "^6.1.2",
         "next": "^13.2.4",
         "react": "18.2.0",
         "react-dom": "18.2.0",
@@ -27,18 +27,18 @@
         "zod": "^3.21.4"
     },
     "devDependencies": {
-        "@synopsis/eslint-config": "workspace:*",
-        "@synopsis/tsconfig": "workspace:*",
-        "@types/eslint": "^8.21.3",
+        "@synopsis/eslint-config": "0.0.1",
+        "@synopsis/tsconfig": "0.0.1",
+        "@types/eslint": "^8.37.0",
         "@types/node": "^18.15.11",
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
         "autoprefixer": "^10.4.14",
-        "eslint": "^8.36.0",
+        "eslint": "^8.28.0",
         "eslint-config-next": "^13.2.4",
         "eslint-define-config": "^1.17.0",
         "postcss": "^8.4.21",
         "tailwindcss": "^3.3.0",
-        "typescript": "^5.0.2"
+        "typescript": "^5.0.4"
     }
 }
