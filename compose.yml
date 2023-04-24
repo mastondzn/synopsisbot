@@ -44,6 +44,10 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ~/volumes/synopsisbot/letsencrypt:/letsencrypt
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     grafana:
         image: grafana/grafana:9.2.2
@@ -64,6 +68,10 @@ services:
             - traefik.http.routers.grafana.entrypoints=websecure
             - traefik.http.routers.grafana.tls.certResolver=myresolver
             - traefik.http.services.grafana.loadbalancer.server.port=3000
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     prometheus:
         image: prom/prometheus:v2.39.1
@@ -81,6 +89,10 @@ services:
             - traefik.http.routers.prometheus.tls.certResolver=myresolver
             - traefik.http.services.prometheus.loadbalancer.server.port=9090
             - traefik.http.routers.prometheus.middlewares=auth
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     node_exporter:
         image: prom/node-exporter:v1.4.0
@@ -99,6 +111,10 @@ services:
             - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
         labels:
             - traefik.enable=false
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     loki:
         image: grafana/loki:2.6.1
@@ -122,6 +138,10 @@ services:
         command: -config.file=/mnt/config/promtail.yml
         labels:
             - traefik.enable=false
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     whoami:
         image: traefik/whoami
@@ -133,6 +153,10 @@ services:
             - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN_NAME?err}`)
             - traefik.http.routers.whoami.entrypoints=websecure
             - traefik.http.routers.whoami.tls.certResolver=myresolver
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     db:
         image: postgres:15-alpine
@@ -147,6 +171,10 @@ services:
             - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
         labels:
             - traefik.enable=false
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     cache:
         image: redis:7-alpine
@@ -158,6 +186,10 @@ services:
             - ~/volumes/synopsisbot/redis:/data
         labels:
             - traefik.enable=false
+        logging:
+            driver: loki
+            options:
+                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
 networks:
     default:
