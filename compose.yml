@@ -1,5 +1,12 @@
+x-logging: &logging
+    logging:
+        driver: loki
+        options:
+            loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
+
 services:
     traefik:
+        <<: *logging
         image: traefik:v2.9
         container_name: traefik
         restart: unless-stopped
@@ -44,12 +51,9 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ~/volumes/synopsisbot/letsencrypt:/letsencrypt
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     grafana:
+        <<: *logging
         image: grafana/grafana:9.4.7
         container_name: grafana
         restart: unless-stopped
@@ -68,12 +72,9 @@ services:
             - traefik.http.routers.grafana.entrypoints=websecure
             - traefik.http.routers.grafana.tls.certResolver=myresolver
             - traefik.http.services.grafana.loadbalancer.server.port=3000
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     prometheus:
+        <<: *logging
         image: prom/prometheus:v2.39.1
         container_name: prometheus
         restart: unless-stopped
@@ -89,12 +90,9 @@ services:
             - traefik.http.routers.prometheus.tls.certResolver=myresolver
             - traefik.http.services.prometheus.loadbalancer.server.port=9090
             - traefik.http.routers.prometheus.middlewares=auth
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     node_exporter:
+        <<: *logging
         image: prom/node-exporter:v1.4.0
         container_name: node_exporter
         restart: unless-stopped
@@ -111,10 +109,6 @@ services:
             - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
         labels:
             - traefik.enable=false
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     loki:
         image: grafana/loki:2.6.1
@@ -129,6 +123,7 @@ services:
             - traefik.enable=false
 
     promtail:
+        <<: *logging
         image: grafana/promtail:2.6.1
         container_name: promtail
         restart: unless-stopped
@@ -138,12 +133,9 @@ services:
         command: -config.file=/mnt/config/promtail.yml
         labels:
             - traefik.enable=false
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     whoami:
+        <<: *logging
         image: traefik/whoami
         container_name: whoami
         restart: unless-stopped
@@ -153,12 +145,9 @@ services:
             - traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN_NAME?err}`)
             - traefik.http.routers.whoami.entrypoints=websecure
             - traefik.http.routers.whoami.tls.certResolver=myresolver
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     db:
+        <<: *logging
         image: postgres:15-alpine
         restart: unless-stopped
         ports:
@@ -171,12 +160,9 @@ services:
             - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
         labels:
             - traefik.enable=false
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
     cache:
+        <<: *logging
         image: redis:7-alpine
         restart: unless-stopped
         command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD?err}"
@@ -186,10 +172,6 @@ services:
             - ~/volumes/synopsisbot/redis:/data
         labels:
             - traefik.enable=false
-        logging:
-            driver: loki
-            options:
-                loki-url: 'http://host.docker.internal:3100/loki/api/v1/push'
 
 networks:
     default:
