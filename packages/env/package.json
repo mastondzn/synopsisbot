@@ -15,7 +15,7 @@
         "eslint-define-config": "^1.17.0"
     },
     "dependencies": {
-        "drizzle-orm": "^0.24.2",
+        "drizzle-orm": "^0.25.0",
         "is-docker": "2",
         "pg": "^8.10.0",
         "zod": "^3.21.4"

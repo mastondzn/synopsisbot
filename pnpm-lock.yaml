@@ -114,8 +114,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3
       drizzle-orm:
-        specifier: ^0.24.2
-        version: 0.24.2(@types/pg@8.6.6)(pg@8.10.0)
+        specifier: ^0.25.0
+        version: 0.25.0(@types/pg@8.6.6)(pg@8.10.0)
       pg:
         specifier: ^8.10.0
         version: 8.10.0
@@ -151,8 +151,8 @@ importers:
   packages/env:
     dependencies:
       drizzle-orm:
-        specifier: ^0.24.2
-        version: 0.24.2(@types/pg@8.6.6)(pg@8.10.0)
+        specifier: ^0.25.0
+        version: 0.25.0(@types/pg@8.6.6)(pg@8.10.0)
       is-docker:
         specifier: '2'
         version: 2.2.1
@@ -2034,8 +2034,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.24.2(@types/pg@8.6.6)(pg@8.10.0):
-    resolution: {integrity: sha512-rmZUqEtTzvkH+AdLSQ7hA2gx5S5Sn6Gwwf3C64kKAoV5qj0Mol02wBAsuEA2FoJo7LhvFQxbsnHgdnupTOMDEA==}
+  /drizzle-orm@0.25.0(@types/pg@8.6.6)(pg@8.10.0):
+    resolution: {integrity: sha512-+gKN/aVxLgMrPFh+1gQN/oJr0YR7+8kFHyGrmLj3EZS4pmL4ibUY1dGhYTSGCQBt69zDpQN16juC0+q8cF5r0Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
