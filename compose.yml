@@ -12,7 +12,7 @@ services:
             - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
 
     cache:
-        image: redis:6-alpine
+        image: redis:7-alpine
         restart: on-failure:10
         command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
         ports:
