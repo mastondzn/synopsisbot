@@ -5,17 +5,12 @@
             "outputs": ["dist/**", ".next/**"]
         },
         "dev": {
+            "persistent": true,
             "cache": false
         },
-        "lint": {
-            "outputs": []
-        },
-        "typecheck": {
-            "outputs": []
-        },
-        "test": {
-            "outputs": []
-        }
+        "lint": {},
+        "lint:fix": {},
+        "typecheck": {}
     },
     "globalDependencies": ["./packages/eslint-config/index.cjs", "./packages/tsconfig"],
     "globalEnv": []

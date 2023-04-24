@@ -43,5 +43,8 @@ jobs:
             - name: Build, lint and typecheck
               run: pnpm turbo build lint typecheck
 
+            - name: Check prettier format
+              run: pnpm format:check
+
             - name: Check workspaces
               run: pnpm manypkg check

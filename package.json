@@ -28,7 +28,6 @@
         "format:check": "prettier -c \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml}\"",
         "lint": "turbo run lint",
         "lint:fix": "turbo run lint -- --fix",
-        "test": "turbo run test",
         "typecheck": "turbo run typecheck"
     },
     "devDependencies": {
