@@ -45,6 +45,10 @@ export const updateAuthedUserByIdThrows = async (
 };
 
 export const getChannelModeByLogin = async (db: NodePgDatabase, login: string) => {
-    const result = await db.select().from(channels).where(eq(channels.twitchLogin, login)).limit(1);
+    const result = await db
+        .select({ mode: channels.mode })
+        .from(channels)
+        .where(eq(channels.twitchLogin, login))
+        .limit(1);
     return result[0]?.mode ?? null;
 };

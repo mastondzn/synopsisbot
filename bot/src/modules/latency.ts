@@ -35,7 +35,7 @@ export const module: BotModule = {
             };
 
             shard.onAuthenticationSuccess(() => {
-                setTimeout(ping, 1000 * 8);
+                setTimeout(ping, 1000 * 3);
                 setInterval(ping, 1000 * 60 * 5);
             });
         });

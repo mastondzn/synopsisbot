@@ -21,8 +21,8 @@ export const module: BotModule = {
 
         if (env.NODE_ENV === 'production') {
             const checkCache = async () => {
-                const res = await cache.get('dev-check');
-                bgDevProcess = Boolean(res);
+                const res = await cache.exists('dev-check');
+                bgDevProcess = res > 0;
             };
 
             await checkCache();

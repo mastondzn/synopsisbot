@@ -2,7 +2,7 @@ import { getTokenInfo } from '@twurple/auth';
 import { z } from 'zod';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { authedUsers, eq } from '@synopsis/db';
+import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 
 import { env } from '~/env.mjs';
 import { consumeState } from '~/utils/auth';
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!code || !Array.isArray(scopesFromRedirect) || !state) {
         return res.status(400).json({
-            error: 'Bad Request, missing some code, scopes, state',
+            error: 'Bad Request, missing code/scopes/state',
         });
     }
 
@@ -64,9 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const response = await fetch('https://id.twitch.tv/oauth2/token', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body,
     });
 
@@ -122,36 +120,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 
-    const existing = await db
-        .select()
-        .from(authedUsers)
-        .where(eq(authedUsers.twitchId, tokenInfo.userId))
-        .limit(1);
+    const user: NewAuthedUser = {
+        twitchId: tokenInfo.userId,
+        twitchLogin: tokenInfo.userName,
+        accessToken,
+        refreshToken,
+        scopes: scopesFromTwitch ?? scopesFromRedirect,
+        expiresAt: tokenInfo.expiryDate,
+        obtainedAt: new Date(),
+    };
 
-    // eslint-disable-next-line unicorn/prefer-ternary
-    if (existing.length === 0) {
-        await db.insert(authedUsers).values({
-            twitchId: tokenInfo.userId,
-            twitchLogin: tokenInfo.userName,
-            accessToken,
-            refreshToken,
-            scopes: scopesFromTwitch || scopesFromRedirect,
-            expiresAt: tokenInfo.expiryDate,
-            obtainedAt: new Date(),
-        });
-    } else {
-        await db
-            .update(authedUsers)
-            .set({
-                twitchLogin: tokenInfo.userName,
-                accessToken,
-                refreshToken,
-                scopes: scopesFromTwitch || scopesFromRedirect,
-                expiresAt: tokenInfo.expiryDate,
-                obtainedAt: new Date(),
-            })
-            .where(eq(authedUsers.twitchId, tokenInfo.userId));
-    }
+    await db
+        .insert(authedUsers)
+        .values(user)
+        .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
     return res.status(200).json({
         ok: true,

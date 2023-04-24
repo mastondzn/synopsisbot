@@ -15,7 +15,11 @@ export const module: BotModule = {
                     twitchId: env.TWITCH_BOT_OWNER_ID,
                     twitchLogin: env.TWITCH_BOT_OWNER_USERNAME,
                 },
-                { mode: 'all', twitchId: env.TWITCH_BOT_ID, twitchLogin: env.TWITCH_BOT_USERNAME },
+                {
+                    mode: 'all',
+                    twitchId: env.TWITCH_BOT_ID,
+                    twitchLogin: env.TWITCH_BOT_USERNAME,
+                },
             ])
             .onConflictDoNothing();
     },

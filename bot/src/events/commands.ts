@@ -49,7 +49,7 @@ export const event: BotEventHandler = {
             cooldownManager.isOnCooldown({ command, channel, userName }),
         ]);
 
-        if (isOnCooldown) return;
+        if (!mode || isOnCooldown) return;
         if (mode === 'readonly') return;
         if (mode === 'offline-only' && isLive) return;
 

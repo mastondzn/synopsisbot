@@ -80,12 +80,16 @@ module.exports = defineConfig({
                             ],
                             // Imports from local monorepo packages
                             [String.raw`^@synopsis/`, String.raw`^@synopsis/.*\u0000$`],
-                            // Absolute imports and other imports such as Vue-style `@/foo`.
-                            // Anything not matched in another group.
-                            [String.raw`^`, String.raw`^[^.].*\u0000$`],
-                            // Relative imports.
-                            // Anything that starts with a dot.
-                            [String.raw`^\.`, String.raw`^\..*\u0000$`],
+                            // Local package imports.
+                            // Anything that starts with a dot or ~/
+                            [
+                                String.raw`^\.`,
+                                String.raw`^`,
+                                String.raw`^~/`,
+                                String.raw`^\..*\u0000$`,
+                                String.raw`^[^.].*\u0000$`,
+                                String.raw`^~/.*\u0000$`,
+                            ],
                             // // Type imports group at the bottom (sorted the same as the groups but in a single group)
                             // [
                             //     String.raw`^node:.*\u0000$`,
