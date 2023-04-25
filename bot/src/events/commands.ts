@@ -64,18 +64,20 @@ export const event: BotEventHandler = {
 
         try {
             await command.run(commandContext);
-            console.log(`${logPrefix} command ${command.name} executed successfully`);
+            console.log(logPrefix, `command ${command.name} executed successfully`);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
-                `${logPrefix} error executing command ${command.name} from ${userName} in ${channel} ("${text}"): ${errorMessage}`
+                logPrefix,
+                `error executing command ${command.name} from ${userName} in ${channel} ("${text}"): ${errorMessage}`
             );
 
             const errorMessageToChat = `@${msg.userInfo.displayName}, something went wrong :/ (${errorMessage})`;
             await chat.say(channel, errorMessageToChat, { replyTo: msg }).catch((error) => {
                 const errorMessage = error instanceof Error ? error.message : 'unknown error';
                 console.error(
-                    `${logPrefix} error sending error message to ${userName} in ${channel}: ${errorMessage}`
+                    logPrefix,
+                    `error sending error message to ${userName} in ${channel}: ${errorMessage}`
                 );
             });
         }

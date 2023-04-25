@@ -49,13 +49,13 @@ export class Bot {
             password: env.DB_PASSWORD,
             database: env.DB_NAME,
         });
-        console.log(`${logPrefix} database connection created`);
+        console.log(logPrefix, `database connection created`);
 
         this.cache = new Redis({
             host: env.REDIS_HOST,
             password: env.REDIS_PASSWORD,
         });
-        console.log(`${logPrefix} cache connection created`);
+        console.log(logPrefix, `cache connection created`);
 
         this.events = events;
         this.commands = commands;
@@ -72,27 +72,27 @@ export class Bot {
             clientId: env.TWITCH_CLIENT_ID,
             clientSecret: env.TWITCH_CLIENT_SECRET,
         });
-        console.log(`${logPrefix} auth provider initialized`);
+        console.log(logPrefix, `auth provider initialized`);
 
         this.api = new ApiClient({ authProvider: this.authProvider });
-        console.log(`${logPrefix} api client initialized`);
+        console.log(logPrefix, `api client initialized`);
 
         this.chat = new ShardedChatClient({
             authProvider: this.authProvider,
             isDev: env.NODE_ENV === 'development',
         });
-        console.log(`${logPrefix} chat client initialized`);
+        console.log(logPrefix, `chat client initialized`);
 
         this.eventSub = new EventSubWsListener({
             apiClient: this.api,
         });
-        console.log(`${logPrefix} eventsub client initialized`);
+        console.log(logPrefix, `eventsub client initialized`);
 
         this.utils = {
             cooldownManager: new CommandCooldownManager(this.cache),
             statusManager: new LiveStatusManager(this.api, this.cache),
         };
-        console.log(`${logPrefix} utils initialized`);
+        console.log(logPrefix, `utils initialized`);
 
         for (const [, { event, handler }] of this.events) {
             this.chat.registerEvent({
@@ -108,7 +108,7 @@ export class Bot {
 
         for (const [, module] of this.modules) {
             void module.register(this);
-            console.log(`${logPrefix} module ${chalk.cyanBright(module.name)} registered`);
+            console.log(logPrefix, `module ${chalk.cyanBright(module.name)} registered`);
         }
     }
 

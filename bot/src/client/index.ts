@@ -35,16 +35,16 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         super();
 
         this.on('say', ({ shard, channel, text }) =>
-            console.log(`${logPrefix} said "${text}" in ${channel} on shard`, shard.shardId)
+            console.log(logPrefix, `said "${text}" in ${channel} on shard`, shard.shardId)
         );
-        this.on('spawn', (shard) => console.log(`${logPrefix} spawned new shard`, shard.shardId));
+        this.on('spawn', (shard) => console.log(logPrefix, `spawned new shard`, shard.shardId));
         this.on('join', ({ shard, channel }) =>
-            console.log(`${logPrefix} joined channel ${channel}, on shard`, shard.shardId)
+            console.log(logPrefix, `joined channel ${channel}, on shard`, shard.shardId)
         );
         this.on('part', ({ shard, channel }) =>
-            console.log(`${logPrefix} parted channel ${channel}, on shard`, shard.shardId)
+            console.log(logPrefix, `parted channel ${channel}, on shard`, shard.shardId)
         );
-        this.on('kill', (shardId) => console.log(`${logPrefix} killed shard`, shardId));
+        this.on('kill', (shardId) => console.log(logPrefix, `killed shard`, shardId));
 
         this.options = options;
         this.shards = new Collection();
