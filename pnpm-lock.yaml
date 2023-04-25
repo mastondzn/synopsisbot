@@ -159,9 +159,6 @@ importers:
 
   packages/env:
     dependencies:
-      drizzle-orm:
-        specifier: ^0.25.3
-        version: 0.25.3(@types/pg@8.6.6)(pg@8.10.0)
       is-docker:
         specifier: '2'
         version: 2.2.1
