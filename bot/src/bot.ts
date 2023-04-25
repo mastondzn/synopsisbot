@@ -4,9 +4,9 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
-import { makeDatabase, type NodePgDatabase, type Pool } from '@synopsis/db';
+import { type AuthedUser, type NodePgDatabase, type Pool } from '@synopsis/db';
 
-import { type BotAuthProvider, makeBotAuthProvider } from './auth-provider';
+import { BotAuthProvider } from './auth-provider';
 import { ShardedChatClient } from './client';
 import {
     type BotCommand,
@@ -24,32 +24,29 @@ export interface BotOptions {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
     modules: Collection<string, BotModule>;
+    botUser: AuthedUser;
+    db: NodePgDatabase;
+    pool: Pool;
 }
 
 export class Bot {
-    chat!: ShardedChatClient;
-    api!: ApiClient;
-    authProvider!: BotAuthProvider;
-    eventSub!: EventSubWsListener;
+    chat: ShardedChatClient;
+    api: ApiClient;
+    authProvider: BotAuthProvider;
+    eventSub: EventSubWsListener;
 
     db: NodePgDatabase;
     pool: Pool;
-
     cache: Redis;
 
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
     modules: Collection<string, BotModule>;
-    utils!: BotUtils;
+    utils: BotUtils;
 
-    constructor({ events, commands, modules }: BotOptions) {
-        const { db, pool } = makeDatabase({
-            host: env.DB_HOST,
-            user: env.DB_USERNAME,
-            password: env.DB_PASSWORD,
-            database: env.DB_NAME,
-        });
-        console.log(logPrefix, `database connection created`);
+    constructor({ events, commands, modules, db, pool, botUser }: BotOptions) {
+        this.db = db;
+        this.pool = pool;
 
         this.cache = new Redis({
             host: env.REDIS_HOST,
@@ -63,14 +60,12 @@ export class Bot {
 
         this.db = db;
         this.pool = pool;
-    }
 
-    async initialize() {
-        this.authProvider = await makeBotAuthProvider({
+        this.authProvider = new BotAuthProvider({
             db: this.db,
-            botId: env.TWITCH_BOT_ID,
             clientId: env.TWITCH_CLIENT_ID,
             clientSecret: env.TWITCH_CLIENT_SECRET,
+            ...botUser,
         });
         console.log(logPrefix, `auth provider initialized`);
 

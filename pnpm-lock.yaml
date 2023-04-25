@@ -123,8 +123,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3
       drizzle-orm:
-        specifier: ^0.25.0
-        version: 0.25.0(@types/pg@8.6.6)(pg@8.10.0)
+        specifier: ^0.25.3
+        version: 0.25.3(@types/pg@8.6.6)(pg@8.10.0)
       pg:
         specifier: ^8.10.0
         version: 8.10.0
@@ -142,8 +142,8 @@ importers:
         specifier: ^8.6.6
         version: 8.6.6
       drizzle-kit:
-        specifier: ^0.17.5
-        version: 0.17.5
+        specifier: ^0.17.6
+        version: 0.17.6
       eslint:
         specifier: ^8.28.0
         version: 8.37.0
@@ -160,8 +160,8 @@ importers:
   packages/env:
     dependencies:
       drizzle-orm:
-        specifier: ^0.25.0
-        version: 0.25.0(@types/pg@8.6.6)(pg@8.10.0)
+        specifier: ^0.25.3
+        version: 0.25.3(@types/pg@8.6.6)(pg@8.10.0)
       is-docker:
         specifier: '2'
         version: 2.2.1
@@ -2385,8 +2385,8 @@ packages:
       wordwrap: 1.0.0
     dev: true
 
-  /drizzle-kit@0.17.5:
-    resolution: {integrity: sha512-oS4qG3d4m7RUHqdhPZSjYh6QSarxbHKyalBeW1cBpJp2F5DB5xvEan6qfaKdasYkI10DNdPuvXcZOR31tiRIGA==}
+  /drizzle-kit@0.17.6:
+    resolution: {integrity: sha512-diNslu/ItzLv+++7l2noevXaCOrsfDXv+ZxMJWOy061Gs1BeEhP0t+mBKqeOPy8LsEo0aitNKOe+gPltEScmWQ==}
     hasBin: true
     dependencies:
       camelcase: 7.0.1
@@ -2402,8 +2402,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.25.0(@types/pg@8.6.6)(pg@8.10.0):
-    resolution: {integrity: sha512-+gKN/aVxLgMrPFh+1gQN/oJr0YR7+8kFHyGrmLj3EZS4pmL4ibUY1dGhYTSGCQBt69zDpQN16juC0+q8cF5r0Q==}
+  /drizzle-orm@0.25.3(@types/pg@8.6.6)(pg@8.10.0):
+    resolution: {integrity: sha512-0LX4Tjh3+3zm8E9T/h+ayj/3KEzNPItpONHfKnKOzBCjW9C1X0T7uUuRdPE+ssXIVLNuk6rvKCKTL3o9caxnKg==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
