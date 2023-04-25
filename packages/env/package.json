@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "drizzle-orm": "^0.25.0",
-        "is-docker": "2",
+        "is-docker": "3",
         "pg": "^8.10.0",
         "zod": "^3.21.4"
     }

@@ -68,8 +68,8 @@ importers:
         specifier: ^5.3.2
         version: 5.3.2
       is-docker:
-        specifier: '2'
-        version: 2.2.1
+        specifier: '3'
+        version: 3.0.0
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -163,8 +163,8 @@ importers:
         specifier: ^0.25.0
         version: 0.25.0(@types/pg@8.6.6)(pg@8.10.0)
       is-docker:
-        specifier: '2'
-        version: 2.2.1
+        specifier: '3'
+        version: 3.0.0
       pg:
         specifier: ^8.10.0
         version: 8.10.0
@@ -3838,6 +3838,12 @@ packages:
     resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
     engines: {node: '>=8'}
     hasBin: true
+
+  /is-docker@3.0.0:
+    resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    hasBin: true
+    dev: false
 
   /is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
