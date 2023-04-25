@@ -125,7 +125,7 @@ services:
 
     promtail:
         <<: *logging
-        image: grafana/promtail:2.6.1
+        image: grafana/promtail:2.8.1
         container_name: promtail
         restart: unless-stopped
         volumes:
