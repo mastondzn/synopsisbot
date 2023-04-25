@@ -20,14 +20,15 @@ export const module: BotModule = {
                     latency = Date.now() - now;
                     success = true;
                     console.log(
-                        `${logPrefix} received latency: ${latency}ms on shard ${shard.shardId}`
+                        logPrefix,
+                        `received latency: ${latency}ms on shard ${shard.shardId}`
                     );
                     shard.irc.removeListener(handler);
                 });
 
                 setTimeout(() => {
                     if (success) return;
-                    console.error(`${logPrefix} latency check timed out.`);
+                    console.error(logPrefix, `latency check timed out.`);
                     shard.irc.removeListener(handler);
                 }, 2 * 1000);
 

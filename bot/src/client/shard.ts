@@ -19,11 +19,10 @@ export class ChatClientShard extends ChatClient {
                 custom: (level, message) => {
                     const logPrefix = chalk.bgGrey(`[chat:${this.shardId}]`);
 
-                    if (level === LogLevel.ERROR)
-                        console.error(`${logPrefix}[${level}] ${message}`);
+                    if (level === LogLevel.ERROR) console.error(logPrefix, `[${level}] ${message}`);
                     else if (level === LogLevel.WARNING) {
-                        console.warn(`${logPrefix}[${level}] ${message}`);
-                    } else console.log(`${logPrefix}[${level}] ${message}`);
+                        console.warn(logPrefix, `[${level}] ${message}`);
+                    } else console.log(logPrefix, `[${level}] ${message}`);
                 },
                 ...options?.logger,
             },
