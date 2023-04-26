@@ -9,6 +9,7 @@ const logPrefix = chalk.bgBlue('[modules:channels]');
 
 export const module: BotModule = {
     name: 'channels',
+    priority: 5,
     register: async ({ db, api, chat }) => {
         // if (env.NODE_ENV !== 'production') return;
         const allChannels = await db

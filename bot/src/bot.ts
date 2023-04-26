@@ -89,6 +89,12 @@ export class Bot {
         };
         console.log(logPrefix, `utils initialized`);
 
+        this.registerEvents();
+
+        void this.registerModules();
+    }
+
+    private registerEvents(): void {
         for (const [, { event, handler }] of this.events) {
             this.chat.registerEvent({
                 event,
@@ -100,9 +106,18 @@ export class Bot {
                 },
             } as never);
         }
+    }
 
-        for (const [, module] of this.modules) {
-            void module.register(this);
+    private async registerModules(): Promise<void> {
+        const orderedModules = [...this.modules.entries()].sort(([, a], [, b]) => {
+            if (!('priority' in a)) return 1;
+            if (!('priority' in b)) return -1;
+            if (a.priority === b.priority) return 0;
+            return a.priority < b.priority ? 1 : -1;
+        });
+
+        for (const [, module] of orderedModules) {
+            await module.register(this);
             console.log(logPrefix, `module ${chalk.cyanBright(module.name)} registered`);
         }
     }
