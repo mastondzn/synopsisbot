@@ -3,6 +3,8 @@ import { readdir } from 'node:fs/promises';
 import { Collection } from '@discordjs/collection';
 import inquirer from 'inquirer';
 
+import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
+
 import { getModules } from '~/modules';
 import { type Script } from '~/types/scripts';
 import { env } from '~/utils/env';
@@ -60,13 +62,23 @@ const main = async () => {
         // eslint-disable-next-line no-fallthrough
         case 'bot': {
             const { Bot } = await import('~/bot');
+            const { db, pool } = makeDatabase({
+                logger: true,
+                host: env.DB_HOST,
+                user: env.DB_USERNAME,
+                password: env.DB_PASSWORD,
+                database: env.DB_NAME,
+            });
+
             const bot = new Bot({
                 events: new Collection(),
                 commands: new Collection(),
                 modules: await getModules(),
+                db,
+                pool,
+                botUser: await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID),
             });
 
-            await bot.initialize();
             await script.run({ bot });
             await bot.stop();
             break;
