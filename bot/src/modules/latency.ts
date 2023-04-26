@@ -9,6 +9,7 @@ const logPrefix = chalk.bgCyan('[module:latency]');
 
 export const module: BotModule = {
     name: 'latency',
+    priority: 20,
     register: ({ chat }) => {
         chat.on('spawn', (shard) => {
             const ping = () => {

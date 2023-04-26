@@ -69,11 +69,17 @@ export interface BotCommand {
     run: (ctx: BotCommandContext) => Promise<void> | void;
 }
 
-export interface BotModule {
+export interface BasicBotModule {
     name: string;
     description?: string;
     register: (ctx: BotContext) => Promise<void> | void;
 }
+
+export interface BotModuleWithPriority extends BasicBotModule {
+    priority: number;
+}
+
+export type BotModule = BasicBotModule | BotModuleWithPriority;
 
 export interface BotUtils {
     cooldownManager: CommandCooldownManager;
