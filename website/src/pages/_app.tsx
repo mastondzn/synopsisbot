@@ -1,12 +1,31 @@
-import '~/styles/globals.css';
-
+import { ChakraProvider, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { mode } from '@chakra-ui/theme-tools';
 import { type AppType } from 'next/app';
+import type { StyleFunctionProps } from '@chakra-ui/styled-system';
 
-import { api } from '~/utils/api';
+import { trpc } from '~/utils/api';
+
+const theme = extendTheme({
+    config: {
+        initialColorMode: 'dark',
+        useSystemColorMode: false,
+    },
+    styles: {
+        global: (props: StyleFunctionProps) => ({
+            body: {
+                bg: mode('white', 'black')(props),
+            },
+        }),
+    },
+});
 
 // eslint-disable-next-line react/prop-types
 const MyApp: AppType = ({ Component, pageProps }) => {
-    return <Component {...pageProps} />;
+    return (
+        <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+        </ChakraProvider>
+    );
 };
 
-export default api.withTRPC(MyApp);
+export default trpc.withTRPC(MyApp);
