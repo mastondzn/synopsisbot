@@ -1,4 +1,4 @@
-import { ChakraProvider, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { type AppType } from 'next/app';
 import type { StyleFunctionProps } from '@chakra-ui/styled-system';
