@@ -7,6 +7,7 @@ import { type Redis } from 'ioredis';
 import { type NodePgDatabase } from '@synopsis/db';
 
 import { type ShardedChatClient } from '~/client';
+import { type ChatClientShard } from '~/client/shard';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type LiveStatusManager } from '~/utils/live-manager';
 
@@ -47,15 +48,18 @@ export type BotEventHandler = ChatClientEvents extends infer T
         : never
     : never;
 
-type OnMessageEventHandlerParams = Parameters<EventHandler<'onMessage'>>;
-interface OnMessageEventHandlerParamsAsObject {
+export type OnMessageEventHandlerParams = Parameters<EventHandler<'onMessage'>>;
+export interface OnMessageEventHandlerParamsAsObject {
     channel: OnMessageEventHandlerParams[0];
     userName: OnMessageEventHandlerParams[1];
     text: OnMessageEventHandlerParams[2];
 }
 
+export type ChatMessage = PrivateMessage & OnMessageEventHandlerParamsAsObject;
+
 export type BotCommandContext = BotContext & {
-    msg: PrivateMessage & OnMessageEventHandlerParamsAsObject;
+    shard: ChatClientShard;
+    msg: ChatMessage;
 };
 
 export interface BotCommand {

@@ -53,8 +53,12 @@ export const event: BotEventHandler = {
         if (mode === 'readonly') return;
         if (mode === 'offline-only' && isLive) return;
 
+        const shard = chat.getShardByChannel(channel);
+        if (!shard) throw new Error(`No shard found for channel ${channel}`);
+
         const commandContext: BotCommandContext = {
             ...ctx,
+            shard,
             msg: Object.assign(msg, {
                 channel,
                 userName,
@@ -71,6 +75,7 @@ export const event: BotEventHandler = {
                 logPrefix,
                 `error executing command ${command.name} from ${userName} in ${channel} ("${text}"): ${errorMessage}`
             );
+            console.error(error);
 
             const errorMessageToChat = `@${msg.userInfo.displayName}, something went wrong :/ (${errorMessage})`;
             await chat.say(channel, errorMessageToChat, { replyTo: msg }).catch((error) => {
