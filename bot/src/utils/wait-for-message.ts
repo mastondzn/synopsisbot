@@ -33,7 +33,7 @@ export const waitForMessage = ({
         }, timeout);
     });
 
-export interface WaitForMessages extends WaitForMessageOptions {
+export interface WaitForMessagesOptions extends WaitForMessageOptions {
     exitOn?: MessageFilter;
 }
 
@@ -41,7 +41,8 @@ export const waitForMessages = ({
     shard,
     timeout = 10,
     filter,
-}: WaitForMessages): Promise<ChatMessage[]> => {
+    exitOn,
+}: WaitForMessagesOptions): Promise<ChatMessage[]> => {
     return new Promise((resolve) => {
         const messages: ChatMessage[] = [];
 
@@ -54,6 +55,10 @@ export const waitForMessages = ({
 
             if (!filter(message)) return;
             messages.push(message);
+            if (exitOn?.(message)) {
+                shard.removeListener(handler);
+                resolve(messages);
+            }
         });
 
         setTimeout(() => {
