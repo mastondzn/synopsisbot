@@ -109,14 +109,15 @@ export class Bot {
     }
 
     private async registerModules(): Promise<void> {
-        const orderedModules = [...this.modules.entries()].sort(([, a], [, b]) => {
+        const orderedModules = [...this.modules.values()].sort((a, b) => {
+            if (!('priority' in a) && !('priority' in b)) return 0;
             if (!('priority' in a)) return 1;
             if (!('priority' in b)) return -1;
             if (a.priority === b.priority) return 0;
             return a.priority < b.priority ? 1 : -1;
         });
 
-        for (const [, module] of orderedModules) {
+        for (const module of orderedModules) {
             await module.register(this);
             console.log(logPrefix, `module ${chalk.cyanBright(module.name)} registered`);
         }

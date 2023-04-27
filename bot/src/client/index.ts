@@ -49,8 +49,7 @@ export class ShardedChatClient extends (EventEmitter as new () => TypedEmitter<S
         this.options = options;
         this.shards = new Collection();
 
-        const baseClientOptions: ChatClientShardOptions = { ...options, channels: [] };
-        this.baseShardOptions = baseClientOptions;
+        this.baseShardOptions = { ...options, channels: [] };
 
         const channels = this.options.channels;
         if (channels) void this.join(channels);
