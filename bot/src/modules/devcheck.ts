@@ -6,6 +6,8 @@ export const hasDevProcess = () => {
     return bgDevProcess;
 };
 
+// TODO: refactor with website api route
+
 export const module: BotModule = {
     name: 'dev-check',
     description: 'checks if the bot is also running in dev mode on the current server',
