@@ -7,6 +7,7 @@ import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 import { env } from '~/env.mjs';
 import { consumeState } from '~/utils/auth';
 import { db } from '~/utils/db';
+import { getUrl } from '~/utils/url';
 
 // const supportedClaims: string[] = [];
 // const signingAlgorithms: string[] = [];
@@ -24,8 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 
-    // TODO: use better url
-    const url = new URL(req.url, 'http://localhost:3000');
+    const url = new URL(req.url, getUrl());
 
     const code = url.searchParams.get('code');
     const scopesFromRedirect = url.searchParams.get('scope')?.split('+');
@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         `client_secret=${env.TWITCH_CLIENT_SECRET}`,
         `code=${code}`,
         'grant_type=authorization_code',
-        `redirect_uri=http://localhost:3000/api/auth/acknowledge`,
+        `redirect_uri=${getUrl()}/api/auth/acknowledge`,
     ].join('&');
 
     const response = await fetch('https://id.twitch.tv/oauth2/token', {
