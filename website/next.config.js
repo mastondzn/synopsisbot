@@ -1,3 +1,5 @@
+const path = require('node:path');
+
 /** @type {import("next").NextConfig} */
 const config = {
     reactStrictMode: true,
@@ -12,5 +14,9 @@ const config = {
         );
         return config;
     },
+    experimental: {
+        outputFileTracingRoot: path.join(__dirname, '../'),
+    },
 };
-export default config;
+
+module.exports = config;

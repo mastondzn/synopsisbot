@@ -10,7 +10,6 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@chakra-ui/next-js": "^2.1.3",
         "@chakra-ui/react": "^2.6.0",
         "@chakra-ui/styled-system": "^2.9.0",
         "@chakra-ui/theme-tools": "^2.0.16",
@@ -27,9 +26,10 @@
         "@twurple/api": "^6.1.2",
         "@twurple/auth": "^6.1.2",
         "framer-motion": "^10.12.4",
-        "next": "^13.2.4",
+        "next": "^13.3.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
+        "sharp": "^0.32.1",
         "superjson": "1.12.3",
         "zod": "^3.21.4"
     },
