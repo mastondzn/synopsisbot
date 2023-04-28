@@ -187,10 +187,10 @@ services:
             - 3001:3000
         labels:
             - traefik.enable=true
-            - traefik.http.routers.grafana.rule=Host(`bot.${DOMAIN_NAME?err}`)
-            - traefik.http.routers.grafana.entrypoints=websecure
-            - traefik.http.routers.grafana.tls.certResolver=myresolver
-            - traefik.http.services.grafana.loadbalancer.server.port=3000
+            - traefik.http.routers.website.rule=Host(`bot.${DOMAIN_NAME?err}`)
+            - traefik.http.routers.website.entrypoints=websecure
+            - traefik.http.routers.website.tls.certResolver=myresolver
+            - traefik.http.services.website.loadbalancer.server.port=3000
 
 networks:
     default:
