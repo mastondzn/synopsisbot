@@ -26,12 +26,15 @@ export const serverEnvSchema = z.object({
         .default('localhost')
         .transform((host) => (host === 'localhost' ? (isDocker() ? 'cache' : host) : host)),
     REDIS_PASSWORD: z.string(),
+
+    DOMAIN_NAME: z.string(),
 });
 
 export const publicEnvSchema = z.object({
     NEXT_PUBLIC_TWITCH_CLIENT_ID: z.string(),
     NEXT_PUBLIC_TWITCH_BOT_USERNAME: z.string(),
     NEXT_PUBLIC_TWITCH_BOT_ID: z.string(),
+    NEXT_PUBLIC_DOMAIN_NAME: z.string(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

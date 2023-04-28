@@ -10,7 +10,9 @@
         },
         "lint": {},
         "lint:fix": {},
-        "typecheck": {}
+        "typecheck": {
+            "dependsOn": ["build"]
+        }
     },
     "globalDependencies": ["./packages/eslint-config/index.cjs", "./packages/tsconfig"],
     "globalEnv": []
