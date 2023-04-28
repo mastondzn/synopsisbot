@@ -1,7 +1,8 @@
-import { Image, Link } from '@chakra-ui/next-js';
 import { Box, Center, IconButton, Text, useColorMode } from '@chakra-ui/react';
 import { type NextPage } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import synopsisBlack from '../../public/synopsisblack.png';
 import synopsisWhite from '../../public/synopsiswhite.png';

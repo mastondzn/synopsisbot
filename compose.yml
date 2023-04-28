@@ -150,6 +150,7 @@ services:
     db:
         <<: *logging
         image: postgres:15-alpine
+        container_name: db
         restart: unless-stopped
         ports:
             - 5432:5432
@@ -165,6 +166,7 @@ services:
     cache:
         <<: *logging
         image: redis:7-alpine
+        container_name: cache
         restart: unless-stopped
         command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD?err}"
         ports:
@@ -173,6 +175,16 @@ services:
             - ~/volumes/synopsisbot/redis:/data
         labels:
             - traefik.enable=false
+
+    website:
+        <<: *logging
+        container_name: website
+        build:
+            context: .
+            dockerfile: ./website/Dockerfile
+        restart: unless-stopped
+        ports:
+            - 3001:3000
 
 networks:
     default:
