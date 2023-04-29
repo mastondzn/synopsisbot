@@ -6,12 +6,18 @@ on:
     workflow_dispatch:
 
 jobs:
-    deploy:
+    cd:
         if: github.repository == 'synopsisgg/bot'
         runs-on: ubuntu-latest
+
         steps:
-            - name: CI
-              uses: synopsisgg/bot/.github/workflows/ci.yml@main
+            - name: Wait for tests to finish
+              uses: lewagon/wait-on-check-action@v1.3.1
+              with:
+                  ref: ${{ github.ref }}
+                  check-name: 'ci'
+                  repo-token: ${{ secrets.GITHUB_TOKEN }}
+                  wait-interval: 8
 
             - name: SSH into VPS, and docker-compose up with rebuild
               uses: appleboy/ssh-action@master
