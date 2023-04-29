@@ -4,6 +4,7 @@ import { getChannelModeByLogin } from '@synopsis/db';
 
 import { hasDevProcess } from '~/modules/devcheck';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
+import { parseCommandParams } from '~/utils/command';
 import { env } from '~/utils/env';
 
 const botPrefix = 'sb ';
@@ -59,6 +60,14 @@ export const event: BotEventHandler = {
         const commandContext: BotCommandContext = {
             ...ctx,
             shard,
+
+            reply: (text) =>
+                chat.say(channel, `@${msg.userInfo.displayName}, ${text}`, { replyTo: msg }),
+
+            say: (text) => chat.say(channel, text),
+
+            params: parseCommandParams(text),
+
             msg: Object.assign(msg, {
                 channel,
                 userName,
