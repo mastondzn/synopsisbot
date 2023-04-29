@@ -34,11 +34,11 @@
         "@twurple/api": "^6.1.2",
         "@twurple/auth": "^6.1.2",
         "@twurple/chat": "^6.1.2",
-        "@twurple/common": "^6.1.2",
         "@twurple/eventsub-ws": "^6.1.2",
         "dotenv": "^16.0.3",
         "ioredis": "^5.3.2",
         "is-docker": "2",
+        "pretty-ms": "7",
         "zod": "^3.21.4"
     }
 }

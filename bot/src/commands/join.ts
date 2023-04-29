@@ -7,38 +7,24 @@ import { channelModeSchema, channelSchema } from '~/utils/zod';
 export const command: BotCommand = {
     name: 'join',
     description: 'join the bot to a channel',
-    run: async ({ msg, chat, db, api }) => {
+    run: async ({ msg, chat, db, api, reply, params }) => {
         if (msg.userInfo.userName !== env.TWITCH_BOT_OWNER_USERNAME) return;
 
-        const params = msg.text.split(' ');
-
-        const channel = params.at(2)?.toLowerCase();
+        const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, you didn't specify a channel.`,
-                { replyTo: msg }
-            );
+            return await reply("you didn't specify a channel.");
         }
 
-        const mode = params.at(3);
+        const mode = params.list.at(1);
 
         const channelSchemaResult = channelSchema.safeParse(channel);
         if (!channelSchemaResult.success) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, invalid channel name.`,
-                { replyTo: msg }
-            );
+            return await reply('invalid channel name.');
         }
 
         const modeSchemaResult = channelModeSchema.safeParse(mode);
         if (!modeSchemaResult.success) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, invalid mode (${mode ?? '?'})`,
-                { replyTo: msg }
-            );
+            return await reply(`invalid mode. (${mode ?? '?'})`);
         }
 
         const isDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(
@@ -46,20 +32,12 @@ export const command: BotCommand = {
         );
 
         if (isDefaultChannel) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, that channel is a default channel.`,
-                { replyTo: msg }
-            );
+            return await reply(`that channel is a default channel.`);
         }
 
         const apiChannel = await api.users.getUserByName(channel);
         if (!apiChannel) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, channel ${channel} not found.`,
-                { replyTo: msg }
-            );
+            return await reply(`channel ${channel} not found.`);
         }
 
         const dbChannel = await db
@@ -68,11 +46,7 @@ export const command: BotCommand = {
             .where(eq(channelsTable.twitchId, apiChannel.id));
 
         if (dbChannel.length > 0) {
-            return await chat.say(
-                msg.channel,
-                `@${msg.userInfo.displayName}, channel ${channel} already exists in database.`,
-                { replyTo: msg }
-            );
+            return await reply(`channel ${channel} already exists in database.`);
         }
 
         await db.insert(channelsTable).values({
@@ -81,10 +55,6 @@ export const command: BotCommand = {
             mode: modeSchemaResult.data,
         });
         await chat.join(apiChannel.name);
-        return await chat.say(
-            msg.channel,
-            `@${msg.userInfo.displayName}, joined channel ${channel}!`,
-            { replyTo: msg }
-        );
+        return await reply(`joined channel ${channel}!`);
     },
 };

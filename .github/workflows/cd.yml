@@ -1,0 +1,26 @@
+name: CD
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: CI
+              uses: ${{ github.repository }}/.github/workflows/ci.yml@main
+
+            - name: SSH into VPS, and docker-compose up with rebuild
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.VPS_IP }}
+                  username: ${{ secrets.VPS_USER }}
+                  password: ${{ secrets.VPS_PASSWORD }}
+                  script_stop: true
+                  script: |
+                      cd bot/
+                      git pull
+                      docker compose up -d --build website
+                  # TODO: dockerize bot

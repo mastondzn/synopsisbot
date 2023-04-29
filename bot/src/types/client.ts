@@ -8,6 +8,7 @@ import { type NodePgDatabase } from '@synopsis/db';
 
 import { type ShardedChatClient } from '~/client';
 import { type ChatClientShard } from '~/client/shard';
+import { type parseCommandParams } from '~/utils/command';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type LiveStatusManager } from '~/utils/live-manager';
 
@@ -60,6 +61,9 @@ export type ChatMessage = PrivateMessage & OnMessageEventHandlerParamsAsObject;
 export type BotCommandContext = BotContext & {
     shard: ChatClientShard;
     msg: ChatMessage;
+    params: ReturnType<typeof parseCommandParams>;
+    reply: (text: string) => Promise<void>;
+    say: (text: string) => Promise<void>;
 };
 
 export interface BotCommand {

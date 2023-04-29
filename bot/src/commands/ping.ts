@@ -1,15 +1,21 @@
+import ms from 'pretty-ms';
+
 import { getLatency } from '~/modules/latency';
 import { type BotCommand } from '~/types/client';
+
+const startedAt = new Date();
 
 export const command: BotCommand = {
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
-    run: async ({ msg, chat }) => {
+    run: async ({ reply }) => {
+        const lines = [`pong 🏓!`];
+
         const latency = getLatency();
+        if (latency) lines.push(`Latency is ${latency}ms.`);
 
-        let messageToSend = `@${msg.userInfo.displayName}, pong! 🏓`;
-        if (latency) messageToSend += ` (${latency}ms)`;
+        lines.push(`Uptime is ${ms(Date.now() - startedAt.getTime(), { unitCount: 3 })}.`);
 
-        await chat.say(msg.channel, messageToSend, { replyTo: msg });
+        return await reply(lines.join(' '));
     },
 };

@@ -55,9 +55,6 @@ importers:
       '@twurple/chat':
         specifier: ^6.1.2
         version: 6.1.2(@twurple/auth@6.1.2)
-      '@twurple/common':
-        specifier: ^6.1.2
-        version: 6.1.2
       '@twurple/eventsub-ws':
         specifier: ^6.1.2
         version: 6.1.2(@twurple/api@6.1.2)
@@ -70,6 +67,9 @@ importers:
       is-docker:
         specifier: '2'
         version: 2.2.1
+      pretty-ms:
+        specifier: '7'
+        version: 7.0.1
       zod:
         specifier: ^3.21.4
         version: 3.21.4
@@ -6016,6 +6016,11 @@ packages:
       lines-and-columns: 1.2.4
     dev: false
 
+  /parse-ms@2.1.0:
+    resolution: {integrity: sha512-kHt7kzLoS9VBZfUsiKjv43mr91ea+U05EyKkEtqp7vNbHxmaVuEqN7XxeEVnGrMtYOAxGrDElSi96K7EgO1zCA==}
+    engines: {node: '>=6'}
+    dev: false
+
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -6172,6 +6177,13 @@ packages:
     resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
+    dev: false
+
+  /pretty-ms@7.0.1:
+    resolution: {integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==}
+    engines: {node: '>=10'}
+    dependencies:
+      parse-ms: 2.1.0
     dev: false
 
   /prop-types@15.8.1:
