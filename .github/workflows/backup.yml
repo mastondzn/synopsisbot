@@ -1,0 +1,21 @@
+name: Backup
+
+on:
+    schedule:
+        - cron: '0 */12 * * *'
+    workflow_dispatch:
+
+jobs:
+    backup:
+        name: Backup
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: SSH into the server and run
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.VPS_IP }}
+                  username: ${{ secrets.VPS_USER }}
+                  password: ${{ secrets.VPS_PASSWORD }}
+                  script_stop: true
+                  script: rclone copy volumes cloudflare:backups/$(date -u +"%Y-%m-%dT%H:%M:%SZ") --progress
