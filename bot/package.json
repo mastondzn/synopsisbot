@@ -38,7 +38,7 @@
         "dotenv": "^16.0.3",
         "ioredis": "^5.3.2",
         "is-docker": "2",
-        "pretty-ms": "7",
+        "pretty-ms": "8",
         "zod": "^3.21.4"
     }
 }
