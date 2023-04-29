@@ -7,10 +7,11 @@ on:
 
 jobs:
     deploy:
+        if: github.repository == 'synopsisgg/bot'
         runs-on: ubuntu-latest
         steps:
             - name: CI
-              uses: '${{ github.repository }}/.github/workflows/ci.yml@main'
+              uses: synopsisgg/bot/.github/workflows/ci.yml@main
 
             - name: SSH into VPS, and docker-compose up with rebuild
               uses: appleboy/ssh-action@master
