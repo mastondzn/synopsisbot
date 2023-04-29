@@ -11,12 +11,13 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Wait for tests to finish
+            - name: Wait for CI to finish
               uses: lewagon/wait-on-check-action@v1.3.1
               with:
                   ref: ${{ github.ref }}
                   check-name: 'ci'
                   repo-token: ${{ secrets.GITHUB_TOKEN }}
+                  verbose: true
                   wait-interval: 8
 
             - name: SSH into VPS, and docker-compose up with rebuild
