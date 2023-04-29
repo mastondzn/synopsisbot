@@ -9,6 +9,7 @@ jobs:
     backup:
         name: Backup
         runs-on: ubuntu-latest
+        if: github.repository == 'synopsisgg/bot'
 
         steps:
             - name: SSH into the server and run rclone
