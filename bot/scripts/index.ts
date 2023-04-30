@@ -1,10 +1,10 @@
 import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
-import inquirer from 'inquirer';
 
 import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
 
+import { listPrompt } from './utils';
 import { getModules } from '~/modules';
 import { type Script } from '~/types/scripts';
 import { env } from '~/utils/env';
@@ -12,7 +12,7 @@ import { env } from '~/utils/env';
 const main = async () => {
     const allFiles = await readdir('./scripts');
     const files = allFiles
-        .filter((file) => file !== 'index.ts')
+        .filter((file) => file !== 'index.ts' && file !== 'utils')
         .map((file) => file.replace('.ts', ''));
 
     const scripts = await Promise.all(
@@ -28,17 +28,15 @@ const main = async () => {
         })
     );
 
-    const promptResults = await inquirer.prompt<{ script: string }>({
-        type: 'list',
-        choices: scripts.map((script) =>
+    const { response: promptScript } = await listPrompt({
+        list: scripts.map((script) =>
             `${script.file}${script.description ? ` - ${script.description}` : ''}`.trim()
         ),
-        name: 'script',
         message: 'Select a script to run!',
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const answer = promptResults.script.split(' - ')[0]!;
+    const answer = promptScript.split(' - ')[0]!;
 
     const script = scripts.find((script) => script.file === answer);
     if (!script) throw new Error('?');

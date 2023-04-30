@@ -1,27 +1,22 @@
-import inquirer from 'inquirer';
-
+import { prompt } from './utils';
 import { type BotScript } from '~/types/scripts';
 
 export const script: BotScript = {
     type: 'bot',
     description: 'say something in chat',
     run: async ({ bot }) => {
-        const { channelInput } = await inquirer.prompt<{ channelInput: string }>({
-            type: 'input',
-            name: 'channelInput',
+        const { response: promptChannel } = await prompt({
             message: 'Which channel?',
         });
 
-        const channel = await bot.api.users.getUserByName(channelInput.toLowerCase());
+        const channel = await bot.api.users.getUserByName(promptChannel.toLowerCase());
         if (!channel) throw new Error('Channel not found!');
 
         if (!bot.chat.currentChannels.includes(`#${channel.name}`)) {
             throw new Error('Bot is not in that channel!');
         }
 
-        const { message } = await inquirer.prompt<{ message: string }>({
-            type: 'input',
-            name: 'message',
+        const { response: message } = await prompt({
             message: 'What should I say?',
         });
 

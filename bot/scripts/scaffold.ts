@@ -1,25 +1,20 @@
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import inquirer from 'inquirer';
-
+import { listPrompt, prompt } from './utils';
 import { type StandaloneScript } from '~/types/scripts';
 
 export const script: StandaloneScript = {
     description: 'scaffold a new script',
     type: 'standalone',
     run: async () => {
-        const { file } = await inquirer.prompt<{ file: string }>({
-            name: 'file',
-            type: 'input',
+        const { response: file } = await prompt({
             message: 'What is the name of the file?',
         });
 
         const choices = ['bot', 'db', 'cache', 'api', 'chat', 'standalone'] as const;
-        const { type } = await inquirer.prompt<{ type: (typeof choices)[number] }>({
-            name: 'type',
-            type: 'list',
-            choices,
+        const { response: type } = await listPrompt({
+            list: ['bot', 'db', 'cache', 'api', 'chat', 'standalone'],
             message: 'What is the type of the script?',
         });
 
