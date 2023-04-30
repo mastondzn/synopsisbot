@@ -58,23 +58,10 @@ jobs:
                   echo "${{ hashFiles('out/**') }}" > /tmp/new_bot_hash.txt
                   echo "hash=$(cat /tmp/new_bot_hash.txt)" >> $GITHUB_OUTPUT
 
-            - name: Upload new website hash
-              uses: actions/upload-artifact@v3
-              with:
-                  name: website_hash
-                  path: /tmp/new_website_hash.txt
-                  if-no-files-found: error
 
-            - name: Upload new bot hash
-              uses: actions/upload-artifact@v3
-              with:
-                  name: bot_hash
-                  path: /tmp/new_bot_hash.txt
-                  if-no-files-found: error
-
-            - name: Download old website hash
-              uses: actions/download-artifact@v3
-              with:
+                  - name: Download old website hash
+                  uses: actions/download-artifact@v3
+                  with:
                   name: website_hash
                   path: /tmp/old_website_hash.txt
 
@@ -89,6 +76,20 @@ jobs:
 
             - id: old-bot-hash
               run: echo "hash=$(cat /tmp/old_bot_hash.txt)" >> $GITHUB_OUTPUT
+
+            - name: Upload new website hash
+              uses: actions/upload-artifact@v3
+              with:
+                  name: website_hash
+                  path: /tmp/new_website_hash.txt
+                  if-no-files-found: error
+
+            - name: Upload new bot hash
+              uses: actions/upload-artifact@v3
+              with:
+                  name: bot_hash
+                  path: /tmp/new_bot_hash.txt
+                  if-no-files-found: error
 
             - name: Wait for CI to finish
               uses: lewagon/wait-on-check-action@v1.3.1
