@@ -38,7 +38,7 @@ jobs:
               run: pnpm install
 
             - name: Prune website with '--docker'
-              run: pnpm turbo prune --scope"@synopsis/website" --docker
+              run: pnpm turbo prune --scope="@synopsis/website" --docker
 
             - name: Store hash of website in temp folder
               id: new-website-hash
@@ -50,7 +50,7 @@ jobs:
               run: rm -rf out/
 
             - name: Prune bot with '--docker'
-              run: pnpm turbo prune --scope"@synopsis/bot" --docker
+              run: pnpm turbo prune --scope="@synopsis/bot" --docker
 
             - name: Store hash of bot in temp folder
               id: new-bot-hash
