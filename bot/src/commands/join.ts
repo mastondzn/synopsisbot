@@ -27,9 +27,8 @@ export const command: BotCommand = {
             return await reply(`invalid mode. (${mode ?? '?'})`);
         }
 
-        const isDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(
-            channel
-        );
+        const isDefaultChannel = //
+            [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
         if (isDefaultChannel) {
             return await reply(`that channel is a default channel.`);
