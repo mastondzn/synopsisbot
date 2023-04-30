@@ -11,6 +11,85 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.2.4
+
+            - name: Setup node 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              run: echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v3
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+
+            - name: Install deps (with cache)
+              run: pnpm install
+
+            - name: Prune website with '--docker'
+              run: pnpm turbo prune --scope"@synopsis/website" --docker
+
+            - name: Store hash of website in temp folder
+              id: new-website-hash
+              run: |
+                  echo "${{ hashFiles('out/**') }}" > /tmp/new_website_hash.txt
+                  echo "hash=$(cat /tmp/new_website_hash.txt)" >> $GITHUB_OUTPUT
+
+            - name: Clean out/ dir
+              run: rm -rf out/
+
+            - name: Prune bot with '--docker'
+              run: pnpm turbo prune --scope"@synopsis/bot" --docker
+
+            - name: Store hash of bot in temp folder
+              id: new-bot-hash
+              run: |
+                  echo "${{ hashFiles('out/**') }}" > /tmp/new_bot_hash.txt
+                  echo "hash=$(cat /tmp/new_bot_hash.txt)" >> $GITHUB_OUTPUT
+
+            - name: Download old website hash
+              uses: actions/download-artifact@v3
+              with:
+                  name: website_hash
+                  path: /tmp/old_website_hash.txt
+
+            - id: old-website-hash
+              run: echo "hash=$(cat /tmp/old_website_hash.txt)" >> $GITHUB_OUTPUT
+
+            - name: Download old bot hash
+              uses: actions/download-artifact@v3
+              with:
+                  name: bot_hash
+                  path: /tmp/old_bot_hash.txt
+
+            - id: old-bot-hash
+              run: echo "hash=$(cat /tmp/old_bot_hash.txt)" >> $GITHUB_OUTPUT
+
+            - name: Upload new website hash
+              uses: actions/upload-artifact@v3
+              with:
+                  name: website_hash
+                  path: /tmp/new_website_hash.txt
+                  if-no-files-found: error
+
+            - name: Upload new bot hash
+              uses: actions/upload-artifact@v3
+              with:
+                  name: bot_hash
+                  path: /tmp/new_bot_hash.txt
+                  if-no-files-found: error
+
             - name: Wait for CI to finish
               uses: lewagon/wait-on-check-action@v1.3.1
               with:
@@ -22,6 +101,7 @@ jobs:
 
             - name: SSH into VPS, and docker-compose up with rebuild
               uses: appleboy/ssh-action@master
+              if: steps.new-website-hash.outputs.hash != steps.old-website-hash.outputs.hash
               with:
                   host: ${{ secrets.VPS_IP }}
                   username: ${{ secrets.VPS_USER }}
