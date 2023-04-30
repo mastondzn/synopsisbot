@@ -58,10 +58,9 @@ jobs:
                   echo "${{ hashFiles('out/**') }}" > /tmp/new_bot_hash.txt
                   echo "hash=$(cat /tmp/new_bot_hash.txt)" >> $GITHUB_OUTPUT
 
-
-                  - name: Download old website hash
-                  uses: actions/download-artifact@v3
-                  with:
+            - name: Download old website hash
+              uses: actions/download-artifact@v3
+              with:
                   name: website_hash
                   path: /tmp/old_website_hash.txt
 
