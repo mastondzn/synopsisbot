@@ -2,8 +2,8 @@ name: Backup
 
 on:
     schedule:
-        # Runs every 3 days
-        - cron: '0 0 */3 * *'
+        # Runs every 12 hours
+        - cron: '0 */12 * * *'
     workflow_dispatch:
 
 jobs:
@@ -23,5 +23,5 @@ jobs:
                   script: |
                       cd
                       rclone sync volumes /tmp/volumes-sync --progress
-                      rclone sync /tmp/volumes-sync google:backups/${{github.repository}}/$(date -u +"%Y-%m-%dT%H:%M:%SZ") --progress
+                      rclone sync /tmp/volumes-sync google:backups/${{github.repository}}/sync --progress
                       rm -rf /tmp/volumes-sync
