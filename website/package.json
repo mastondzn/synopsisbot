@@ -26,7 +26,7 @@
         "@twurple/api": "^6.1.2",
         "@twurple/auth": "^6.1.2",
         "framer-motion": "^10.12.4",
-        "next": "^13.2.4",
+        "next": "^13.3.2",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "sharp": "^0.32.1",
@@ -41,7 +41,7 @@
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.11",
         "eslint": "^8.28.0",
-        "eslint-config-next": "^13.2.4",
+        "eslint-config-next": "^13.3.2",
         "eslint-define-config": "^1.17.0",
         "typescript": "^5.0.4"
     }
