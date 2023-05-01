@@ -1,11 +1,9 @@
-import { NextResponse } from 'next/server';
-
 import { env } from '~/env.mjs';
 import { createState } from '~/utils/auth';
+import { redirect } from '~/utils/responses';
 import { getUrl } from '~/utils/url';
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { redirect } = NextResponse;
+export const dynamic = 'force-dynamic';
 
 export const GET = async () => {
     const url = new URL('https://id.twitch.tv/oauth2/authorize');

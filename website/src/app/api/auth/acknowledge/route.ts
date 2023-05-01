@@ -1,5 +1,5 @@
 import { getTokenInfo } from '@twurple/auth';
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
 import { authedUsers, type NewAuthedUser } from '@synopsis/db';
@@ -7,10 +7,10 @@ import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 import { env } from '~/env.mjs';
 import { consumeState } from '~/utils/auth';
 import { db } from '~/utils/db';
+import { json } from '~/utils/responses';
 import { getUrl } from '~/utils/url';
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { json } = NextResponse;
+export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest) => {
     const url = new URL(req.url);
