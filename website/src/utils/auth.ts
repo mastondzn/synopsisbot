@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 
-import { eq, lt, states } from '@synopsis/db';
+import { eq, states } from '@synopsis/db';
 
 import { db } from './db';
 
@@ -15,8 +15,3 @@ export const consumeState = async (state: string): Promise<{ ok: boolean }> => {
     if (result.length === 0) return { ok: false };
     return { ok: true };
 };
-
-setInterval(() => {
-    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-    void db.delete(states).where(lt(states.createdAt, fifteenMinutesAgo));
-}, 30 * 60 * 1000);
