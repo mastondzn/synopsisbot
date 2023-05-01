@@ -17,5 +17,6 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./website"],
-    "eslint.codeActionsOnSave.mode": "all"
+    "eslint.codeActionsOnSave.mode": "all",
+    "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]]
 }

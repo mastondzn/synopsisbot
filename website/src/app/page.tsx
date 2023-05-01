@@ -1,39 +1,34 @@
+import { IconBrandGithub, IconBrandTwitch, IconMail } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import synopsisWhite from '../../public/synopsiswhite.png';
-import { buttonVariants } from '~/components/button';
+import { Button } from '~/components/button';
 
 export default function IndexPage() {
     return (
-        <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-            <div className="flex max-w-[980px] flex-col items-start gap-2">
-                <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
-                    Beautifully designed components <br className="hidden sm:inline" />
-                    built with Radix UI and Tailwind CSS.
-                </h1>
-                <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
-                    Accessible and customizable components that you can copy and paste into your
-                    apps. Free. Open Source. And Next.js 13 Ready.
-                </p>
-            </div>
-            <div className="flex gap-4">
-                <Link
-                    href={''}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={buttonVariants({ size: 'lg' })}
-                >
-                    Documentation
+        <div className="container flex min-h-screen flex-col items-center justify-center gap-6">
+            <Image src={synopsisWhite} alt="synopsisbot logo" className="w-[500px]" />
+            <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                {'Website is currently under construction ⛏️'}
+            </h2>
+            <div className="flex flex-row gap-10">
+                <Link href="https://twitch.tv/synopsisbot" target="_blank" rel="noreferrer">
+                    <Button size="lg" className="h-fit w-fit px-3 py-3">
+                        <IconBrandTwitch className="h-8 w-8" />{' '}
+                    </Button>
                 </Link>
-                <Link
-                    target="_blank"
-                    rel="noreferrer"
-                    href={''}
-                    className={buttonVariants({ variant: 'outline', size: 'lg' })}
-                >
-                    GitHub
+                <Link href="https://github.com/synopsisgg/bot" target="_blank" rel="noreferrer">
+                    <Button size="lg" className="h-fit w-fit px-3 py-3">
+                        <IconBrandGithub className="h-8 w-8" />{' '}
+                    </Button>
+                </Link>
+                <Link href="mailto:contact@synopsis.gg" target="_blank" rel="noreferrer">
+                    <Button size="lg" className="h-fit w-fit px-3 py-3">
+                        <IconMail className="h-8 w-8" />
+                    </Button>
                 </Link>
             </div>
-        </section>
+        </div>
     );
 }
