@@ -12,11 +12,11 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "^8.28.0",
-        "eslint-define-config": "^1.17.0"
+        "eslint-define-config": "^1.17.0",
+        "tsup": "^6.7.0"
     },
     "dependencies": {
         "is-docker": "2",
-        "pg": "^8.10.0",
         "zod": "^3.21.4"
     }
 }
