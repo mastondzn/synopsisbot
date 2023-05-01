@@ -3,8 +3,6 @@
     "exclude": ["node_modules", "dist", "coverage"],
     "include": ["src/**/*", "scripts/**/*"],
     "compilerOptions": {
-        "moduleResolution": "node16",
-
         "baseUrl": "src",
         "paths": {
             "~/*": ["*"]
