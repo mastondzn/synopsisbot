@@ -36,6 +36,8 @@
         "@commitlint/types": "^17.4.4",
         "@manypkg/cli": "^0.20.0",
         "@types/node": "^18.15.11",
+        "prettier": "^2.8.7",
+        "prettier-plugin-tailwindcss": "^0.2.8",
         "rimraf": "^5.0.0",
         "turbo": "^1.8.8",
         "typescript": "^5.0.4"
@@ -43,9 +45,5 @@
     "packageManager": "pnpm@8.3.1",
     "engines": {
         "node": ">=18"
-    },
-    "devDependencies": {
-        "prettier": "^2.8.7",
-        "prettier-plugin-tailwindcss": "^0.2.8"
     }
 }
