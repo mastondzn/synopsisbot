@@ -1,5 +1,6 @@
+import { env } from '@synopsis/env/node';
+
 import { type BotModule } from '~/types/client';
-import { env } from '~/utils/env';
 
 let bgDevProcess = false;
 export const hasDevProcess = () => {

@@ -1,6 +1,5 @@
 import { makeDatabase } from '@synopsis/db';
-
-import { env } from '~/env.mjs';
+import { env } from '@synopsis/env/next';
 
 export const { db, pool } = makeDatabase({
     host: env.DB_HOST,

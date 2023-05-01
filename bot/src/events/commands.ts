@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 
 import { getChannelModeByLogin } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { hasDevProcess } from '~/modules/devcheck';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
 import { parseCommandParams } from '~/utils/command';
-import { env } from '~/utils/env';
 
 const botPrefix = 'sb ';
 

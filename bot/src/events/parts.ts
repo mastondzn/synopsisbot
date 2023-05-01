@@ -1,7 +1,8 @@
 import chalk from 'chalk';
 
+import { env } from '@synopsis/env/node';
+
 import { type BotEventHandler } from '~/types/client';
-import { env } from '~/utils/env';
 
 export const event: BotEventHandler = {
     event: 'onPart',

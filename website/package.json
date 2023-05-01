@@ -14,6 +14,7 @@
         "@synopsis/db": "0.0.1",
         "@synopsis/env": "0.0.1",
         "@synopsis/scopes": "0.0.1",
+        "@t3-oss/env-nextjs": "^0.2.2",
         "@tabler/icons-react": "^2.17.0",
         "@tanstack/react-query": "^4.28.0",
         "@twurple/api": "^6.1.2",

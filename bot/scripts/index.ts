@@ -3,11 +3,11 @@ import { readdir } from 'node:fs/promises';
 import { Collection } from '@discordjs/collection';
 
 import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { listPrompt } from './utils';
 import { getModules } from '~/modules';
 import { type Script } from '~/types/scripts';
-import { env } from '~/utils/env';
 
 const main = async () => {
     const allFiles = await readdir('./scripts');

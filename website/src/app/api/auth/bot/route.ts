@@ -1,6 +1,6 @@
+import { env } from '@synopsis/env/next';
 import { allScopes } from '@synopsis/scopes';
 
-import { env } from '~/env.mjs';
 import { createState } from '~/utils/auth';
 import { redirect } from '~/utils/responses';
 import { getUrl } from '~/utils/url';

@@ -21,7 +21,8 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "turbo run build",
+        "start:bot": "turbo run start --filter=@synopsis/bot",
+        "build:website": "turbo run build --filter=@synopsis/website",
         "clean": "rimraf node_modules .turbo .vercel dist",
         "dev": "turbo run dev",
         "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml}\"",

@@ -1,10 +1,18 @@
-const path = require('node:path');
+//@ts-check
+
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// set process.env.SKIP_ENV_VALIDATION to something to skip validation
+import '@synopsis/env/next';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("next").NextConfig} */
 const config = {
     reactStrictMode: true,
     output: 'standalone',
-    transpilePackages: ['@synopsis/db', '@synopsis/env', '@synopsis/scopes'],
+    transpilePackages: ['@synopsis/db', '@synopsis/scopes'],
     webpack: (config, { webpack }) => {
         config.plugins.push(
             new webpack.IgnorePlugin({
@@ -15,9 +23,9 @@ const config = {
         return config;
     },
     experimental: {
-        outputFileTracingRoot: path.join(__dirname, '../'),
+        outputFileTracingRoot: join(__dirname, '../'),
         appDir: true,
     },
 };
 
-module.exports = config;
+export default config;

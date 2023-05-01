@@ -1,12 +1,12 @@
 import chalk from 'chalk';
 
 import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { Bot } from './bot';
 import { getCommands } from './commands';
 import { getEventHandlers } from './events';
 import { getModules } from './modules';
-import { env } from './utils/env';
 
 const logPrefix = chalk.bgYellow('[init]');
 void (async () => {
