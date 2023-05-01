@@ -3,8 +3,8 @@ import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
 import { authedUsers, type NewAuthedUser } from '@synopsis/db';
+import { env } from '@synopsis/env/next';
 
-import { env } from '~/env.mjs';
 import { consumeState } from '~/utils/auth';
 import { db } from '~/utils/db';
 import { json } from '~/utils/responses';

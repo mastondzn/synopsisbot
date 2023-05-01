@@ -1,7 +1,7 @@
 import { channels } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { type BotModule } from '~/types/client';
-import { env } from '~/utils/env';
 
 export const module: BotModule = {
     name: 'default-channels',

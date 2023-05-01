@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
 import { type AuthedUser, type NodePgDatabase, type Pool } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { BotAuthProvider } from './auth-provider';
 import { ShardedChatClient } from './client';
@@ -16,7 +17,6 @@ import {
 } from './types/client';
 import { CommandCooldownManager } from './utils/cooldown';
 import { LiveStatusManager } from './utils/live-manager';
-import { env } from '~/utils/env';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
 

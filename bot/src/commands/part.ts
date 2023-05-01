@@ -1,7 +1,7 @@
 import { channels as channelsTable, eq } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 
 import { type BotCommand } from '~/types/client';
-import { env } from '~/utils/env';
 import { channelSchema } from '~/utils/zod';
 
 export const command: BotCommand = {
