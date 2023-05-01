@@ -1,4 +1,4 @@
-import { getTokenInfo } from '@twurple/auth/lib';
+import { getTokenInfo } from '@twurple/auth';
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -45,9 +45,9 @@ export const GET = async (req: NextRequest) => {
     ].join('&');
 
     const response = await fetch('https://id.twitch.tv/oauth2/token', {
+        body,
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body,
     });
 
     if (!response.ok) {
@@ -57,6 +57,7 @@ export const GET = async (req: NextRequest) => {
 
         const errorParseResult = errorSchema.safeParse(await response.json());
         const error = errorParseResult.success ? errorParseResult.data.error : 'Unknown Error';
+
         return json({
             error: `Bad Request, could not get access token from Twitch (${error})`,
             status: response.status,
@@ -93,9 +94,7 @@ export const GET = async (req: NextRequest) => {
 
     if ('error' in tokenInfo) {
         return json(
-            {
-                error: `Internal Server Error, could not get token info from Twitch (${tokenInfo.error})`,
-            },
+            { error: `Internal Server Error, could not get token info (${tokenInfo.error})` },
             { status: 500 }
         );
     }
@@ -122,5 +121,6 @@ export const GET = async (req: NextRequest) => {
         .values(user)
         .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
+    // TODO: use jwt and set a cookie
     return json({ message: 'Success' }, { status: 200 });
 };
