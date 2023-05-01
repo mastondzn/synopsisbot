@@ -1,6 +1,6 @@
-import { getTokenInfo } from '@twurple/auth';
+import { getTokenInfo } from '@twurple/auth/lib';
+import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 
@@ -9,23 +9,11 @@ import { consumeState } from '~/utils/auth';
 import { db } from '~/utils/db';
 import { getUrl } from '~/utils/url';
 
-// const supportedClaims: string[] = [];
-// const signingAlgorithms: string[] = [];
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { json } = NextResponse;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'GET') {
-        return res.status(405).json({
-            error: 'Method Not Allowed',
-        });
-    }
-
-    if (!req.url) {
-        return res.status(400).json({
-            error: 'Bad Request',
-        });
-    }
-
-    const url = new URL(req.url, getUrl());
+export const GET = async (req: NextRequest) => {
+    const url = new URL(req.url);
 
     const code = url.searchParams.get('code');
     const scopesFromRedirect = url.searchParams.get('scope')?.split('+');
@@ -36,22 +24,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (error && errorDescription && state) {
         await consumeState(state);
-        return res.status(400).json({
-            error: `Bad Request, ${error}: ${errorDescription}`,
-        });
+        return json({ error: `Bad Request, ${error}: ${errorDescription}` }, { status: 400 });
     }
 
     if (!code || !Array.isArray(scopesFromRedirect) || !state) {
-        return res.status(400).json({
-            error: 'Bad Request, missing code/scopes/state',
-        });
+        return json({ error: 'Bad Request, missing code/scopes/state' }, { status: 400 });
     }
 
     const stateConsumed = await consumeState(state);
     if (!stateConsumed.ok) {
-        return res.status(400).json({
-            error: 'Bad Request, state could not be consumed.',
-        });
+        return json({ error: 'Bad Request, state could not be consumed.' }, { status: 400 });
     }
 
     const body = [
@@ -75,9 +57,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const errorParseResult = errorSchema.safeParse(await response.json());
         const error = errorParseResult.success ? errorParseResult.data.error : 'Unknown Error';
-
-        return res.status(response.status).json({
+        return json({
             error: `Bad Request, could not get access token from Twitch (${error})`,
+            status: response.status,
         });
     }
 
@@ -93,9 +75,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const responseParseResult = responseSchema.safeParse(responseBody);
     if (!responseParseResult.success) {
-        return res.status(500).json({
-            error: 'Internal Server Error, could not parse response from Twitch',
-        });
+        return json(
+            { error: 'Internal Server Error, could not parse response from Twitch' },
+            { status: 500 }
+        );
     }
 
     const {
@@ -109,15 +92,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     if ('error' in tokenInfo) {
-        return res.status(500).json({
-            error: `Internal Server Error, could not get token info from Twitch (${tokenInfo.error})`,
-        });
+        return json(
+            {
+                error: `Internal Server Error, could not get token info from Twitch (${tokenInfo.error})`,
+            },
+            { status: 500 }
+        );
     }
 
     if (!tokenInfo.userId || !tokenInfo.userName || !tokenInfo.expiryDate) {
-        return res.status(500).json({
-            error: 'Internal Server Error, could not get user id, username, or expiryDate from token info',
-        });
+        return json(
+            { error: 'Internal Server Error, no user id, username, or expiryDate from token info' },
+            { status: 500 }
+        );
     }
 
     const user: NewAuthedUser = {
@@ -135,7 +122,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .values(user)
         .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
-    return res.status(200).json({
-        ok: true,
-    });
-}
+    return json({ message: 'Success' }, { status: 200 });
+};
