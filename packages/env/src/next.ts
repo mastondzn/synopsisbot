@@ -23,6 +23,7 @@ export const env = createEnv({
         TWITCH_BOT_OWNER_ID: process.env['TWITCH_BOT_OWNER_ID'],
         TWITCH_BOT_OWNER_USERNAME: process.env['TWITCH_BOT_OWNER_USERNAME'],
         DOMAIN_NAME: process.env['DOMAIN_NAME'],
+        APP_SECRET: process.env['APP_SECRET'],
 
         NEXT_PUBLIC_TWITCH_BOT_ID: process.env['NEXT_PUBLIC_TWITCH_BOT_ID'],
         NEXT_PUBLIC_TWITCH_BOT_USERNAME: process.env['NEXT_PUBLIC_TWITCH_BOT_USERNAME'],

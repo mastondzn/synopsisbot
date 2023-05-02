@@ -1,9 +1,9 @@
 import chalk from 'chalk';
+import { type Redis } from 'ioredis';
 
 import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { hasDevProcess } from '~/modules/devcheck';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
 import { parseCommandParams } from '~/utils/command';
 
@@ -11,10 +11,15 @@ const botPrefix = 'sb ';
 
 const logPrefix = chalk.bgBlue('[events:commands]');
 
+const hasDevProcess = async (redis: Redis): Promise<boolean> => {
+    const devProcess = await redis.get('dev-announce');
+    return devProcess === 'true';
+};
+
 export const event: BotEventHandler = {
     event: 'onMessage',
     handler: async (ctx) => {
-        const { params, chat, commands, utils, db } = ctx;
+        const { params, chat, commands, utils, db, cache } = ctx;
         const { cooldownManager, statusManager } = utils;
         const [channel, userName, text, msg] = params;
 
@@ -35,7 +40,7 @@ export const event: BotEventHandler = {
             // if we're in development don't reply to commands in non-default channels
             env.NODE_ENV === 'development' && !inDefaultChannel,
             // if we're in production and theres a dev process running don't reply to commands in default channels
-            env.NODE_ENV === 'production' && hasDevProcess() && inDefaultChannel,
+            env.NODE_ENV === 'production' && (await hasDevProcess(cache)) && inDefaultChannel,
         ];
 
         if (conditions.some(Boolean)) return;
