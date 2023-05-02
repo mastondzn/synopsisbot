@@ -4,7 +4,7 @@ import { env } from '@synopsis/env/node';
 
 import { type BotModule } from '~/types/client';
 
-const logPrefix = chalk.bgGreenBright('[dev-announce]');
+const logPrefix = chalk.bgGreenBright('[module:dev-announce]');
 
 export const module: BotModule = {
     name: 'dev-announce',
