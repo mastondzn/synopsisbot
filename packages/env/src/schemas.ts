@@ -27,6 +27,8 @@ export const serverEnvSchema = z.object({
         .transform((host) => (host === 'localhost' ? (isDocker() ? 'cache' : host) : host)),
     REDIS_PASSWORD: z.string(),
 
+    // our own secret, also used for JWT signing
+    APP_SECRET: z.string(),
     DOMAIN_NAME: z.string(),
 });
 
