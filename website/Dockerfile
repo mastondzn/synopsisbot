@@ -1,17 +1,24 @@
 FROM node:18-alpine AS pruner
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+
 RUN apk add --no-cache libc6-compat
 RUN apk update
-# Set working directory
+
 WORKDIR /app
 RUN yarn global add turbo
+
 COPY . .
 RUN turbo prune --scope=@synopsis/website --docker
 
+# ////////////////////////////
+# ////////////////////////////
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:18-alpine AS builder
+
 ARG TURBO_TEAM
+ENV TURBO_TEAM=$TURBO_TEAM
+
 ARG TURBO_TOKEN
+ENV TURBO_TOKEN=$TURBO_TOKEN
 
 RUN apk add --no-cache libc6-compat
 RUN apk update
@@ -32,6 +39,8 @@ COPY turbo.json turbo.json
 
 RUN SKIP_ENV_VALIDATION=1 pnpm turbo run build --filter=@synopsis/website...
 
+# ////////////////////////////
+# ////////////////////////////
 FROM node:18-alpine AS runner
 WORKDIR /app
 

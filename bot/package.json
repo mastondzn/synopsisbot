@@ -7,6 +7,7 @@
         "dev": "tsx watch -r tsconfig-paths/register src/index.ts",
         "start": "tsx -r tsconfig-paths/register src/index.ts",
         "scripts": "tsx -r tsconfig-paths/register scripts/index.ts",
+        "build": "node -e \"console.log('just start')\"",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"
