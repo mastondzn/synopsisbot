@@ -193,7 +193,7 @@ services:
             - traefik.http.routers.website.entrypoints=websecure
             - traefik.http.routers.website.tls.certResolver=myresolver
             - traefik.http.services.website.loadbalancer.server.port=3000
-    
+
     bot:
         <<: *logging
         container_name: bot
@@ -205,7 +205,7 @@ services:
         restart: unless-stopped
         labels:
             - traefik.enable=false
-            
+
 networks:
     default:
         name: synopsis
