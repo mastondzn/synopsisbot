@@ -36,7 +36,7 @@
         }
     },
     "scripts": {
-        "build": "tsup src/index.ts src/node.ts src/next.ts --format cjs,esm --sourcemap --dts-resolve",
+        "build": "tsup src/index.ts src/node.ts src/next.ts --format cjs,esm --sourcemap && tsc --emitDeclarationOnly --declaration --declarationMap --outdir dist",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"

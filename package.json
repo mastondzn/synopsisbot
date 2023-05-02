@@ -23,6 +23,7 @@
     "scripts": {
         "start:bot": "turbo run start --filter=@synopsis/bot",
         "build:website": "turbo run build --filter=@synopsis/website",
+        "build:bot": "turbo run build --filter=@synopsis/bot",
         "clean": "rimraf node_modules .turbo .vercel dist",
         "dev": "turbo run dev",
         "dev:website": "turbo run dev --filter=@synopsis/website",
