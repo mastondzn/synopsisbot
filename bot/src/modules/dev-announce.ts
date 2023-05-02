@@ -11,10 +11,9 @@ export const module: BotModule = {
     description: 'Announces the process is running in dev mode locally, to the remote server.',
     register: () => {
         if (env.NODE_ENV !== 'development') return;
-
         const interval = 2 * 60 * 1000;
 
-        setInterval(async () => {
+        const announce = async () => {
             const res = await fetch(`https://bot.${env.DOMAIN_NAME}/api/dev-announce`, {
                 method: 'POST',
                 headers: {
@@ -38,6 +37,9 @@ export const module: BotModule = {
             }
 
             console.log(logPrefix, 'Announced dev mode to remote server');
-        }, interval);
+        };
+
+        void announce();
+        setInterval(announce, interval);
     },
 };
