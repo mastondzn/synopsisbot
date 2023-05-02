@@ -15,7 +15,7 @@ export class ChatClientShard extends ChatClient {
             ...options,
             logger: {
                 name: `chat:${clientShardId}`,
-                minLevel: options?.isDev ? 'debug' : 'warn',
+                minLevel: options?.isDev ? 'debug' : 'warning',
                 custom: (level, message) => {
                     const logPrefix = chalk.bgGrey(`[chat:${this.shardId}]`);
 
