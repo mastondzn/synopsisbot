@@ -28,6 +28,6 @@ export const module: BotModule = {
         }
 
         console.log(logPrefix, `joining ${channels.length} channels`);
-        await chat.join(channels);
+        await chat.joinAll(channels);
     },
 };

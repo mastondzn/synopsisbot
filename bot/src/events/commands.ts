@@ -17,20 +17,22 @@ const hasDevProcess = async (redis: Redis): Promise<boolean> => {
 };
 
 export const event: BotEventHandler = {
-    event: 'onMessage',
+    event: 'PRIVMSG',
     handler: async (ctx) => {
         const { params, chat, commands, utils, db, cache } = ctx;
         const { cooldownManager, statusManager } = utils;
-        const [channel, userName, text, msg] = params;
+        const [msg] = params;
 
-        if (!text.startsWith(botPrefix)) return;
+        const text = msg.messageText;
+        const channel = msg.channelName;
+
+        if (!msg.messageText.startsWith(botPrefix)) return;
 
         const commandIdentifier = text.replace(/ +/g, ' ').split(' ')[1]?.toLowerCase();
         if (!commandIdentifier) return;
 
-        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(
-            channel.replace(/#+/, '')
-        );
+        const inDefaultChannel = //
+            [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
         const command = commands.find(
             (c) => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier)
@@ -46,38 +48,33 @@ export const event: BotEventHandler = {
         if (conditions.some(Boolean)) return;
         if (!command) return;
 
-        console.log(logPrefix, `executing command ${command.name} from ${userName} in ${channel}`);
-        console.log(logPrefix, `${userName}: "${text}"`);
+        console.log(
+            logPrefix,
+            `executing command ${command.name} from ${msg.senderUsername} in ${channel}`
+        );
+        console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
         const [mode, isLive, isOnCooldown] = await Promise.all([
-            getChannelModeByLogin(db, channel.replace(/#+/, '')),
+            getChannelModeByLogin(db, channel),
             statusManager.isLive(channel),
-            cooldownManager.isOnCooldown({ command, channel, userName }),
+            cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
         ]);
 
         if (!mode || isOnCooldown) return;
         if (mode === 'readonly') return;
         if (mode === 'offline-only' && isLive) return;
 
-        const shard = chat.getShardByChannel(channel);
-        if (!shard) throw new Error(`No shard found for channel ${channel}`);
+        const reply = (text: string) =>
+            chat.reply(channel, msg.messageID, `@${msg.displayName}, ${text}`);
+        const say = (text: string) => chat.say(channel, text);
 
         const commandContext: BotCommandContext = {
             ...ctx,
-            shard,
-
-            reply: (text) =>
-                chat.say(channel, `@${msg.userInfo.displayName}, ${text}`, { replyTo: msg }),
-
-            say: (text) => chat.say(channel, text),
+            msg,
+            reply,
+            say,
 
             params: parseCommandParams(text),
-
-            msg: Object.assign(msg, {
-                channel,
-                userName,
-                text,
-            }),
         };
 
         try {
@@ -87,16 +84,16 @@ export const event: BotEventHandler = {
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 logPrefix,
-                `error executing command ${command.name} from ${userName} in ${channel} ("${text}"): ${errorMessage}`
+                `error executing command ${command.name} from ${msg.senderUsername} in ${channel} ("${text}"): ${errorMessage}`
             );
             console.error(error);
 
-            const errorMessageToChat = `@${msg.userInfo.displayName}, something went wrong :/ (${errorMessage})`;
-            await chat.say(channel, errorMessageToChat, { replyTo: msg }).catch((error) => {
+            const errorMessageToChat = `something went wrong :/ (${errorMessage})`;
+            await reply(errorMessageToChat).catch((error) => {
                 const errorMessage = error instanceof Error ? error.message : 'unknown error';
                 console.error(
                     logPrefix,
-                    `error sending error message to ${userName} in ${channel}: ${errorMessage}`
+                    `error sending error message to ${msg.senderUsername} in ${channel}: ${errorMessage}`
                 );
             });
         }

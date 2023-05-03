@@ -8,7 +8,7 @@ export const command: BotCommand = {
     name: 'part',
     description: 'part the bot from a channel',
     run: async ({ msg, chat, db, api, reply, params }) => {
-        if (msg.userInfo.userName !== env.TWITCH_BOT_OWNER_USERNAME) return;
+        if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
 
         const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {

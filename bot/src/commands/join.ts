@@ -8,7 +8,7 @@ export const command: BotCommand = {
     name: 'join',
     description: 'join the bot to a channel',
     run: async ({ msg, chat, db, api, reply, params }) => {
-        if (msg.userInfo.userName !== env.TWITCH_BOT_OWNER_USERNAME) return;
+        if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
 
         const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {

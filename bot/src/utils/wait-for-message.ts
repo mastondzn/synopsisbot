@@ -1,69 +1,60 @@
-import { type ChatClientShard } from '~/client/shard';
-import { type ChatMessage } from '~/types/client';
+import { type ChatClient, type PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
 export interface WaitForMessageOptions {
-    shard: ChatClientShard;
+    chat: ChatClient;
     timeout?: number;
     filter: MessageFilter;
 }
 
-export type MessageFilter = (message: ChatMessage) => unknown;
+export type MessageFilter = (message: PrivmsgMessage) => unknown;
 
 export const waitForMessage = ({
-    shard,
+    chat: chat,
     timeout = 10,
     filter,
-}: WaitForMessageOptions): Promise<ChatMessage> =>
-    new Promise((resolve, reject) => {
-        const handler = shard.onMessage((channel, userName, text, msg) => {
-            const message: ChatMessage = Object.assign(msg, {
-                channel,
-                userName,
-                text,
-            });
-            if (!filter(message)) return;
+}: WaitForMessageOptions): Promise<PrivmsgMessage> => {
+    return new Promise((resolve, reject) => {
+        const handler = (msg: PrivmsgMessage): unknown => {
+            if (filter(msg)) return resolve(msg);
+            return chat.once('PRIVMSG', handler);
+        };
 
-            shard.removeListener(handler);
-            resolve(message);
-        });
+        chat.once('PRIVMSG', handler);
 
         setTimeout(() => {
-            shard.removeListener(handler);
             reject(new Error(`Waiting for message timed out after ${timeout}ms`));
-        }, timeout);
+        }, timeout * 1000);
     });
+};
 
 export interface WaitForMessagesOptions extends WaitForMessageOptions {
     exitOn?: MessageFilter;
 }
 
 export const waitForMessages = ({
-    shard,
+    chat,
     timeout = 10,
     filter,
     exitOn,
-}: WaitForMessagesOptions): Promise<ChatMessage[]> => {
+}: WaitForMessagesOptions): Promise<PrivmsgMessage[]> => {
     return new Promise((resolve) => {
-        const messages: ChatMessage[] = [];
+        const messages: PrivmsgMessage[] = [];
+        const handler = (msg: PrivmsgMessage): void => {
+            if (!filter(msg)) return;
 
-        const handler = shard.onMessage((channel, userName, text, msg) => {
-            const message: ChatMessage = Object.assign(msg, {
-                channel,
-                userName,
-                text,
-            });
+            messages.push(msg);
 
-            if (!filter(message)) return;
-            messages.push(message);
-            if (exitOn?.(message)) {
-                shard.removeListener(handler);
+            if (exitOn?.(msg)) {
+                chat.removeListener('PRIVMSG', handler);
                 resolve(messages);
             }
-        });
+        };
+
+        chat.on('PRIVMSG', handler);
 
         setTimeout(() => {
-            shard.removeListener(handler);
+            chat.removeListener('PRIVMSG', handler);
             resolve(messages);
-        }, timeout);
+        }, timeout * 1000);
     });
 };

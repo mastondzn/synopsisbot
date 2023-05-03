@@ -1,12 +1,12 @@
 import { readdir } from 'node:fs/promises';
 
-import { Collection } from '@discordjs/collection';
-
-import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
+// import { Collection } from '@discordjs/collection';
+// import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { listPrompt } from './utils';
-import { getModules } from '~/modules';
+// import { BotAuthProvider } from '~/auth-provider';
+// import { getModules } from '~/modules';
 import { type Script } from '~/types/scripts';
 
 const main = async () => {
@@ -59,27 +59,7 @@ const main = async () => {
         }
         // eslint-disable-next-line no-fallthrough
         case 'bot': {
-            const { Bot } = await import('~/bot');
-            const { db, pool } = makeDatabase({
-                logger: true,
-                host: env.DB_HOST,
-                user: env.DB_USERNAME,
-                password: env.DB_PASSWORD,
-                database: env.DB_NAME,
-            });
-
-            const bot = new Bot({
-                events: new Collection(),
-                commands: new Collection(),
-                modules: await getModules(),
-                db,
-                pool,
-                botUser: await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID),
-            });
-
-            await script.run({ bot });
-            await bot.stop();
-            break;
+            throw new Error('Not implemented yet!');
         }
         case 'cache': {
             throw new Error('Not implemented yet!');

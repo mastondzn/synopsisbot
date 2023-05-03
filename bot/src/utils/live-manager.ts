@@ -12,8 +12,6 @@ export class LiveStatusManager {
     }
 
     public async isLive(channel: string): Promise<boolean> {
-        channel = channel.replace(/^#+/, '');
-
         const cached = await this.getCache(channel);
         if (cached !== null) return cached;
 

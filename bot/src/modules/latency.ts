@@ -11,35 +11,16 @@ export const module: BotModule = {
     name: 'latency',
     priority: 20,
     register: ({ chat }) => {
-        chat.on('spawn', (shard) => {
-            const ping = () => {
-                const now = Date.now();
+        const handshake = async () => {
+            const pingStart = Date.now();
+            await chat.ping();
+            const pingEnd = Date.now();
 
-                let success = false;
-                const handler = shard.irc.onAnyMessage((message) => {
-                    if (message.params['message'] !== now.toString(10)) return;
-                    latency = Date.now() - now;
-                    success = true;
-                    console.log(
-                        logPrefix,
-                        `received latency: ${latency}ms on shard ${shard.shardId}`
-                    );
-                    shard.irc.removeListener(handler);
-                });
+            latency = pingEnd - pingStart;
+            console.log(logPrefix, `received latency: ${latency}ms`);
+        };
 
-                setTimeout(() => {
-                    if (success) return;
-                    console.error(logPrefix, `latency check timed out.`);
-                    shard.irc.removeListener(handler);
-                }, 2 * 1000);
-
-                shard.irc.sendRaw(`PING :${now}`);
-            };
-
-            shard.onAuthenticationSuccess(() => {
-                setTimeout(ping, 1000 * 3);
-                setInterval(ping, 1000 * 60 * 5);
-            });
-        });
+        void handshake();
+        setInterval(handshake, 1000 * 60 * 2);
     },
 };

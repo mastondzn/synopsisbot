@@ -1,5 +1,10 @@
 // @ts-check
 
+const plugins = [];
+if (process.cwd().includes('website')) {
+    plugins.push(require('prettier-plugin-tailwindcss'));
+}
+
 /** @type {import('prettier').Options} */
 module.exports = {
     arrowParens: 'always',
@@ -17,6 +22,6 @@ module.exports = {
     trailingComma: 'es5',
     useTabs: false,
 
-    plugins: [require('prettier-plugin-tailwindcss')],
+    plugins,
     tailwindConfig: './website/tailwind.config.js',
 };
