@@ -38,14 +38,8 @@ export const event: BotEventHandler = {
             (c) => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier)
         );
 
-        const conditions = [
-            // if we're in development don't reply to commands in non-default channels
-            env.NODE_ENV === 'development' && !inDefaultChannel,
-            // if we're in production and theres a dev process running don't reply to commands in default channels
-            env.NODE_ENV === 'production' && (await hasDevProcess(cache)) && inDefaultChannel,
-        ];
-
-        if (conditions.some(Boolean)) return;
+        // if we're in development don't reply to commands in non-default channels
+        if (env.NODE_ENV === 'development' && !inDefaultChannel) return;
         if (!command) return;
 
         console.log(
@@ -54,12 +48,19 @@ export const event: BotEventHandler = {
         );
         console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
-        const [mode, isLive, isOnCooldown] = await Promise.all([
+        const [mode, isLive, isOnCooldown, devProcessCheck] = await Promise.all([
             getChannelModeByLogin(db, channel),
             statusManager.isLive(channel),
             cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
+
+            // if we're in production and theres a dev process running don't reply to commands in default channels
+            hasDevProcess(cache).then(
+                (hasDevProcess) =>
+                    env.NODE_ENV === 'production' && hasDevProcess && inDefaultChannel
+            ),
         ]);
 
+        if (devProcessCheck) return;
         if (!mode || isOnCooldown) return;
         if (mode === 'readonly') return;
         if (mode === 'offline-only' && isLive) return;
@@ -73,7 +74,6 @@ export const event: BotEventHandler = {
             msg,
             reply,
             say,
-
             params: parseCommandParams(text),
         };
 

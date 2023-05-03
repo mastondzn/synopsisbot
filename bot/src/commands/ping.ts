@@ -8,8 +8,12 @@ const startedAt = new Date();
 export const command: BotCommand = {
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
-    run: async ({ reply }) => {
-        const lines = [`pong 🏓!`];
+    aliases: ['pong'],
+    run: async ({ reply, params }) => {
+        const lines = [];
+
+        if (params.command === 'pong') lines.push(`ping 🏓!`);
+        else lines.push(`pong 🏓!`);
 
         const latency = getLatency();
         if (latency) lines.push(`Latency is ${latency}ms.`);
