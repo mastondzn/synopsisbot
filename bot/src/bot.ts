@@ -4,7 +4,6 @@ import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
-import client from 'prom-client';
 
 import { type NodePgDatabase, type Pool } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
