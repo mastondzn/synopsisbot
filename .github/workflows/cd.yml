@@ -29,10 +29,6 @@ jobs:
                   password: ${{ secrets.VPS_PASSWORD }}
                   script_stop: true
                   script: |
-                      export NVM_DIR=~/.nvm
-                      source ~/.nvm/nvm.sh
-                      npm --help
                       cd bot/
                       git pull
-                      npm run db:migrate --force
                       docker compose up -d --build website bot
