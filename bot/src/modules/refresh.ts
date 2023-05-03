@@ -7,7 +7,7 @@ export const module: BotModule = {
     description: "ensures the bot's oauth token is always up to date",
     register: ({ authProvider, chat }) => {
         authProvider.events.on('refresh', (token) => {
-            if (token.userId !== env.TWITCH_BOT_OWNER_ID) return;
+            if (token.userId !== env.TWITCH_BOT_ID) return;
 
             chat.configuration.password = `oauth:${token.accessToken}`;
 
