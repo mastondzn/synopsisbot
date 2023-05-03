@@ -18,7 +18,12 @@ export const command: BotCommand = {
         const latency = getLatency();
         if (latency) lines.push(`Latency is ${latency}ms.`);
 
-        lines.push(`Uptime is ${ms(Date.now() - startedAt.getTime(), { unitCount: 3 })}.`);
+        lines.push(
+            `Uptime is ${ms(Date.now() - startedAt.getTime(), {
+                unitCount: 2,
+                secondsDecimalDigits: 0,
+            })}.`
+        );
 
         return await reply(lines.join(' '));
     },

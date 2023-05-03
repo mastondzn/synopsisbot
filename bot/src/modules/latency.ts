@@ -17,10 +17,12 @@ export const module: BotModule = {
             const pingEnd = Date.now();
 
             latency = pingEnd - pingStart;
-            console.log(logPrefix, `received latency: ${latency}ms`);
         };
 
         void handshake();
-        setInterval(handshake, 1000 * 60 * 2);
+        setInterval(
+            () => handshake().catch(() => console.error(logPrefix, 'handshake failed')),
+            1000 * 60 * 2
+        );
     },
 };

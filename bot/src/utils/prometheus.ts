@@ -14,9 +14,9 @@ export class PrometheusExposer {
 
         this.app = new Hono();
         this.app.get('/metrics', async ({ text }) => {
-            console.log(logPrefix, 'metrics requested');
-            return text(await this.registry.metrics(), 200, {
-                'content-type': this.registry.contentType,
+            return text(await this.registry.metrics(), {
+                status: 200,
+                headers: { 'Content-Type': this.registry.contentType },
             });
         });
 
