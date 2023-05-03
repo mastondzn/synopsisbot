@@ -31,6 +31,5 @@ jobs:
                   script: |
                       cd bot/
                       git pull
-                      npm install -g pnpm
-                      pnpm db:migrate
+                      npm run db:migrate --force
                       docker compose up -d --build website bot
