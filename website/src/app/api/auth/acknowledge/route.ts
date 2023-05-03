@@ -6,7 +6,7 @@ import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 import { env } from '@synopsis/env/next';
 
 import { consumeState } from '~/utils/auth';
-import { db } from '~/utils/db';
+import { getDb } from '~/utils/db';
 import { json } from '~/utils/responses';
 import { getUrl } from '~/utils/url';
 
@@ -115,6 +115,8 @@ export const GET = async (req: NextRequest) => {
         expiresAt: tokenInfo.expiryDate,
         obtainedAt: new Date(),
     };
+
+    const db = getDb();
 
     await db
         .insert(authedUsers)
