@@ -17,6 +17,7 @@ import {
 } from './types/client';
 import { CommandCooldownManager } from './utils/cooldown';
 import { LiveStatusManager } from './utils/live-manager';
+import { PrometheusExposer } from './utils/prometheus';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
 
@@ -84,6 +85,7 @@ export class Bot {
         this.utils = {
             cooldownManager: new CommandCooldownManager(this.cache),
             statusManager: new LiveStatusManager(this.api, this.cache),
+            prometheus: new PrometheusExposer(),
         };
         console.log(logPrefix, `utils initialized`);
 
