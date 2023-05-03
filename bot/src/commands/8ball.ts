@@ -4,6 +4,7 @@ import { pickOne } from '~/utils/functions';
 export const command: BotCommand = {
     name: '8ball',
     description: 'Ask the magic 8ball a question',
+    aliases: ['8b'],
     run: async ({ reply, params }) => {
         if (!params.text) {
             return await reply(
