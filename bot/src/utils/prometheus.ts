@@ -13,9 +13,11 @@ export class PrometheusExposer {
         collectDefaultMetrics({ register: this.registry, prefix: 'bot_' });
 
         this.app = new Hono();
-        this.app.get('/metrics', async ({ json }) => {
+        this.app.get('/metrics', async ({ text }) => {
             console.log(logPrefix, 'metrics requested');
-            return json(await this.registry.metrics());
+            return text(await this.registry.metrics(), 200, {
+                'content-type': this.registry.contentType,
+            });
         });
 
         serve({ fetch: this.app.fetch, port: 3003 });
