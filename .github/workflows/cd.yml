@@ -29,7 +29,8 @@ jobs:
                   password: ${{ secrets.VPS_PASSWORD }}
                   script_stop: true
                   script: |
+                      exec bash \-l
                       cd bot/
                       git pull
-                      npm run db:migrate --force
+                      pnpm db:migrate --force
                       docker compose up -d --build website bot
