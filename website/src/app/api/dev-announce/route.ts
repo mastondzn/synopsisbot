@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { env } from '@synopsis/env/next';
 
-import { redis } from '~/utils/redis';
+import { getRedis } from '~/utils/redis';
 import { json } from '~/utils/responses';
 
 export const dynamic = 'force-dynamic';
@@ -23,6 +23,8 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     if (!parsedBody.success) {
         return json({ ok: false, error: 'Unexpected shape' }, { status: 400 });
     }
+
+    const redis = getRedis();
 
     await redis.set('dev-announce', 'true', 'EX', parsedBody.data.announce_for);
 
