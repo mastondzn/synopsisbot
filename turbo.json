@@ -16,6 +16,16 @@
         "lint:fix": {},
         "typecheck": {
             "dependsOn": ["build"]
+        },
+        "db:migrate": {
+            "outputs": ["migrations/**"],
+            "dependsOn": ["^build"]
+        },
+        "db:check": {
+            "cache": false
+        },
+        "db:generate": {
+            "cache": false
         }
     },
     "globalDependencies": ["./packages/eslint-config/index.cjs", "./packages/tsconfig"],
