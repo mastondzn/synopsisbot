@@ -1,5 +1,5 @@
 import { type Collection } from '@discordjs/collection';
-import { ChatClient } from '@kararty/dank-twitch-irc';
+import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
@@ -73,6 +73,7 @@ export class Bot {
             password: `oauth:${botToken}`,
             rateLimits: 'default',
         });
+        this.chat.use(new AlternateMessageModifier(this.chat));
         console.log(logPrefix, `chat client initialized`);
 
         this.eventSub = new EventSubWsListener({
