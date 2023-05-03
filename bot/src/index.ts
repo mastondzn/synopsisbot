@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
+import { BotAuthProvider } from './auth-provider';
 import { Bot } from './bot';
 import { getCommands } from './commands';
 import { getEventHandlers } from './events';
@@ -28,6 +29,17 @@ void (async () => {
     const botUser = await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID);
     console.log(logPrefix, `bot user loaded`);
 
-    new Bot({ commands, events, modules, db, pool, botUser });
+    const authProvider = new BotAuthProvider({
+        clientId: env.TWITCH_CLIENT_ID,
+        clientSecret: env.TWITCH_CLIENT_SECRET,
+        db,
+        ...botUser,
+    });
+
+    const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
+    if (!botToken) throw new Error('could not obtain token from auth provider');
+    console.log(logPrefix, `bot token loaded`);
+
+    new Bot({ commands, events, modules, db, pool, authProvider, botToken: botToken.accessToken });
     console.log(logPrefix, `bot initialized`);
 })();

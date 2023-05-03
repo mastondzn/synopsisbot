@@ -1,14 +1,14 @@
 import { type Collection } from '@discordjs/collection';
+import { ChatClient } from '@kararty/dank-twitch-irc';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
-import { type AuthedUser, type NodePgDatabase, type Pool } from '@synopsis/db';
+import { type NodePgDatabase, type Pool } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { BotAuthProvider } from './auth-provider';
-import { ShardedChatClient } from './client';
+import { type BotAuthProvider } from './auth-provider';
 import {
     type BotCommand,
     type BotEventHandler,
@@ -24,13 +24,14 @@ export interface BotOptions {
     events: Collection<string, BotEventHandler>;
     commands: Collection<string, BotCommand>;
     modules: Collection<string, BotModule>;
-    botUser: AuthedUser;
+    authProvider: BotAuthProvider;
+    botToken: string;
     db: NodePgDatabase;
     pool: Pool;
 }
 
 export class Bot {
-    chat: ShardedChatClient;
+    chat: ChatClient;
     api: ApiClient;
     authProvider: BotAuthProvider;
     eventSub: EventSubWsListener;
@@ -44,7 +45,7 @@ export class Bot {
     modules: Collection<string, BotModule>;
     utils: BotUtils;
 
-    constructor({ events, commands, modules, db, pool, botUser }: BotOptions) {
+    constructor({ events, commands, modules, db, pool, botToken, authProvider }: BotOptions) {
         this.db = db;
         this.pool = pool;
 
@@ -61,20 +62,16 @@ export class Bot {
         this.db = db;
         this.pool = pool;
 
-        this.authProvider = new BotAuthProvider({
-            db: this.db,
-            clientId: env.TWITCH_CLIENT_ID,
-            clientSecret: env.TWITCH_CLIENT_SECRET,
-            ...botUser,
-        });
+        this.authProvider = authProvider;
         console.log(logPrefix, `auth provider initialized`);
 
         this.api = new ApiClient({ authProvider: this.authProvider });
         console.log(logPrefix, `api client initialized`);
 
-        this.chat = new ShardedChatClient({
-            authProvider: this.authProvider,
-            isDev: env.NODE_ENV === 'development',
+        this.chat = new ChatClient({
+            username: env.TWITCH_BOT_USERNAME,
+            password: `oauth:${botToken}`,
+            rateLimits: 'default',
         });
         console.log(logPrefix, `chat client initialized`);
 
@@ -96,15 +93,9 @@ export class Bot {
 
     private registerEvents(): void {
         for (const [, { event, handler }] of this.events) {
-            this.chat.registerEvent({
-                event,
-                handler: (...args: unknown[]) => {
-                    return void handler({
-                        ...this,
-                        params: args as never,
-                    });
-                },
-            } as never);
+            this.chat.on(event, (...params) => {
+                void handler({ ...this, params: params as never } as never);
+            });
         }
     }
 

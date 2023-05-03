@@ -1,4 +1,5 @@
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
+import { EventEmitter } from 'eventemitter3';
 
 import { type NodePgDatabase, updateAuthedUserById } from '@synopsis/db';
 
@@ -15,6 +16,8 @@ export interface BotAuthProviderOptions {
 }
 
 export class BotAuthProvider extends RefreshingAuthProvider {
+    events = new EventEmitter<{ refresh: [AccessToken & { userId: string }] }>();
+
     constructor(options: BotAuthProviderOptions) {
         const onRefresh = async (userId: string, token: AccessToken) => {
             await updateAuthedUserById(options.db, userId, {
@@ -25,6 +28,8 @@ export class BotAuthProvider extends RefreshingAuthProvider {
                     ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) }
                     : {}),
             });
+
+            this.events.emit('refresh', { ...token, userId });
         };
 
         super({

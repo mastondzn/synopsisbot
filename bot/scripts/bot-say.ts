@@ -12,7 +12,7 @@ export const script: BotScript = {
         const channel = await bot.api.users.getUserByName(promptChannel.toLowerCase());
         if (!channel) throw new Error('Channel not found!');
 
-        if (!bot.chat.currentChannels.includes(`#${channel.name}`)) {
+        if (!bot.chat.joinedChannels.has(channel.name)) {
             throw new Error('Bot is not in that channel!');
         }
 

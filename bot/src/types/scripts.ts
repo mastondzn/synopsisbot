@@ -1,5 +1,5 @@
+import { type ChatClient } from '@kararty/dank-twitch-irc';
 import { type ApiClient } from '@twurple/api';
-import { type ChatClient } from '@twurple/chat';
 import { type Redis } from 'ioredis';
 
 import { type NodePgDatabase } from '@synopsis/db';

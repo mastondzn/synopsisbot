@@ -1,33 +1,57 @@
 import { type Collection } from '@discordjs/collection';
+import {
+    type ChatClient,
+    type PrivmsgMessage,
+    type SpecificClientEvents,
+    type TwitchMessageEvents,
+} from '@kararty/dank-twitch-irc';
 import { type ApiClient } from '@twurple/api';
-import { type ChatClient, type PrivateMessage } from '@twurple/chat';
 import { type EventSubWsListener } from '@twurple/eventsub-ws';
 import { type Redis } from 'ioredis';
 
 import { type NodePgDatabase } from '@synopsis/db';
 
-import { type ShardedChatClient } from '~/client';
-import { type ChatClientShard } from '~/client/shard';
+import { type KnownKeys, type Prettify } from './general';
+import { type BotAuthProvider } from '~/auth-provider';
 import { type parseCommandParams } from '~/utils/command';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type LiveStatusManager } from '~/utils/live-manager';
 
-export type ChatClientEvents = Exclude<Extract<keyof ChatClient, `on${string}`>, 'on'>;
+type SpecificClientEventsList = KnownKeys<SpecificClientEvents>;
+type TwitchCommandsList = KnownKeys<TwitchMessageEvents>;
 
-export type EventHandler<T extends ChatClientEvents> = Parameters<ChatClient[T]>[0];
-export type EventHandlerParams<T extends ChatClientEvents> = Parameters<EventHandler<T>>;
+export type ChatClientEventsList = SpecificClientEventsList | TwitchCommandsList;
 
-export type BasicEventHandler = ChatClientEvents extends infer T
-    ? T extends ChatClientEvents
-        ? { event: T; description?: string; handler: EventHandler<T> }
+export type ChatClientEvents = Prettify<
+    {
+        [K in SpecificClientEventsList]: SpecificClientEvents[K];
+    } & {
+        [K in TwitchCommandsList]: TwitchMessageEvents[K];
+    }
+>;
+
+export type EventHandler<T extends keyof ChatClientEvents> = (
+    ...args: ChatClientEvents[T]
+) => Promise<void> | void;
+
+export type BasicEventHandler = ChatClientEventsList extends infer T
+    ? T extends ChatClientEventsList
+        ? {
+              event: T;
+              description?: string;
+              handler: EventHandler<T>;
+          }
         : never
     : never;
 
+export type EventHandlerParams<T extends ChatClientEventsList> = Parameters<EventHandler<T>>;
+
 export interface BotContext {
-    chat: ShardedChatClient;
+    chat: ChatClient;
     api: ApiClient;
     db: NodePgDatabase;
     cache: Redis;
+    authProvider: BotAuthProvider;
     eventSub: EventSubWsListener;
     commands: Collection<string, BotCommand>;
     events: Collection<string, BotEventHandler>;
@@ -35,8 +59,8 @@ export interface BotContext {
     utils: BotUtils;
 }
 
-export type BotEventHandler = ChatClientEvents extends infer T
-    ? T extends ChatClientEvents
+export type BotEventHandler = ChatClientEventsList extends infer T
+    ? T extends ChatClientEventsList
         ? {
               event: T;
               description?: string;
@@ -49,18 +73,8 @@ export type BotEventHandler = ChatClientEvents extends infer T
         : never
     : never;
 
-export type OnMessageEventHandlerParams = Parameters<EventHandler<'onMessage'>>;
-export interface OnMessageEventHandlerParamsAsObject {
-    channel: OnMessageEventHandlerParams[0];
-    userName: OnMessageEventHandlerParams[1];
-    text: OnMessageEventHandlerParams[2];
-}
-
-export type ChatMessage = PrivateMessage & OnMessageEventHandlerParamsAsObject;
-
 export type BotCommandContext = BotContext & {
-    shard: ChatClientShard;
-    msg: ChatMessage;
+    msg: PrivmsgMessage;
     params: ReturnType<typeof parseCommandParams>;
     reply: (text: string) => Promise<void>;
     say: (text: string) => Promise<void>;
