@@ -10,7 +10,7 @@ export class PrometheusExposer {
 
     constructor() {
         this.registry = new Registry();
-        collectDefaultMetrics({ register: this.registry, prefix: 'bot_' });
+        collectDefaultMetrics({ register: this.registry });
 
         this.app = new Hono();
         this.app.get('/metrics', async ({ text }) => {
