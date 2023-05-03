@@ -16,6 +16,7 @@ import { type BotAuthProvider } from '~/auth-provider';
 import { type parseCommandParams } from '~/utils/command';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type LiveStatusManager } from '~/utils/live-manager';
+import { type PrometheusExposer } from '~/utils/prometheus';
 
 type SpecificClientEventsList = KnownKeys<SpecificClientEvents>;
 type TwitchCommandsList = KnownKeys<TwitchMessageEvents>;
@@ -106,4 +107,5 @@ export type BotModule = BasicBotModule | BotModuleWithPriority;
 export interface BotUtils {
     cooldownManager: CommandCooldownManager;
     statusManager: LiveStatusManager;
+    prometheus: PrometheusExposer;
 }
