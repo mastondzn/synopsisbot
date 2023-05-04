@@ -1,5 +1,5 @@
 import { type InferModel } from 'drizzle-orm';
-import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const authedUsers = pgTable('authed_users', {
     twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
@@ -36,11 +36,36 @@ export type NewChannel = InferModel<typeof channels, 'insert'>;
 export type UpdateChannel = Partial<Channel>;
 export type ChannelMode = Channel['mode'];
 
-// export const ambassadors = pgTable('ambassadors', {
-// twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
-// twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
-// createdAt: timestamp('created_at').notNull().defaultNow(),
-// channelId: varchar('channel_id', { length: 256 })
-// .notNull()
-// .references(() => channels.twitchId, { onDelete: 'cascade' }),
-// });
+export const localPermissions = pgTable(
+    'local_permissions',
+    {
+        channelId: varchar('channel_id', { length: 256 }).references(() => channels.twitchId, {
+            onDelete: 'cascade',
+        }),
+        channelLogin: varchar('channel_login', { length: 256 }).notNull(),
+
+        userId: varchar('user_id', { length: 256 }).notNull(),
+        userLogin: varchar('user_login', { length: 256 }).notNull(),
+
+        // other permissions are determined by the incoming irc tags
+        permission: varchar('permission', {
+            length: 64,
+            enum: ['banned', 'ambassador'],
+        }).notNull(),
+    },
+    (table) => ({ cpk: primaryKey(table.channelId, table.userId) })
+);
+export type LocalPermission = InferModel<typeof localPermissions>;
+export type NewLocalPermission = InferModel<typeof localPermissions, 'insert'>;
+export type UpdateLocalPermission = Partial<LocalPermission>;
+export type DatabaseLocalPermission = LocalPermission['permission'];
+
+export const globalPermissions = pgTable('global_permissions', {
+    userId: varchar('user_id', { length: 256 }).primaryKey(),
+    userLogin: varchar('user_login', { length: 256 }).notNull(),
+    permission: varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
+});
+export type GlobalPermission = InferModel<typeof globalPermissions>;
+export type NewGlobalPermission = InferModel<typeof globalPermissions, 'insert'>;
+export type UpdateGlobalPermission = Partial<GlobalPermission>;
+export type DatabaseGlobalPermission = GlobalPermission['permission'];

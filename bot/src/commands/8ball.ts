@@ -1,5 +1,5 @@
+import { pickOne } from '~/helpers/functions';
 import { type BotCommand } from '~/types/client';
-import { pickOne } from '~/utils/functions';
 
 export const command: BotCommand = {
     name: '8ball',

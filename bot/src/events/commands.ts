@@ -4,8 +4,8 @@ import { type Redis } from 'ioredis';
 import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
+import { parseCommandParams } from '~/helpers/command';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
-import { parseCommandParams } from '~/utils/command';
 
 const botPrefix = 'sb ';
 

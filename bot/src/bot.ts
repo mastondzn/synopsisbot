@@ -16,7 +16,9 @@ import {
     type BotUtils,
 } from './types/client';
 import { CommandCooldownManager } from './utils/cooldown';
+import { IdLoginPairProvider } from './utils/id-login-pair';
 import { LiveStatusManager } from './utils/live-manager';
+import { PermissionProvider } from './utils/permissions';
 import { PrometheusExposer } from './utils/prometheus';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
@@ -82,10 +84,13 @@ export class Bot {
         });
         console.log(logPrefix, `eventsub client initialized`);
 
+        const idLoginPairs = new IdLoginPairProvider(this.cache, this.api);
         this.utils = {
             cooldownManager: new CommandCooldownManager(this.cache),
             statusManager: new LiveStatusManager(this.api, this.cache),
             prometheus: new PrometheusExposer(),
+            idLoginPairs,
+            permissions: new PermissionProvider(this.cache, this.db, idLoginPairs),
         };
         console.log(logPrefix, `utils initialized`);
 

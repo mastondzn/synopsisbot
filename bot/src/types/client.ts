@@ -13,9 +13,11 @@ import { type NodePgDatabase } from '@synopsis/db';
 
 import { type KnownKeys, type Prettify } from './general';
 import { type BotAuthProvider } from '~/auth-provider';
-import { type parseCommandParams } from '~/utils/command';
+import { type parseCommandParams } from '~/helpers/command';
 import { type CommandCooldownManager } from '~/utils/cooldown';
+import { type IdLoginPairProvider } from '~/utils/id-login-pair';
 import { type LiveStatusManager } from '~/utils/live-manager';
+import { type PermissionProvider } from '~/utils/permissions';
 import { type PrometheusExposer } from '~/utils/prometheus';
 
 type SpecificClientEventsList = KnownKeys<SpecificClientEvents>;
@@ -108,4 +110,6 @@ export interface BotUtils {
     cooldownManager: CommandCooldownManager;
     statusManager: LiveStatusManager;
     prometheus: PrometheusExposer;
+    idLoginPairs: IdLoginPairProvider;
+    permissions: PermissionProvider;
 }
