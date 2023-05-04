@@ -1,12 +1,5 @@
-// @ts-check
-
-const plugins = [];
-if (process.cwd().includes('website')) {
-    plugins.push(require('prettier-plugin-tailwindcss'));
-}
-
-/** @type {import('prettier').Options} */
-module.exports = {
+/** @satisfies {import('prettier').Options} */
+const config = {
     arrowParens: 'always',
     bracketSpacing: true,
     endOfLine: 'lf',
@@ -21,7 +14,12 @@ module.exports = {
     tabWidth: 4,
     trailingComma: 'es5',
     useTabs: false,
-
-    plugins,
-    tailwindConfig: './website/tailwind.config.js',
+    plugins: [],
 };
+
+if (process.cwd().includes('website')) {
+    config.tailwindConfig = './tailwind.config.js';
+    config.plugins.push(require('prettier-plugin-tailwindcss'));
+}
+
+module.exports = config;
