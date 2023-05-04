@@ -67,7 +67,7 @@ export const event: BotEventHandler = {
         }
         if (isOnCooldown) return;
         if (mode === 'readonly') return;
-        if (mode === 'offline-only' && isLive) return;
+        if (mode === 'offlineonly' && isLive) return;
 
         const reply = (text: string) => chat.reply(channel, msg.messageID, text);
         const say = (text: string) => chat.say(channel, text);
