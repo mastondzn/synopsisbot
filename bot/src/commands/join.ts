@@ -12,31 +12,31 @@ export const command: BotCommand = {
 
         const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {
-            return await reply("you didn't specify a channel.");
+            return await reply("You didn't specify a channel.");
         }
 
         const mode = params.list.at(1);
 
         const channelSchemaResult = channelSchema.safeParse(channel);
         if (!channelSchemaResult.success) {
-            return await reply('invalid channel name.');
+            return await reply('Invalid channel name.');
         }
 
         const modeSchemaResult = channelModeSchema.safeParse(mode);
         if (!modeSchemaResult.success) {
-            return await reply(`invalid mode. (${mode ?? '?'})`);
+            return await reply(`Invalid mode. (${mode ?? '?'})`);
         }
 
         const isDefaultChannel = //
             [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
         if (isDefaultChannel) {
-            return await reply(`that channel is a default channel.`);
+            return await reply(`That channel is a default channel.`);
         }
 
         const apiChannel = await api.users.getUserByName(channel);
         if (!apiChannel) {
-            return await reply(`channel ${channel} not found.`);
+            return await reply(`Channel ${channel} not found.`);
         }
 
         const dbChannel = await db
@@ -45,7 +45,7 @@ export const command: BotCommand = {
             .where(eq(channelsTable.twitchId, apiChannel.id));
 
         if (dbChannel.length > 0) {
-            return await reply(`channel ${channel} already exists in database.`);
+            return await reply(`Channel ${channel} already exists in database.`);
         }
 
         await db.insert(channelsTable).values({
@@ -54,6 +54,6 @@ export const command: BotCommand = {
             mode: modeSchemaResult.data,
         });
         await chat.join(apiChannel.name);
-        return await reply(`joined channel ${channel}!`);
+        return await reply(`Joined channel ${channel}! (mode: ${modeSchemaResult.data})`);
     },
 };

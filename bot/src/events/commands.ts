@@ -61,12 +61,15 @@ export const event: BotEventHandler = {
         ]);
 
         if (devProcessCheck) return;
-        if (!mode || isOnCooldown) return;
+        if (!mode) {
+            console.warn(logPrefix, `channel ${channel} not found in database`);
+            return;
+        }
+        if (isOnCooldown) return;
         if (mode === 'readonly') return;
         if (mode === 'offline-only' && isLive) return;
 
-        const reply = (text: string) =>
-            chat.reply(channel, msg.messageID, `@${msg.displayName}, ${text}`);
+        const reply = (text: string) => chat.reply(channel, msg.messageID, text);
         const say = (text: string) => chat.say(channel, text);
 
         const commandContext: BotCommandContext = {

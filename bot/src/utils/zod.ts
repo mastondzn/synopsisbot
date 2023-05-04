@@ -5,6 +5,4 @@ export const channelSchema = z
     .regex(/^#?\w+$/i)
     .transform((v) => v.replace(/^#+/, ''));
 
-export const channelModeSchema = z
-    .enum(['readonly', 'offline-only', 'all'])
-    .default('offline-only');
+export const channelModeSchema = z.enum(['readonly', 'all', 'offlineonly']).default('offlineonly');

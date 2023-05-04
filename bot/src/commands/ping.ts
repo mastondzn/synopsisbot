@@ -12,8 +12,8 @@ export const command: BotCommand = {
     run: async ({ reply, params }) => {
         const lines = [];
 
-        if (params.command === 'pong') lines.push(`ping 🏓!`);
-        else lines.push(`pong 🏓!`);
+        if (params.command === 'pong') lines.push(`Ping 🏓!`);
+        else lines.push(`Pong 🏓!`);
 
         const latency = getLatency();
         if (latency) lines.push(`Latency is ${latency}ms.`);
