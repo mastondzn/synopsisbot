@@ -84,13 +84,12 @@ export class Bot {
         });
         console.log(logPrefix, `eventsub client initialized`);
 
-        const idLoginPairs = new IdLoginPairProvider(this.cache, this.api);
         this.utils = {
             cooldownManager: new CommandCooldownManager(this.cache),
             statusManager: new LiveStatusManager(this.api, this.cache),
             prometheus: new PrometheusExposer(),
-            idLoginPairs,
-            permissions: new PermissionProvider(this.cache, this.db, idLoginPairs),
+            idLoginPairs: new IdLoginPairProvider(this.cache, this.api),
+            permissions: new PermissionProvider(this.cache, this.db),
         };
         console.log(logPrefix, `utils initialized`);
 

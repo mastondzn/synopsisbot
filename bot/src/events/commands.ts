@@ -140,7 +140,7 @@ export const event: BotEventHandler = {
             );
             console.error(error);
 
-            const errorMessageToChat = `something went wrong :/ (${errorMessage})`;
+            const errorMessageToChat = `Something went wrong :/ (${errorMessage})`;
             await reply(errorMessageToChat).catch((error) => {
                 const errorMessage = error instanceof Error ? error.message : 'unknown error';
                 console.error(

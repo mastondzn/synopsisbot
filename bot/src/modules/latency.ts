@@ -19,7 +19,10 @@ export const module: BotModule = {
             latency = pingEnd - pingStart;
         };
 
-        void handshake();
+        setTimeout(
+            () => handshake().catch(() => console.error(logPrefix, 'initial handshake failed')),
+            1000 * 5
+        );
         setInterval(
             () => handshake().catch(() => console.error(logPrefix, 'handshake failed')),
             1000 * 60 * 2
