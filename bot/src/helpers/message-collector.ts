@@ -9,7 +9,7 @@ export interface CollectMessageOptions {
 export type MessageFilter = (message: PrivmsgMessage) => unknown;
 
 export const collectMessage = ({
-    chat: chat,
+    chat,
     timeout = 10,
     filter,
 }: CollectMessageOptions): Promise<PrivmsgMessage> => {
