@@ -68,7 +68,6 @@ export const event: BotEventHandler = {
 
         if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
         if (dontExecute) {
-            console.log('did not exec');
             await cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
             return;
         }
