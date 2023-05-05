@@ -333,11 +333,20 @@ export class PermissionProvider {
         wantedLocalPermission: LocalLevel,
         msg: PrivmsgMessage
     ): Promise<boolean> {
-        const [global, local] = await Promise.all([
-            this.pleasesGlobal(wantedGlobalPermission, msg.senderUserID),
-            this.pleasesLocal(wantedLocalPermission, msg),
-        ]);
+        const { global, local } = await this.getPermission(msg);
 
-        return global || local;
+        if (
+            (global === 'banned' && wantedGlobalPermission !== 'banned') ||
+            (local === 'banned' && wantedLocalPermission !== 'banned')
+        ) {
+            return false;
+        }
+        // ?
+        // i think if one of them is banned then the other one should be ignored
+
+        return (
+            pleasesGlobal(wantedGlobalPermission, global) ||
+            pleasesLocal(wantedLocalPermission, local)
+        );
     }
 }
