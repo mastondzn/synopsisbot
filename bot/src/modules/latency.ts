@@ -21,7 +21,7 @@ export const module: BotModule = {
 
         setTimeout(
             () => handshake().catch(() => console.error(logPrefix, 'initial handshake failed')),
-            1000 * 5
+            1000 * 15
         );
         setInterval(
             () => handshake().catch(() => console.error(logPrefix, 'handshake failed')),
