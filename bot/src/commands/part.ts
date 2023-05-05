@@ -13,14 +13,10 @@ export const command: BotCommand = {
         if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
 
         const channel = params.list.at(0)?.toLowerCase();
-        if (!channel) {
-            return await reply(`You didn't specify a channel.`);
-        }
+        if (!channel) return await reply(`You didn't specify a channel.`);
 
         const channelSchemaResult = channelSchema.safeParse(channel);
-        if (!channelSchemaResult.success) {
-            return await reply(`Invalid channel name.`);
-        }
+        if (!channelSchemaResult.success) return await reply(`Invalid channel name.`);
 
         const isDefaultChannel = //
             [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
