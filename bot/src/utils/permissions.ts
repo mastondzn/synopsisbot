@@ -260,7 +260,10 @@ export class PermissionProvider {
         };
 
         if (!existingDbPermission) {
-            await this.db.insert(localPermissionsTable).values(dbPermission);
+            await Promise.all([
+                this.db.insert(localPermissionsTable).values(dbPermission),
+                this.setCacheLocal(channel.id, user.id, permission),
+            ]);
             return;
         }
 
