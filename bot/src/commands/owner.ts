@@ -1,6 +1,6 @@
 import { type ChannelMode, channels as channelsTable, eq } from '@synopsis/db';
 
-import { waitForMessage } from '~/helpers/wait-for-message';
+import { collectMessage } from '~/helpers/message-collector';
 import { channelSchema } from '~/helpers/zod';
 import { type BotCommand } from '~/types/client';
 
@@ -9,25 +9,21 @@ export const command: BotCommand = {
     description: 'Lets the owner do certain things. Like joining and parting channels.',
     permission: { global: 'owner' },
     usage: [
-        'owner part <channel>',
-        'owner part <channel> confirm',
+        'part <channel>',
+        'part <channel> confirm',
         '',
-        'owner join <channel>',
-        'owner join <channel> offlineonly',
-        'owner join <channel> readonly',
-        'owner join <channel> all',
+        'join <channel>',
+        'join <channel> offlineonly',
+        'join <channel> readonly',
+        'join <channel> all',
         '',
-        'owner global ban <user>',
-        'owner global unban <user>',
+        'global ban <user>',
+        'global unban <user>',
         '',
-        'owner local ban <channel> <user>',
-        'owner local unban <channel> <user>',
-        'owner local ambassador <channel> <user>',
-        'owner local unambassador <channel> <user>',
-        'owner local ban _ <user>',
-        'owner local unban _ <user>',
-        'owner local ambassador _ <user>',
-        'owner local unambassador _ <user>',
+        'local ban <channel|"_"> <user>',
+        'local unban <channel|"_"> <user>',
+        'local ambassador <channel|"_"> <user>',
+        'local unambassador <channel|"_"> <user>',
     ].join('\n'),
 
     run: async ({ msg, chat, params, db, reply, utils: { idLoginPairs, permissions } }) => {
@@ -150,10 +146,10 @@ export const command: BotCommand = {
                         ].join(' ')
                     );
 
-                    const message = await waitForMessage({
+                    const message = await collectMessage({
                         filter: (incoming) =>
                             incoming.senderUserID === msg.senderUserID &&
-                            incoming.messageText === 'confirm',
+                            incoming.messageText.trim() === 'confirm',
                         timeout: 15,
                         chat,
                     }).catch(() => 'timeout' as const);
