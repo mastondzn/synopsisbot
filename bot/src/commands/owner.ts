@@ -188,7 +188,12 @@ export const command: BotCommand = {
             const userId = await idLoginPairs.getId(user);
             if (!userId) return await reply(`User ${user} not found.`);
 
+            const currentPermission = await permissions.getGlobalPermission(userId);
+
             if (subcommand === 'ban') {
+                if (currentPermission === 'banned') {
+                    return await reply(`User ${user} is already banned globally.`);
+                }
                 await permissions.setGlobalPermission('banned', {
                     user: { id: userId, login: user },
                 });
@@ -196,6 +201,9 @@ export const command: BotCommand = {
             }
 
             if (subcommand === 'unban') {
+                if (currentPermission === 'normal') {
+                    return await reply(`User ${user} is not currently banned globally.`);
+                }
                 await permissions.setGlobalPermission('normal', {
                     user: { id: userId, login: user },
                 });
@@ -232,8 +240,8 @@ export const command: BotCommand = {
             }
 
             const [channelId, userId] = await Promise.all([
-                idLoginPairs.getId(user),
                 idLoginPairs.getId(channel),
+                idLoginPairs.getId(user),
             ]);
             if (!channelId) return await reply(`Channel ${channel} not found.`);
             if (!userId) return await reply(`User ${user} not found.`);
@@ -249,12 +257,23 @@ export const command: BotCommand = {
                 },
             };
 
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channelId, userId)) ?? 'normal';
+
             if (subcommand === 'ban') {
+                if (currentPermission === 'banned') {
+                    return await reply(`User ${user} is already banned in channel ${channel}.`);
+                }
                 await permissions.setLocalPermission('banned', context);
                 return await reply(`Banned user ${user} from using the bot in channel ${channel}.`);
             }
 
             if (subcommand === 'unban') {
+                if (currentPermission === 'normal') {
+                    return await reply(
+                        `User ${user} is not currently banned in channel ${channel}.`
+                    );
+                }
                 await permissions.setLocalPermission('normal', context);
                 return await reply(
                     `Unbanned user ${user} from using the bot in channel ${channel}.`
@@ -262,12 +281,22 @@ export const command: BotCommand = {
             }
 
             if (subcommand === 'ambassador') {
+                if (currentPermission === 'ambassador') {
+                    return await reply(
+                        `User ${user} is already an ambassador in channel ${channel}.`
+                    );
+                }
                 await permissions.setLocalPermission('ambassador', context);
                 return await reply(`Set user ${user} as ambassador in channel ${channel}.`);
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (subcommand === 'unambassador') {
+                if (currentPermission === 'normal') {
+                    return await reply(
+                        `User ${user} is not currently an ambassador in channel ${channel}.`
+                    );
+                }
                 await permissions.setLocalPermission('normal', context);
                 return await reply(`Unset user ${user} as ambassador in channel ${channel}.`);
             }

@@ -24,6 +24,7 @@ export const command: BotCommand = {
             return await reply('Invalid subcommand.');
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (command === 'ban' || command === 'unban') {
             const user = params.list.at(1)?.toLowerCase().replace('@', '');
             const userSchemaResult = channelSchema.safeParse(user);
@@ -63,13 +64,26 @@ export const command: BotCommand = {
                 },
             };
 
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channelId, userId)) ?? 'normal';
+
             if (command === 'ban') {
+                if (currentPermission === 'banned') {
+                    return await reply(
+                        `User ${user} is already banned from using the bot locally.`
+                    );
+                }
                 await permissions.setLocalPermission('banned', context);
                 return await reply(`Banned user ${user} from using the bot in this channel.`);
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (command === 'unban') {
+                if (currentPermission === 'normal') {
+                    return await reply(
+                        `User ${user} is not currently banned from using the bot locally.`
+                    );
+                }
                 await permissions.setLocalPermission('normal', context);
                 return await reply(`Unbanned user ${user} from using the bot in this channel.`);
             }

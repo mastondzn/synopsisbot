@@ -200,6 +200,7 @@ export class PermissionProvider {
 
         const localFromMessage = this.getLocalPermissionFromMessage(msg);
         const localFromDatabase = await this.getDbLocalPermission(msg.channelID, msg.senderUserID);
+        if (localFromDatabase === 'banned') return 'banned';
 
         const permission =
             localFromDatabase && localFromMessage
@@ -263,17 +264,18 @@ export class PermissionProvider {
             return;
         }
 
-        await this.db
-            .update(localPermissionsTable)
-            .set(dbPermission)
-            .where(
-                and(
-                    eq(localPermissionsTable.channelId, channel.id),
-                    eq(localPermissionsTable.userId, user.id)
-                )
-            );
-
-        await this.setCacheLocal(channel.id, user.id, permission);
+        await Promise.all([
+            this.db
+                .update(localPermissionsTable)
+                .set(dbPermission)
+                .where(
+                    and(
+                        eq(localPermissionsTable.channelId, channel.id),
+                        eq(localPermissionsTable.userId, user.id)
+                    )
+                ),
+            this.setCacheLocal(channel.id, user.id, permission),
+        ]);
         return;
     }
 
