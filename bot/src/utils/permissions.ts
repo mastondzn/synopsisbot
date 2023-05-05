@@ -327,4 +327,17 @@ export class PermissionProvider {
 
         return global && local;
     }
+
+    async pleasesGlobalOrLocal(
+        wantedGlobalPermission: GlobalLevel,
+        wantedLocalPermission: LocalLevel,
+        msg: PrivmsgMessage
+    ): Promise<boolean> {
+        const [global, local] = await Promise.all([
+            this.pleasesGlobal(wantedGlobalPermission, msg.senderUserID),
+            this.pleasesLocal(wantedLocalPermission, msg),
+        ]);
+
+        return global || local;
+    }
 }

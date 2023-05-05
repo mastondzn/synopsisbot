@@ -93,10 +93,13 @@ export interface BotCommand {
         user: number; // seconds
         global: number; // seconds
     };
-    permission?: {
-        local?: LocalLevel;
-        global?: GlobalLevel;
-    };
+    permission?:
+        | {
+              local?: LocalLevel;
+              global?: GlobalLevel;
+              mode?: 'any' | 'all';
+          }
+        | { mode: 'custom' };
     run: (ctx: BotCommandContext) => Promise<void> | void;
 }
 
