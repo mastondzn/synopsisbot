@@ -4,9 +4,8 @@ import { type Redis } from 'ioredis';
 import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { parseCommandParams } from '~/helpers/command';
+import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
-import { type GlobalLevel, type LocalLevel } from '~/utils/permissions';
 
 const botPrefix = 'sb ';
 
@@ -42,30 +41,7 @@ export const event: BotEventHandler = {
         // if we're in development don't reply to commands in non-default channels
         if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) return;
 
-        const wantedPermissions: {
-            global: GlobalLevel;
-            local: LocalLevel;
-        } = {
-            global: 'normal',
-            local: 'normal',
-        };
-
-        if (
-            command.permission &&
-            command.permission.mode !== 'custom' &&
-            command.permission.local
-        ) {
-            wantedPermissions.local = command.permission.local;
-        }
-        if (
-            command.permission &&
-            command.permission.mode !== 'custom' &&
-            command.permission.global
-        ) {
-            wantedPermissions.global = command.permission.global;
-        }
-
-        const permissionMode = command.permission?.mode ?? 'all';
+        const wantedPermissions = getCommandPermissions(command);
 
         const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
             getChannelModeByLogin(db, channel),
@@ -79,9 +55,9 @@ export const event: BotEventHandler = {
             ),
 
             // scuffed
-            permissionMode === 'custom'
+            wantedPermissions.mode === 'custom'
                 ? Promise.resolve(true)
-                : permissionMode === 'all'
+                : wantedPermissions.mode === 'all'
                 ? permissions.pleasesGlobalAndLocal(
                       wantedPermissions.global,
                       wantedPermissions.local,
