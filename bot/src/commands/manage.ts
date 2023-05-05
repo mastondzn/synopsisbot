@@ -19,9 +19,7 @@ export const command: BotCommand = {
 
         if (
             command !== 'ban' && //
-            command !== 'unban' &&
-            command !== 'part' &&
-            command !== 'mode'
+            command !== 'unban'
         ) {
             return await reply('Invalid subcommand.');
         }
