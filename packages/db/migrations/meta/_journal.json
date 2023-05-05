@@ -19,6 +19,18 @@
       "version": "5",
       "when": 1682191072660,
       "tag": "0002_far_spiral"
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1683261993209,
+      "tag": "0003_secret_piledriver"
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1683262429228,
+      "tag": "0004_fuzzy_the_executioner"
     }
   ]
 }

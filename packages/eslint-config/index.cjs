@@ -102,6 +102,30 @@ module.exports = defineConfig({
                     },
                 ],
 
+                'no-restricted-globals': (() => {
+                    const message = 'Do not use jest globals in non-test files.';
+
+                    // https://jestjs.io/docs/api
+                    const jestGlobals = [
+                        'beforeAll',
+                        'beforeEach',
+                        'afterAll',
+                        'afterEach',
+                        'describe',
+                        'fdescribe',
+                        'xdescribe',
+                        'it',
+                        'fit',
+                        'xit',
+                        'test',
+                        'xtest',
+                        'expect',
+                        'jasmine',
+                    ];
+
+                    return ['error', ...jestGlobals.map((global) => ({ name: global, message }))];
+                })(),
+
                 '@typescript-eslint/consistent-type-imports': [
                     'error',
                     {
@@ -121,6 +145,13 @@ module.exports = defineConfig({
                 'unicorn/prevent-abbreviations': 'off',
                 'unicorn/prefer-module': 'off',
                 'unicorn/prefer-top-level-await': 'off',
+            },
+        },
+        {
+            // Jest again to overload previous no-restricted-globals
+            files: ['**/*.test.ts'],
+            rules: {
+                'no-restricted-globals': 'off',
             },
         },
         {

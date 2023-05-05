@@ -53,4 +53,15 @@ export class CommandCooldownManager {
 
         return false;
     }
+
+    async clearCooldown({
+        command,
+        channel,
+        userName,
+    }: CommandCooldownManagerCheckOptions): Promise<void> {
+        const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
+        const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
+
+        await Promise.all([this.cache.del(userCooldownKey), this.cache.del(globalCooldownKey)]);
+    }
 }

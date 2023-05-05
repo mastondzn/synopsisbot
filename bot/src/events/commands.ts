@@ -4,8 +4,8 @@ import { type Redis } from 'ioredis';
 import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
+import { parseCommandParams } from '~/helpers/command';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
-import { parseCommandParams } from '~/utils/command';
 
 const botPrefix = 'sb ';
 
@@ -20,7 +20,7 @@ export const event: BotEventHandler = {
     event: 'PRIVMSG',
     handler: async (ctx) => {
         const { params, chat, commands, utils, db, cache } = ctx;
-        const { cooldownManager, statusManager } = utils;
+        const { cooldownManager, statusManager, permissions } = utils;
         const [msg] = params;
 
         const text = msg.messageText;
@@ -39,16 +39,12 @@ export const event: BotEventHandler = {
         );
 
         // if we're in development don't reply to commands in non-default channels
-        if (env.NODE_ENV === 'development' && !inDefaultChannel) return;
-        if (!command) return;
+        if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) return;
 
-        console.log(
-            logPrefix,
-            `executing command ${command.name} from ${msg.senderUsername} in ${channel}`
-        );
-        console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
+        const wantedLocalPermission = command.permission?.local ?? 'normal';
+        const wantedGlobalPermission = command.permission?.global ?? 'normal';
 
-        const [mode, isLive, isOnCooldown, devProcessCheck] = await Promise.all([
+        const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
             getChannelModeByLogin(db, channel),
             statusManager.isLive(channel),
             cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
@@ -58,16 +54,29 @@ export const event: BotEventHandler = {
                 (hasDevProcess) =>
                     env.NODE_ENV === 'production' && hasDevProcess && inDefaultChannel
             ),
+
+            permissions.pleasesGlobalAndLocal(wantedGlobalPermission, wantedLocalPermission, msg),
         ]);
 
-        if (devProcessCheck) return;
-        if (!mode) {
-            console.warn(logPrefix, `channel ${channel} not found in database`);
+        const dontExecute: boolean =
+            devProcessCheck ||
+            isOnCooldown ||
+            !isPermitted ||
+            !mode ||
+            mode === 'readonly' ||
+            (mode === 'offlineonly' && isLive);
+
+        if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+        if (dontExecute) {
+            await cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
             return;
         }
-        if (isOnCooldown) return;
-        if (mode === 'readonly') return;
-        if (mode === 'offlineonly' && isLive) return;
+
+        console.log(
+            logPrefix,
+            `executing command ${command.name} from ${msg.senderUsername} in ${channel}`
+        );
+        console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
         const reply = (text: string) => chat.reply(channel, msg.messageID, text);
         const say = (text: string) => chat.say(channel, text);

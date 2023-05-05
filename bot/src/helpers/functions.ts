@@ -3,3 +3,6 @@ export const pickOne = <T>(arr: T[]): T => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return arr[Math.floor(Math.random() * arr.length)]!;
 };
+
+export const wait = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
