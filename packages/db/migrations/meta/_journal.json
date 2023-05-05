@@ -31,6 +31,18 @@
       "version": "5",
       "when": 1683262429228,
       "tag": "0004_fuzzy_the_executioner"
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1683301440223,
+      "tag": "0005_closed_squadron_sinister"
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1683301484624,
+      "tag": "0006_demonic_shard"
     }
   ]
 }

@@ -18,4 +18,8 @@ describe('parseCommandParams', () => {
     it('should return the command name', () => {
         expect(parseCommandParams('sb command').command).toBe('command');
     });
+
+    it('should throw if theres not enough params', () => {
+        expect(() => parseCommandParams('sb')).toThrow();
+    });
 });

@@ -6,6 +6,7 @@ import { env } from '@synopsis/env/node';
 
 import { parseCommandParams } from '~/helpers/command';
 import { type BotCommandContext, type BotEventHandler } from '~/types/client';
+import { type GlobalLevel, type LocalLevel } from '~/utils/permissions';
 
 const botPrefix = 'sb ';
 
@@ -41,8 +42,30 @@ export const event: BotEventHandler = {
         // if we're in development don't reply to commands in non-default channels
         if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) return;
 
-        const wantedLocalPermission = command.permission?.local ?? 'normal';
-        const wantedGlobalPermission = command.permission?.global ?? 'normal';
+        const wantedPermissions: {
+            global: GlobalLevel;
+            local: LocalLevel;
+        } = {
+            global: 'normal',
+            local: 'normal',
+        };
+
+        if (
+            command.permission &&
+            command.permission.mode !== 'custom' &&
+            command.permission.local
+        ) {
+            wantedPermissions.local = command.permission.local;
+        }
+        if (
+            command.permission &&
+            command.permission.mode !== 'custom' &&
+            command.permission.global
+        ) {
+            wantedPermissions.global = command.permission.global;
+        }
+
+        const permissionMode = command.permission?.mode ?? 'all';
 
         const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
             getChannelModeByLogin(db, channel),
@@ -55,7 +78,20 @@ export const event: BotEventHandler = {
                     env.NODE_ENV === 'production' && hasDevProcess && inDefaultChannel
             ),
 
-            permissions.pleasesGlobalAndLocal(wantedGlobalPermission, wantedLocalPermission, msg),
+            // scuffed
+            permissionMode === 'custom'
+                ? Promise.resolve(true)
+                : permissionMode === 'all'
+                ? permissions.pleasesGlobalAndLocal(
+                      wantedPermissions.global,
+                      wantedPermissions.local,
+                      msg
+                  )
+                : permissions.pleasesGlobalOrLocal(
+                      wantedPermissions.global,
+                      wantedPermissions.local,
+                      msg
+                  ),
         ]);
 
         const dontExecute: boolean =
@@ -66,9 +102,12 @@ export const event: BotEventHandler = {
             mode === 'readonly' ||
             (mode === 'offlineonly' && isLive);
 
+        const cancel = () =>
+            cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+
         if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
         if (dontExecute) {
-            await cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+            await cancel();
             return;
         }
 
@@ -86,6 +125,7 @@ export const event: BotEventHandler = {
             msg,
             reply,
             say,
+            cancel,
             params: parseCommandParams(text),
         };
 
@@ -100,7 +140,7 @@ export const event: BotEventHandler = {
             );
             console.error(error);
 
-            const errorMessageToChat = `something went wrong :/ (${errorMessage})`;
+            const errorMessageToChat = `Something went wrong :/ (${errorMessage})`;
             await reply(errorMessageToChat).catch((error) => {
                 const errorMessage = error instanceof Error ? error.message : 'unknown error';
                 console.error(

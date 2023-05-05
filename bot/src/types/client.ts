@@ -81,20 +81,25 @@ export type BotCommandContext = BotContext & {
     params: ReturnType<typeof parseCommandParams>;
     reply: (text: string) => Promise<void>;
     say: (text: string) => Promise<void>;
+    cancel: () => Promise<void>;
 };
 
 export interface BotCommand {
     name: string;
     description?: string;
+    usage?: string;
     aliases?: string[];
     cooldown?: {
         user: number; // seconds
         global: number; // seconds
     };
-    permission?: {
-        local?: LocalLevel;
-        global?: GlobalLevel;
-    };
+    permission?:
+        | {
+              local?: LocalLevel;
+              global?: GlobalLevel;
+              mode?: 'any' | 'all';
+          }
+        | { mode: 'custom' };
     run: (ctx: BotCommandContext) => Promise<void> | void;
 }
 

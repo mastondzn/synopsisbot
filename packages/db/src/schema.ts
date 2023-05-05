@@ -39,11 +39,7 @@ export type ChannelMode = Channel['mode'];
 export const localPermissions = pgTable(
     'local_permissions',
     {
-        channelId: varchar('channel_id', { length: 256 })
-            .notNull()
-            .references(() => channels.twitchId, {
-                onDelete: 'cascade',
-            }),
+        channelId: varchar('channel_id', { length: 256 }).notNull(),
         channelLogin: varchar('channel_login', { length: 256 }).notNull(),
 
         userId: varchar('user_id', { length: 256 }).notNull(),
@@ -54,6 +50,8 @@ export const localPermissions = pgTable(
             length: 64,
             enum: ['banned', 'ambassador'],
         }).notNull(),
+
+        createdAt: timestamp('created_at').notNull().defaultNow(),
     },
     (table) => ({ cpk: primaryKey(table.channelId, table.userId) })
 );
@@ -66,6 +64,7 @@ export const globalPermissions = pgTable('global_permissions', {
     userId: varchar('user_id', { length: 256 }).primaryKey(),
     userLogin: varchar('user_login', { length: 256 }).notNull(),
     permission: varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 export type GlobalPermission = InferModel<typeof globalPermissions>;
 export type NewGlobalPermission = InferModel<typeof globalPermissions, 'insert'>;
