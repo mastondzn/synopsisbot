@@ -114,24 +114,12 @@ export class PermissionProvider {
         return `perm:global:${userId}`;
     }
 
-    private async getCacheLocal(channelId: string, userId: string) {
-        const cacheResult = await this.redis.get(this.localKey(channelId, userId));
-        const validated = localLevelSchema.safeParse(cacheResult);
-
-        if (!validated.success) return null;
-        return validated.data;
-    }
-
     private async getCacheGlobal(userId: string) {
         const cacheResult = await this.redis.get(this.globalKey(userId));
         const validated = globalLevelSchema.safeParse(cacheResult);
 
         if (!validated.success) return null;
         return validated.data;
-    }
-
-    private async setCacheLocal(channelId: string, userId: string, level: LocalLevel) {
-        await this.redis.set(this.localKey(channelId, userId), level, 'EX', 10 * 60);
     }
 
     private async setCacheGlobal(userId: string, level: GlobalLevel) {
@@ -192,12 +180,7 @@ export class PermissionProvider {
         return null;
     }
 
-    async getLocalPermission(msg: PrivmsgMessage, skipCache?: boolean): Promise<LocalLevel> {
-        if (!skipCache) {
-            const cached = await this.getCacheLocal(msg.channelID, msg.senderUserID);
-            if (cached) return cached;
-        }
-
+    async getLocalPermission(msg: PrivmsgMessage): Promise<LocalLevel> {
         const localFromMessage = this.getLocalPermissionFromMessage(msg);
         const localFromDatabase = await this.getDbLocalPermission(msg.channelID, msg.senderUserID);
         if (localFromDatabase === 'banned') return 'banned';
@@ -206,7 +189,6 @@ export class PermissionProvider {
             localFromDatabase && localFromMessage
                 ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
                 : localFromDatabase ?? localFromMessage ?? 'normal';
-        void this.setCacheLocal(msg.channelID, msg.senderUserID, permission);
         return permission;
     }
 
@@ -260,10 +242,7 @@ export class PermissionProvider {
         };
 
         if (!existingDbPermission) {
-            await Promise.all([
-                this.db.insert(localPermissionsTable).values(dbPermission),
-                this.setCacheLocal(channel.id, user.id, permission),
-            ]);
+            await Promise.all([this.db.insert(localPermissionsTable).values(dbPermission)]);
             return;
         }
 
@@ -277,7 +256,6 @@ export class PermissionProvider {
                         eq(localPermissionsTable.userId, user.id)
                     )
                 ),
-            this.setCacheLocal(channel.id, user.id, permission),
         ]);
         return;
     }
@@ -295,7 +273,7 @@ export class PermissionProvider {
                 this.db
                     .delete(globalPermissionsTable)
                     .where(eq(globalPermissionsTable.userId, user.id)),
-                this.redis.del(this.globalKey(user.id)),
+                this.setCacheGlobal(user.id, permission),
             ]);
             return;
         }
@@ -362,8 +340,6 @@ export class PermissionProvider {
         ) {
             return false;
         }
-        // ?
-        // i think if one of them is banned then the other one should be ignored
 
         return (
             pleasesGlobal(wantedGlobalPermission, global) ||
