@@ -1,0 +1,1 @@
+ALTER TABLE "local_permissions" ALTER COLUMN "channel_id" SET NOT NULL;

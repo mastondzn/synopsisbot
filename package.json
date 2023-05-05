@@ -27,6 +27,7 @@
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
         "db:check": "turbo run db:check",
+        "test": "turbo run test",
         "clean": "rimraf node_modules .turbo .vercel dist",
         "dev": "turbo run dev",
         "dev:website": "turbo run dev --filter=@synopsis/website",

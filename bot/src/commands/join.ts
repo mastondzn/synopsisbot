@@ -7,9 +7,10 @@ import { channelModeSchema, channelSchema } from '~/utils/zod';
 export const command: BotCommand = {
     name: 'join',
     description: 'join the bot to a channel',
-    run: async ({ msg, chat, db, api, reply, params }) => {
-        if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
-
+    permission: {
+        global: 'owner',
+    },
+    run: async ({ chat, db, api, reply, params }) => {
         const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {
             return await reply("You didn't specify a channel.");

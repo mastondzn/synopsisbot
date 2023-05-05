@@ -7,6 +7,9 @@ import { channelSchema } from '~/utils/zod';
 export const command: BotCommand = {
     name: 'part',
     description: 'part the bot from a channel',
+    permission: {
+        global: 'owner',
+    },
     run: async ({ msg, chat, db, api, reply, params }) => {
         if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
 

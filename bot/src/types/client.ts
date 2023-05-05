@@ -17,7 +17,7 @@ import { type parseCommandParams } from '~/helpers/command';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type IdLoginPairProvider } from '~/utils/id-login-pair';
 import { type LiveStatusManager } from '~/utils/live-manager';
-import { type PermissionProvider } from '~/utils/permissions';
+import { type GlobalLevel, type LocalLevel, type PermissionProvider } from '~/utils/permissions';
 import { type PrometheusExposer } from '~/utils/prometheus';
 
 type SpecificClientEventsList = KnownKeys<SpecificClientEvents>;
@@ -90,6 +90,10 @@ export interface BotCommand {
     cooldown?: {
         user: number; // seconds
         global: number; // seconds
+    };
+    permission?: {
+        local?: LocalLevel;
+        global?: GlobalLevel;
     };
     run: (ctx: BotCommandContext) => Promise<void> | void;
 }

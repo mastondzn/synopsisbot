@@ -39,9 +39,11 @@ export type ChannelMode = Channel['mode'];
 export const localPermissions = pgTable(
     'local_permissions',
     {
-        channelId: varchar('channel_id', { length: 256 }).references(() => channels.twitchId, {
-            onDelete: 'cascade',
-        }),
+        channelId: varchar('channel_id', { length: 256 })
+            .notNull()
+            .references(() => channels.twitchId, {
+                onDelete: 'cascade',
+            }),
         channelLogin: varchar('channel_login', { length: 256 }).notNull(),
 
         userId: varchar('user_id', { length: 256 }).notNull(),

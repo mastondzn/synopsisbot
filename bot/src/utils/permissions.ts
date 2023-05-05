@@ -22,29 +22,28 @@ export const localLevels = [
     'normal',
     'banned',
 ] as const;
-const localLevelsFromMessage = ['broadcaster', 'moderator', 'vip'] as const;
-type LocalPermissionLevelFromMessage = (typeof localLevelsFromMessage)[number];
-const localLevelsFromDatabase = ['banned', 'ambassador'] as const;
-type LocalPermissionLevelFromDatabase = (typeof localLevelsFromDatabase)[number];
-export type LocalPermissionLevel = (typeof localLevels)[number];
-const localLevelSchema = z.enum(localLevels);
+export const localLevelsFromMessage = ['broadcaster', 'moderator', 'vip'] as const;
+export const localLevelsFromDatabase = ['banned', 'ambassador'] as const;
+export const localLevelSchema = z.enum(localLevels);
 
-const globalLevelsFromDatabase = ['banned', 'owner'] as const;
-type GlobalPermissionLevelFromDatabase = (typeof globalLevelsFromDatabase)[number];
+export type LocalLevelFromMessage = (typeof localLevelsFromMessage)[number];
+export type LocalLevelFromDatabase = (typeof localLevelsFromDatabase)[number];
+export type LocalLevel = (typeof localLevels)[number];
+
+export const globalLevelsFromDatabase = ['banned', 'owner'] as const;
 export const globalLevels = ['owner', 'normal', 'banned'] as const;
-export type GlobalPermissionLevel = (typeof globalLevels)[number];
-const globalLevelSchema = z.enum(globalLevels);
+export const globalLevelSchema = z.enum(globalLevels);
 
-export const determineHighestLocalLevel = (
-    ...levels: LocalPermissionLevel[]
-): LocalPermissionLevel => {
+export type GlobalLevelFromDatabase = (typeof globalLevelsFromDatabase)[number];
+export type GlobalLevel = (typeof globalLevels)[number];
+
+export const determineHighestLocalLevel = (...levels: LocalLevel[]): LocalLevel => {
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = localLevels.indexOf(level);
         if (index === -1) throw new Error('Invalid local permission level.');
-        if (highestIndex === null || index > highestIndex) highestIndex = index;
+        if (highestIndex === null || index < highestIndex) highestIndex = index;
     }
-
     if (highestIndex === null) throw new Error('No local permission levels provided.');
 
     const level = localLevels[highestIndex];
@@ -52,14 +51,12 @@ export const determineHighestLocalLevel = (
     return level;
 };
 
-export const determineHighestGlobalLevel = (
-    ...levels: GlobalPermissionLevel[]
-): GlobalPermissionLevel => {
+export const determineHighestGlobalLevel = (...levels: GlobalLevel[]): GlobalLevel => {
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = globalLevels.indexOf(level);
         if (index === -1) throw new Error('Invalid local permission level.');
-        if (highestIndex === null || index > highestIndex) highestIndex = index;
+        if (highestIndex === null || index < highestIndex) highestIndex = index;
     }
 
     if (highestIndex === null) throw new Error('No local permission levels provided.');
@@ -69,10 +66,28 @@ export const determineHighestGlobalLevel = (
     return level;
 };
 
+/**
+ * @param wantedLevel The level the user wants to have
+ * @param actualLevel The level the user actually has
+ * @returns wether or not the user has a high enough level
+ */
+export const pleasesLocal = (wantedLevel: LocalLevel, actualLevel: LocalLevel): boolean => {
+    return determineHighestLocalLevel(wantedLevel, actualLevel) === actualLevel;
+};
+
+/**
+ * @param wantedLevel the level the user wants to have
+ * @param actualLevel the level the user actually has
+ * @returns wether or not the user has a high enough level
+ */
+export const pleasesGlobal = (wantedLevel: GlobalLevel, actualLevel: GlobalLevel): boolean => {
+    return determineHighestGlobalLevel(wantedLevel, actualLevel) === actualLevel;
+};
+
 export class PermissionProvider {
-    redis: Redis;
-    db: NodePgDatabase;
-    idLoginPairs: IdLoginPairProvider;
+    private redis: Redis;
+    private db: NodePgDatabase;
+    private idLoginPairs: IdLoginPairProvider;
 
     constructor(redis: Redis, db: NodePgDatabase, idLoginPair: IdLoginPairProvider) {
         this.redis = redis;
@@ -104,18 +119,18 @@ export class PermissionProvider {
         return validated.data;
     }
 
-    private async setCacheLocal(channelId: string, userId: string, level: LocalPermissionLevel) {
+    private async setCacheLocal(channelId: string, userId: string, level: LocalLevel) {
         await this.redis.set(this.localKey(channelId, userId), level, 'EX', 10 * 60);
     }
 
-    private async setCacheGlobal(userId: string, level: GlobalPermissionLevel) {
+    private async setCacheGlobal(userId: string, level: GlobalLevel) {
         await this.redis.set(this.globalKey(userId), level, 'EX', 10 * 60);
     }
 
     private async getDbLocalPermission(
         channelId: string,
         userId: string
-    ): Promise<LocalPermissionLevelFromDatabase | null> {
+    ): Promise<LocalLevelFromDatabase | null> {
         const [result] = await this.db
             .select({
                 permission: localPermissionsTable.permission,
@@ -132,9 +147,7 @@ export class PermissionProvider {
         return result?.permission ?? null;
     }
 
-    private async getDbGlobalPermission(
-        userId: string
-    ): Promise<GlobalPermissionLevelFromDatabase | null> {
+    private async getDbGlobalPermission(userId: string): Promise<GlobalLevelFromDatabase | null> {
         const [result] = await this.db
             .select({
                 permission: globalPermissionsTable.permission,
@@ -146,7 +159,7 @@ export class PermissionProvider {
         return result?.permission ?? null;
     }
 
-    async getGlobalPermission(userId: string, skipCache?: boolean): Promise<GlobalPermissionLevel> {
+    async getGlobalPermission(userId: string, skipCache?: boolean): Promise<GlobalLevel> {
         if (!skipCache) {
             const cached = await this.getCacheGlobal(userId);
             if (cached) return cached;
@@ -157,9 +170,7 @@ export class PermissionProvider {
         return permission;
     }
 
-    private getLocalPermissionFromMessage(
-        msg: PrivmsgMessage
-    ): LocalPermissionLevelFromMessage | null {
+    private getLocalPermissionFromMessage(msg: PrivmsgMessage): LocalLevelFromMessage | null {
         const { isMod, channelName, senderUsername, badges } = msg;
         const isBroadcaster = channelName === senderUsername;
         const isVip = badges.hasVIP;
@@ -170,10 +181,7 @@ export class PermissionProvider {
         return null;
     }
 
-    async getLocalPermission(
-        msg: PrivmsgMessage,
-        skipCache?: boolean
-    ): Promise<LocalPermissionLevel> {
+    async getLocalPermission(msg: PrivmsgMessage, skipCache?: boolean): Promise<LocalLevel> {
         if (!skipCache) {
             const cached = await this.getCacheLocal(msg.channelID, msg.senderUserID);
             if (cached) return cached;
@@ -191,22 +199,19 @@ export class PermissionProvider {
     }
 
     async getPermission(msg: PrivmsgMessage): Promise<{
-        local: LocalPermissionLevel;
-        global: GlobalPermissionLevel;
+        local: LocalLevel;
+        global: GlobalLevel;
     }> {
         const [local, global] = await Promise.all([
             this.getLocalPermission(msg),
             this.getGlobalPermission(msg.senderUserID),
         ]);
 
-        return {
-            local,
-            global,
-        };
+        return { local, global };
     }
 
     async setLocalPermission(
-        permission: LocalPermissionLevelFromDatabase,
+        permission: LocalLevelFromDatabase,
         msg: PrivmsgMessage
     ): Promise<void> {
         const channel = {
@@ -248,10 +253,11 @@ export class PermissionProvider {
         return;
     }
 
-    async setGlobalPermission(
-        permission: GlobalPermissionLevel,
-        identifier: PrivmsgMessage | string
-    ) {
+    /**
+     * @param permission the permission level we want to set
+     * @param identifier the user id or the message object
+     */
+    async setGlobalPermission(permission: GlobalLevel, identifier: PrivmsgMessage | string) {
         const userId = typeof identifier === 'string' ? identifier : identifier.senderUserID;
         const userLogin =
             typeof identifier === 'string'
@@ -299,22 +305,19 @@ export class PermissionProvider {
         return;
     }
 
-    async pleasesLocal(
-        wantedPermission: LocalPermissionLevel,
-        msg: PrivmsgMessage
-    ): Promise<boolean> {
+    async pleasesLocal(wantedPermission: LocalLevel, msg: PrivmsgMessage): Promise<boolean> {
         const current = await this.getLocalPermission(msg);
-        return determineHighestLocalLevel(current, wantedPermission) === wantedPermission;
+        return pleasesLocal(wantedPermission, current);
     }
 
-    async pleasesGlobal(wantedPermission: GlobalPermissionLevel, userId: string): Promise<boolean> {
+    async pleasesGlobal(wantedPermission: GlobalLevel, userId: string): Promise<boolean> {
         const current = await this.getGlobalPermission(userId);
-        return determineHighestGlobalLevel(current, wantedPermission) === wantedPermission;
+        return pleasesGlobal(wantedPermission, current);
     }
 
     async pleasesGlobalAndLocal(
-        wantedGlobalPermission: GlobalPermissionLevel,
-        wantedLocalPermission: LocalPermissionLevel,
+        wantedGlobalPermission: GlobalLevel,
+        wantedLocalPermission: LocalLevel,
         msg: PrivmsgMessage
     ): Promise<boolean> {
         const [global, local] = await Promise.all([
