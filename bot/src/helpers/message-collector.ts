@@ -1,6 +1,6 @@
 import { type ChatClient, type PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
-export interface WaitForMessageOptions {
+export interface CollectMessageOptions {
     chat: ChatClient;
     timeout?: number;
     filter: MessageFilter;
@@ -8,11 +8,11 @@ export interface WaitForMessageOptions {
 
 export type MessageFilter = (message: PrivmsgMessage) => unknown;
 
-export const waitForMessage = ({
+export const collectMessage = ({
     chat: chat,
     timeout = 10,
     filter,
-}: WaitForMessageOptions): Promise<PrivmsgMessage> => {
+}: CollectMessageOptions): Promise<PrivmsgMessage> => {
     return new Promise((resolve, reject) => {
         const handler = (msg: PrivmsgMessage): unknown => {
             if (filter(msg)) return resolve(msg);
@@ -27,16 +27,16 @@ export const waitForMessage = ({
     });
 };
 
-export interface WaitForMessagesOptions extends WaitForMessageOptions {
+export interface CollectMessagesOptions extends CollectMessageOptions {
     exitOn?: MessageFilter;
 }
 
-export const waitForMessages = ({
+export const collectMessages = ({
     chat,
     timeout = 10,
     filter,
     exitOn,
-}: WaitForMessagesOptions): Promise<PrivmsgMessage[]> => {
+}: CollectMessagesOptions): Promise<PrivmsgMessage[]> => {
     return new Promise((resolve) => {
         const messages: PrivmsgMessage[] = [];
         const handler = (msg: PrivmsgMessage): void => {

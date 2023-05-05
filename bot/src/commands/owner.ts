@@ -1,6 +1,6 @@
 import { type ChannelMode, channels as channelsTable, eq } from '@synopsis/db';
 
-import { waitForMessage } from '~/helpers/wait-for-message';
+import { collectMessage } from '~/helpers/message-collector';
 import { channelSchema } from '~/helpers/zod';
 import { type BotCommand } from '~/types/client';
 
@@ -146,10 +146,10 @@ export const command: BotCommand = {
                         ].join(' ')
                     );
 
-                    const message = await waitForMessage({
+                    const message = await collectMessage({
                         filter: (incoming) =>
                             incoming.senderUserID === msg.senderUserID &&
-                            incoming.messageText === 'confirm',
+                            incoming.messageText.trim() === 'confirm',
                         timeout: 15,
                         chat,
                     }).catch(() => 'timeout' as const);
