@@ -81,11 +81,13 @@ export type BotCommandContext = BotContext & {
     params: ReturnType<typeof parseCommandParams>;
     reply: (text: string) => Promise<void>;
     say: (text: string) => Promise<void>;
+    cancel: () => Promise<void>;
 };
 
 export interface BotCommand {
     name: string;
     description?: string;
+    usage?: string;
     aliases?: string[];
     cooldown?: {
         user: number; // seconds

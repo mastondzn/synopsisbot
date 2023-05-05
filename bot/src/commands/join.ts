@@ -1,16 +1,15 @@
 import { channels as channelsTable, eq } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
+import { channelModeSchema, channelSchema } from '~/helpers/zod';
 import { type BotCommand } from '~/types/client';
-import { channelModeSchema, channelSchema } from '~/utils/zod';
 
 export const command: BotCommand = {
     name: 'join',
-    description: 'join the bot to a channel',
-    permission: {
-        global: 'owner',
-    },
-    run: async ({ chat, db, api, reply, params }) => {
+    description: 'Join the bot to a channel.',
+    permission: { global: 'owner' },
+
+    run: async ({ chat, db, reply, params, utils: { idLoginPairs } }) => {
         const channel = params.list.at(0)?.toLowerCase();
         if (!channel) {
             return await reply("You didn't specify a channel.");
@@ -35,26 +34,26 @@ export const command: BotCommand = {
             return await reply(`That channel is a default channel.`);
         }
 
-        const apiChannel = await api.users.getUserByName(channel);
-        if (!apiChannel) {
+        const channelId = await idLoginPairs.getId(channel);
+        if (!channelId) {
             return await reply(`Channel ${channel} not found.`);
         }
 
         const dbChannel = await db
             .select()
             .from(channelsTable)
-            .where(eq(channelsTable.twitchId, apiChannel.id));
+            .where(eq(channelsTable.twitchId, channelId));
 
         if (dbChannel.length > 0) {
             return await reply(`Channel ${channel} already exists in database.`);
         }
 
         await db.insert(channelsTable).values({
-            twitchId: apiChannel.id,
-            twitchLogin: apiChannel.name,
+            twitchId: channelId,
+            twitchLogin: channel,
             mode: modeSchemaResult.data,
         });
-        await chat.join(apiChannel.name);
-        return await reply(`Joined channel ${channel}! (mode: ${modeSchemaResult.data})`);
+        await chat.join(channel);
+        return await reply(`Joined channel ${channel} in ${modeSchemaResult.data} mode`);
     },
 };

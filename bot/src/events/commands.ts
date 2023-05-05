@@ -66,9 +66,12 @@ export const event: BotEventHandler = {
             mode === 'readonly' ||
             (mode === 'offlineonly' && isLive);
 
+        const cancel = () =>
+            cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+
         if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
         if (dontExecute) {
-            await cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+            await cancel();
             return;
         }
 
@@ -86,6 +89,7 @@ export const event: BotEventHandler = {
             msg,
             reply,
             say,
+            cancel,
             params: parseCommandParams(text),
         };
 

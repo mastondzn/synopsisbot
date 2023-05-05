@@ -1,16 +1,15 @@
 import { channels as channelsTable, eq } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
+import { channelSchema } from '~/helpers/zod';
 import { type BotCommand } from '~/types/client';
-import { channelSchema } from '~/utils/zod';
 
 export const command: BotCommand = {
     name: 'part',
-    description: 'part the bot from a channel',
-    permission: {
-        global: 'owner',
-    },
-    run: async ({ msg, chat, db, api, reply, params }) => {
+    description: 'Part the bot from a channel.',
+    permission: { global: 'owner' },
+
+    run: async ({ msg, chat, db, api, reply, params, utils: { idLoginPairs } }) => {
         if (msg.senderUsername !== env.TWITCH_BOT_OWNER_USERNAME) return;
 
         const channel = params.list.at(0)?.toLowerCase();
@@ -28,19 +27,19 @@ export const command: BotCommand = {
 
         if (isDefaultChannel) return await reply("You can't part a default channel.");
 
-        const apiChannel = await api.users.getUserByName(channel);
-        if (!apiChannel) return await reply(`Channel ${channel} not found.`);
+        const channelId = await idLoginPairs.getId(channel);
+        if (!channelId) return await reply(`Channel ${channel} not found.`);
 
         const dbChannel = await db
             .select()
             .from(channelsTable)
-            .where(eq(channelsTable.twitchId, apiChannel.id));
+            .where(eq(channelsTable.twitchId, channelId));
 
         if (dbChannel.length === 0) {
             return await reply(`Channel ${channel} does not exist in the database.`);
         }
 
-        await db.delete(channelsTable).where(eq(channelsTable.twitchId, apiChannel.id));
+        await db.delete(channelsTable).where(eq(channelsTable.twitchId, channelId));
         await chat.part(channel);
         return await reply(`Channel ${channel} has been parted!`);
     },
