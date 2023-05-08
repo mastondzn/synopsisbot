@@ -28,7 +28,7 @@ export const event: BotEventHandler = {
 
         if (!msg.messageText.startsWith(botPrefix)) return;
 
-        const commandIdentifier = text.replace(/ +/g, ' ').split(' ')[1]?.toLowerCase();
+        const commandIdentifier = text.replaceAll(/ +/g, ' ').split(' ')[1]?.toLowerCase();
         if (!commandIdentifier) return;
 
         const inDefaultChannel = //

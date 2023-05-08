@@ -16,6 +16,7 @@ export interface BotAuthProviderOptions {
 }
 
 export class BotAuthProvider extends RefreshingAuthProvider {
+    // eslint-disable-next-line unicorn/prefer-event-target
     events = new EventEmitter<{ refresh: [AccessToken & { userId: string }] }>();
 
     constructor(options: BotAuthProviderOptions) {
@@ -30,6 +31,9 @@ export class BotAuthProvider extends RefreshingAuthProvider {
             });
 
             this.events.emit('refresh', { ...token, userId });
+            token.expiresIn
+                ? setTimeout(() => this.refreshAccessTokenForIntent('chat'), token.expiresIn * 1000)
+                : console.error('[utils:auth] no expiresIn');
         };
 
         super({
@@ -48,5 +52,10 @@ export class BotAuthProvider extends RefreshingAuthProvider {
             },
             ['chat']
         );
+
+        setTimeout(() => {
+            console.log('[utils:auth] refreshing bot oauth token');
+            void this.refreshAccessTokenForIntent('chat');
+        }, options.expiresAt.getTime() - Date.now());
     }
 }

@@ -46,7 +46,7 @@ export const script: StandaloneScript = {
             };
             `
             .trimStart()
-            .replace(/^ {12}/gm, '');
+            .replaceAll(/^ {12}/gm, '');
 
         const path = join(__dirname, `${file}.ts`);
         await writeFile(path, fileContents);

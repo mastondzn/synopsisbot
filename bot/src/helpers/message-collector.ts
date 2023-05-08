@@ -1,12 +1,12 @@
 import { type ChatClient, type PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
+export type MessageFilter = (message: PrivmsgMessage) => unknown;
+
 export interface CollectMessageOptions {
     chat: ChatClient;
     timeout?: number;
     filter: MessageFilter;
 }
-
-export type MessageFilter = (message: PrivmsgMessage) => unknown;
 
 export const collectMessage = ({
     chat,
