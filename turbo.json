@@ -12,7 +12,9 @@
             "dependsOn": ["^build"],
             "cache": false
         },
-        "lint": {},
+        "lint": {
+            "dependsOn": ["^build"]
+        },
         "lint:fix": {},
         "typecheck": {
             "dependsOn": ["build"]
@@ -28,6 +30,6 @@
             "cache": false
         }
     },
-    "globalDependencies": ["./packages/eslint-config/index.cjs", "./packages/tsconfig"],
+    "globalDependencies": ["./packages/eslint-config", "./packages/tsconfig"],
     "globalEnv": []
 }
