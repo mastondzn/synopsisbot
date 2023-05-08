@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { BotAuthProvider } from './auth-provider';
+import { BotAuthProvider } from './utils/auth-provider';
 import { Bot } from './bot';
 import { getCommands } from './commands';
 import { getEventHandlers } from './events';

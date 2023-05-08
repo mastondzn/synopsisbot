@@ -8,7 +8,7 @@ import { Redis } from 'ioredis';
 import { type NodePgDatabase, type Pool } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { type BotAuthProvider } from './auth-provider';
+import { type BotAuthProvider } from './utils/auth-provider';
 import {
     type BotCommand,
     type BotEventHandler,
