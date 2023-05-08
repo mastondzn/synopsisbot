@@ -8,13 +8,13 @@ import { Redis } from 'ioredis';
 import { type NodePgDatabase, type Pool } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import { type BotAuthProvider } from './utils/auth-provider';
 import {
     type BotCommand,
     type BotEventHandler,
     type BotModule,
     type BotUtils,
 } from './types/client';
+import { type BotAuthProvider } from './utils/auth-provider';
 import { CommandCooldownManager } from './utils/cooldown';
 import { IdLoginPairProvider } from './utils/id-login-pair';
 import { LiveStatusManager } from './utils/live-manager';

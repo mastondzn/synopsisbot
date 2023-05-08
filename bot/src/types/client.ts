@@ -12,8 +12,8 @@ import { type Redis } from 'ioredis';
 import { type NodePgDatabase } from '@synopsis/db';
 
 import { type KnownKeys, type Prettify } from './general';
-import { type BotAuthProvider } from '~/utils/auth-provider';
 import { type parseCommandParams } from '~/helpers/command';
+import { type BotAuthProvider } from '~/utils/auth-provider';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type IdLoginPairProvider } from '~/utils/id-login-pair';
 import { type LiveStatusManager } from '~/utils/live-manager';
@@ -84,6 +84,8 @@ export type BotCommandContext = BotContext & {
     cancel: () => Promise<void>;
 };
 
+export type BotCommandFunction = (ctx: BotCommandContext) => Promise<void> | void;
+
 export interface BotCommand {
     name: string;
     description?: string;
@@ -100,7 +102,7 @@ export interface BotCommand {
               mode?: 'any' | 'all';
           }
         | { mode: 'custom' };
-    run: (ctx: BotCommandContext) => Promise<void> | void;
+    run: BotCommandFunction;
 }
 
 export interface BasicBotModule {
