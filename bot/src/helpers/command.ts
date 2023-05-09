@@ -39,10 +39,10 @@ export const getCommandPermissions = (
 };
 
 export interface DeepCommandRecord {
-    [K: string]: BotCommandFunction | DeepCommandRecord;
+    [key: string]: BotCommandFunction | DeepCommandRecord;
 }
 
-export function runDeepCommand({
+export const runDeepCommand = ({
     ctx,
     commands,
     onNotFound,
@@ -50,14 +50,14 @@ export function runDeepCommand({
     ctx: BotCommandContext;
     commands: DeepCommandRecord;
     onNotFound: BotCommandFunction;
-}): Promise<void> | void {
+}): Promise<void> | void => {
     const params = ctx.params.list;
     const paths = getPaths(commands);
 
     let command: DeepCommandRecord | BotCommandFunction | undefined = commands;
     for (const path of paths) {
         const desiredPath = params.slice(0, path.length);
-        if (JSON.stringify(path) === JSON.stringify(desiredPath)) {
+        if (path.join(' ') === desiredPath.join(' ')) {
             for (const accessor of desiredPath) {
                 command = (command as DeepCommandRecord)[accessor];
             }
@@ -65,13 +65,13 @@ export function runDeepCommand({
         }
     }
 
-    if (!(command as unknown)) command = onNotFound;
+    if (!command) command = onNotFound;
     if (typeof command !== 'function') throw new Error('Command not found');
 
     return command(ctx);
-}
+};
 
-const getPaths = (subcommands: DeepCommandRecord): string[][] => {
+export const getPaths = (subcommands: DeepCommandRecord): string[][] => {
     const paths: string[][] = [];
 
     const keys = Object.keys(subcommands);
