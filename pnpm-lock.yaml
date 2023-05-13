@@ -187,8 +187,8 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2(zod@3.21.4)
       '@t3-oss/env-nextjs':
-        specifier: ^0.2.2
-        version: 0.2.2(zod@3.21.4)
+        specifier: ^0.3.0
+        version: 0.3.0(typescript@5.0.4)(zod@3.21.4)
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
@@ -299,8 +299,8 @@ importers:
         specifier: 0.0.1
         version: link:../packages/scopes
       '@t3-oss/env-nextjs':
-        specifier: ^0.2.2
-        version: 0.2.2(zod@3.21.4)
+        specifier: ^0.3.0
+        version: 0.3.0(typescript@5.0.4)(zod@3.21.4)
       '@tabler/icons-react':
         specifier: ^2.17.0
         version: 2.17.0(react@18.2.0)
@@ -1872,12 +1872,24 @@ packages:
       zod: 3.21.4
     dev: false
 
-  /@t3-oss/env-nextjs@0.2.2(zod@3.21.4):
-    resolution: {integrity: sha512-9LnVpTkf/8WkggyVN6Liz9Ma9a7fLzV00b5BngWj3HI3iWDfddsWaqCf/H0f46Bgu29NubP3Bwajf1JieVrxFA==}
+  /@t3-oss/env-core@0.3.0(typescript@5.0.4)(zod@3.21.4):
+    resolution: {integrity: sha512-d2D/CSvPPPooysZFO4OZH/aneYVppwjnYJSyBMcZtvtDQH++QgmHlOui8aUriPf4+Ul/DmhQjQEh0eGorINihw==}
     peerDependencies:
+      typescript: '>=4.7.2'
       zod: ^3.0.0
     dependencies:
-      '@t3-oss/env-core': 0.2.2(zod@3.21.4)
+      typescript: 5.0.4
+      zod: 3.21.4
+    dev: false
+
+  /@t3-oss/env-nextjs@0.3.0(typescript@5.0.4)(zod@3.21.4):
+    resolution: {integrity: sha512-TP/yTxH46oP3aJOBwOrcQwVHGA8X3b0/gT9kK9KotZVdsIUSg/T69PhijZG4KLLBeR71uhoFedSipXg5KdsHLQ==}
+    peerDependencies:
+      typescript: '>=4.7.2'
+      zod: ^3.0.0
+    dependencies:
+      '@t3-oss/env-core': 0.3.0(typescript@5.0.4)(zod@3.21.4)
+      typescript: 5.0.4
       zod: 3.21.4
     dev: false
 
