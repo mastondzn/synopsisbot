@@ -13,5 +13,10 @@ export const env = createEnv({
     server: serverEnvSchema.shape,
     client: publicEnvSchema.shape,
 
+    skipValidation:
+        !!process.env['SKIP_ENV_VALIDATION'] &&
+        process.env['SKIP_ENV_VALIDATION'] !== 'false' &&
+        process.env['SKIP_ENV_VALIDATION'] !== '0',
+
     runtimeEnv: process.env,
 });

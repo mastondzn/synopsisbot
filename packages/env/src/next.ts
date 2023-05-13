@@ -8,6 +8,11 @@ export const env = createEnv({
     server: serverEnvSchema.shape,
     client: publicEnvSchema.shape,
 
+    skipValidation:
+        !!process.env['SKIP_ENV_VALIDATION'] &&
+        process.env['SKIP_ENV_VALIDATION'] !== 'false' &&
+        process.env['SKIP_ENV_VALIDATION'] !== '0',
+
     runtimeEnv: {
         NODE_ENV: process.env['NODE_ENV'],
         DB_HOST: process.env['DB_HOST'],
