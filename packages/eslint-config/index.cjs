@@ -145,6 +145,7 @@ module.exports = defineConfig({
                 'unicorn/prevent-abbreviations': 'off',
                 'unicorn/prefer-module': 'off',
                 'unicorn/prefer-top-level-await': 'off',
+                'unicorn/prefer-event-target': 'off',
             },
         },
         {
