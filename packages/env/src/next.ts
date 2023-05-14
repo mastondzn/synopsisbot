@@ -1,5 +1,4 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 import { createEnv } from '@t3-oss/env-nextjs';
 
 import { publicEnvSchema, serverEnvSchema } from './schemas';

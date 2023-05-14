@@ -18,7 +18,7 @@ const config = {
                 'monorepo',
                 'deps',
             ];
-            return [1, 'always', scopes];
+            return [2, 'always', scopes];
         },
     },
 };

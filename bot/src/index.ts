@@ -24,10 +24,10 @@ void (async () => {
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
     });
-    console.log(logPrefix, `database connection created`);
+    console.log(logPrefix, 'database connection created');
 
     const botUser = await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID);
-    console.log(logPrefix, `bot user loaded`);
+    console.log(logPrefix, 'bot user loaded');
 
     const authProvider = new BotAuthProvider({
         clientId: env.TWITCH_CLIENT_ID,
@@ -38,8 +38,8 @@ void (async () => {
 
     const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
     if (!botToken) throw new Error('could not obtain token from auth provider');
-    console.log(logPrefix, `bot token loaded`);
+    console.log(logPrefix, 'bot token loaded');
 
     new Bot({ commands, events, modules, db, pool, authProvider, botToken: botToken.accessToken });
-    console.log(logPrefix, `bot initialized`);
+    console.log(logPrefix, 'bot initialized');
 })();

@@ -56,7 +56,7 @@ export class Bot {
             host: env.REDIS_HOST,
             password: env.REDIS_PASSWORD,
         });
-        console.log(logPrefix, `cache connection created`);
+        console.log(logPrefix, 'cache connection created');
 
         this.events = events;
         this.commands = commands;
@@ -66,10 +66,10 @@ export class Bot {
         this.pool = pool;
 
         this.authProvider = authProvider;
-        console.log(logPrefix, `auth provider initialized`);
+        console.log(logPrefix, 'auth provider initialized');
 
         this.api = new ApiClient({ authProvider: this.authProvider });
-        console.log(logPrefix, `api client initialized`);
+        console.log(logPrefix, 'api client initialized');
 
         this.chat = new ChatClient({
             username: env.TWITCH_BOT_USERNAME,
@@ -77,12 +77,12 @@ export class Bot {
             rateLimits: 'default',
         });
         this.chat.use(new AlternateMessageModifier(this.chat));
-        console.log(logPrefix, `chat client initialized`);
+        console.log(logPrefix, 'chat client initialized');
 
         this.eventSub = new EventSubWsListener({
             apiClient: this.api,
         });
-        console.log(logPrefix, `eventsub client initialized`);
+        console.log(logPrefix, 'eventsub client initialized');
 
         this.utils = {
             cooldownManager: new CommandCooldownManager(this.cache),
@@ -91,7 +91,7 @@ export class Bot {
             idLoginPairs: new IdLoginPairProvider(this.cache, this.api),
             permissions: new PermissionProvider(this.cache, this.db),
         };
-        console.log(logPrefix, `utils initialized`);
+        console.log(logPrefix, 'utils initialized');
 
         this.registerEvents();
 

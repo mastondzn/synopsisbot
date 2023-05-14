@@ -137,9 +137,9 @@ export const command: BotCommand = {
                             [
                                 // TODO: change this to the truth
                                 `Are you sure you want the bot to leave channel ${channel}?`,
-                                `This will delete the channel data, including the ambassador list and probably other channel settings.`,
+                                'This will delete the channel data, including the ambassador list and probably other channel settings.',
                                 `You can instead change the channel mode to readonly using "sb owner bot join ${channel} readonly"`,
-                                `Type "confirm" in the next 15s to confirm.`,
+                                'Type "confirm" in the next 15s to confirm.',
                             ].join(' ')
                         );
 

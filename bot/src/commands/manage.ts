@@ -37,8 +37,8 @@ export const command: BotCommand = {
 
         const isBroadcaster = msg.channelName === user.login;
         const isSelf = msg.senderUsername === user.login;
-        if (isBroadcaster) return await reply(`You can't ban the broadcaster.`);
-        if (isSelf) return await reply(`You can't ban yourself.`);
+        if (isBroadcaster) return await reply("You can't ban the broadcaster.");
+        if (isSelf) return await reply("You can't ban yourself.");
 
         const channel = { login: msg.channelName, id: msg.channelID };
 
