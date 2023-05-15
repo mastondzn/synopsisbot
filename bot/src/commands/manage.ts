@@ -16,19 +16,10 @@ export const command: BotCommand = {
 
     run: async (ctx) => {
         const {
-            params,
             reply,
             msg,
             utils: { permissions },
         } = ctx;
-        const command = params.list.at(0)?.toLowerCase();
-
-        if (
-            command !== 'ban' && //
-            command !== 'unban'
-        ) {
-            return await reply('Invalid subcommand.');
-        }
 
         const user = await parseUserParameter(ctx, 1, true);
         if (!user.ok) {
@@ -49,10 +40,7 @@ export const command: BotCommand = {
         const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
         if (isOwner) return await reply(`You can't ban ${user.login}.`);
 
-        const context = {
-            channel,
-            user,
-        };
+        const context = { channel, user };
 
         const currentPermission =
             (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
