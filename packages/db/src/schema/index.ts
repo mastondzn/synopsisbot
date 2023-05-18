@@ -1,5 +1,5 @@
-export * from './authed_users';
+export * from './authed-users';
 export * from './channels';
-export * from './command_users';
+export * from './command-users';
 export * from './permissions';
 export * from './states';
