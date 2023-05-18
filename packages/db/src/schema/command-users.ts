@@ -1,4 +1,4 @@
-import { InferModel } from 'drizzle-orm';
+import { type InferModel } from 'drizzle-orm';
 import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const commandUsers = pgTable('command_users', {

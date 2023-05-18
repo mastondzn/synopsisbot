@@ -1,4 +1,4 @@
-import { InferModel } from 'drizzle-orm';
+import { type InferModel } from 'drizzle-orm';
 import { pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const localPermissions = pgTable(
