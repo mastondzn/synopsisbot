@@ -43,6 +43,12 @@
       "version": "5",
       "when": 1683301484624,
       "tag": "0006_demonic_shard"
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1684450009788,
+      "tag": "0007_gigantic_legion"
     }
   ]
 }
