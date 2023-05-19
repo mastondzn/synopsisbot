@@ -12,11 +12,12 @@ import { BotAuthProvider } from './utils/auth-provider';
 const logPrefix = chalk.bgYellow('[init]');
 void (async () => {
     const commands = await getCommands();
-    console.log(logPrefix, `${commands.size} commands files loaded`);
     const events = await getEventHandlers();
-    console.log(logPrefix, `${events.size} events files loaded`);
     const modules = await getModules();
-    console.log(logPrefix, `${modules.size} module files loaded`);
+    console.log(
+        logPrefix,
+        `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`
+    );
 
     const { db, pool } = makeDatabase({
         host: env.DB_HOST,
@@ -27,7 +28,6 @@ void (async () => {
     console.log(logPrefix, 'database connection created');
 
     const botUser = await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID);
-    console.log(logPrefix, 'bot user loaded');
 
     const authProvider = new BotAuthProvider({
         clientId: env.TWITCH_CLIENT_ID,
