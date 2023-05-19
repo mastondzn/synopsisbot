@@ -39,7 +39,11 @@ export const command: BotCommand = {
         if (!user) throw new Error('Failed to create command user');
 
         if (params.list.at(0)?.toLowerCase() === 'points') {
-            return await reply(`You have ${user.hydrationPoints} hydration points!`);
+            return await reply(
+                `You have ${user.hydrationPoints} hydration points${
+                    user.hydrationPoints > 0 ? '!' : '.'
+                }`
+            );
         }
 
         if (hydratedRecently(user)) {
