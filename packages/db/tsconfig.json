@@ -1,7 +1,7 @@
 {
     "extends": "@synopsis/tsconfig/node.json",
     "exclude": ["node_modules", "dist", "coverage"],
-    "include": ["src/**/*", "scripts/**/*"],
+    "include": ["src/**/*", "scripts/**/*", "drizzle.config.ts"],
     "compilerOptions": {
         "baseUrl": "src",
         "paths": {

@@ -1,9 +1,8 @@
-import type * as schema from './schema';
+import * as relations from './relations';
+import { tables } from './tables';
 
-type Prettify<T> = {
-    [K in keyof T]: T[K];
-};
+export const schema = { ...tables, ...relations };
+export type DatabaseSchema = typeof schema;
 
-export type DatabaseSchema = Prettify<typeof schema>;
-export * from './schema';
-export * as schema from './schema';
+export * from './relations';
+export * from './tables';
