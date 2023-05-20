@@ -1,4 +1,5 @@
-import { drizzle, type DrizzleConfig } from 'drizzle-orm/node-postgres';
+import { type DrizzleConfig } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { Client, type ClientConfig, Pool, type PoolConfig } from 'pg';
 
 export const makeDatabase = (options: DrizzleConfig & PoolConfig) => {
