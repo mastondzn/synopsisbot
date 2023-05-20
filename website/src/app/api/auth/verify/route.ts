@@ -1,7 +1,7 @@
 import { type NextRequest } from 'next/server';
 
-import { verifyRequest } from '~/utils/encode';
 import { json } from '~/utils/responses';
+import { verifyRequest } from '~/utils/verify';
 
 export const GET = async (req: NextRequest) => {
     const jwt = await verifyRequest(req);

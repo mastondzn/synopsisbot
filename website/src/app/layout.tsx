@@ -1,6 +1,6 @@
 import '~/globals.css';
 
-import { ThemeProvider } from '~/components/theme';
+import { Providers } from './providers';
 import { fontSans } from '~/utils/fonts';
 import { tw } from '~/utils/tw';
 
@@ -28,11 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         fontSans.variable
                     )}
                 >
-                    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-                        <div className="relative flex min-h-screen flex-col">
-                            <div className="flex-1">{children}</div>
+                    <div className="relative flex min-h-screen flex-col">
+                        <div className="flex-1">
+                            <Providers>{children}</Providers>
                         </div>
-                    </ThemeProvider>
+                    </div>
                 </body>
             </html>
         </>
