@@ -299,8 +299,17 @@ importers:
         specifier: ^2.17.0
         version: 2.17.0(react@18.2.0)
       '@tanstack/react-query':
-        specifier: ^4.28.0
+        specifier: ^4.29.1
         version: 4.29.1(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/client':
+        specifier: ^10.27.1
+        version: 10.27.1(@trpc/server@10.27.1)
+      '@trpc/react-query':
+        specifier: ^10.27.1
+        version: 10.27.1(@tanstack/react-query@4.29.1)(@trpc/client@10.27.1)(@trpc/server@10.27.1)(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/server':
+        specifier: ^10.27.1
+        version: 10.27.1
       '@twurple/api':
         specifier: ^6.1.2
         version: 6.1.2(@twurple/auth@6.1.2)
@@ -316,6 +325,9 @@ importers:
       ioredis:
         specifier: ^5.3.2
         version: 5.3.2
+      jose:
+        specifier: ^4.14.4
+        version: 4.14.4
       next:
         specifier: ^13.4.3
         version: 13.4.3(react-dom@18.2.0)(react@18.2.0)
@@ -1872,6 +1884,34 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
+  /@trpc/client@10.27.1(@trpc/server@10.27.1):
+    resolution: {integrity: sha512-e9Syj6F41OHDSUg3JvT67fgoD22UbxPzYgp9Bno13NFpyeJc6vkXRlAgDc8ZuouqUPQuouJWll/I90CsuxEqvA==}
+    peerDependencies:
+      '@trpc/server': 10.27.1
+    dependencies:
+      '@trpc/server': 10.27.1
+    dev: false
+
+  /@trpc/react-query@10.27.1(@tanstack/react-query@4.29.1)(@trpc/client@10.27.1)(@trpc/server@10.27.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-6Q6B5cGKvxnmy/B5VsOjOG4sBl19VJJrGloFp93jc3Hq3+EfniOssdoA81VLI3fInif8ns0Z4jgWUIpq8741cA==}
+    peerDependencies:
+      '@tanstack/react-query': ^4.18.0
+      '@trpc/client': 10.27.1
+      '@trpc/server': 10.27.1
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@tanstack/react-query': 4.29.1(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/client': 10.27.1(@trpc/server@10.27.1)
+      '@trpc/server': 10.27.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@trpc/server@10.27.1:
+    resolution: {integrity: sha512-oMTNpei0+CAet0BuDdBE9cup0SseJAOlWRhWhcTAU05rETsJnzCA5DfNkf+aP3XiAM8rMJfrTfC0Z3aeADhHaA==}
     dev: false
 
   /@tsconfig/node10@1.0.9:
@@ -5308,6 +5348,10 @@ packages:
 
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
+    dev: false
+
+  /jose@4.14.4:
+    resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
     dev: false
 
   /joycon@3.1.1:

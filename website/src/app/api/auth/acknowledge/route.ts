@@ -7,7 +7,8 @@ import { env } from '@synopsis/env/next';
 
 import { consumeState } from '~/utils/auth';
 import { getDb } from '~/utils/db';
-import { json } from '~/utils/responses';
+import { setJWTCookie } from '~/utils/encode';
+import { json, redirect } from '~/utils/responses';
 import { getUrl } from '~/utils/url';
 
 export const dynamic = 'force-dynamic';
@@ -123,6 +124,11 @@ export const GET = async (req: NextRequest) => {
         .values(user)
         .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
-    // TODO: use jwt and set a cookie
-    return json({ message: 'Success' }, { status: 200 });
+    return await setJWTCookie(
+        redirect(getUrl()), //
+        {
+            twitchId: tokenInfo.userId,
+            twitchLogin: tokenInfo.userName,
+        }
+    );
 };
