@@ -75,10 +75,10 @@ export const command: BotCommand = {
         lines.push(
             points > 0 //
                 ? `You gained ${points} points!`
-                : `You lost ${points} points.`,
+                : `You lost ${Math.abs(points)} points.`,
 
             `You have ${pointsNow} ✨ hydration points now!`,
-            'Hydrate again in 3 hours 😊!'
+            '(3h cooldown...)'
         );
 
         return await reply(lines.join(' '));
