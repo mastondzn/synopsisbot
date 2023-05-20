@@ -28,7 +28,7 @@
     "dependencies": {
         "@synopsis/env": "0.0.1",
         "dotenv": "^16.0.3",
-        "drizzle-orm": "^0.25.4",
+        "drizzle-orm": "^0.26.0",
         "pg": "^8.10.0"
     }
 }
