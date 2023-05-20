@@ -12,7 +12,6 @@ export const GET = async () => {
     const state = await createState();
 
     url.searchParams.set('client_id', env.TWITCH_CLIENT_ID);
-    url.searchParams.set('force_verify', 'true');
     url.searchParams.set('redirect_uri', `${getUrl()}/api/auth/acknowledge`);
     url.searchParams.set('response_type', 'code');
     url.searchParams.set('scope', '');
