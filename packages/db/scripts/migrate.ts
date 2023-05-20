@@ -5,7 +5,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
 import { envSchema } from '@synopsis/env';
 
-import { makeDatabase } from '~/index';
+import { makeDatabase, type NodePgDatabase } from '~/index';
 
 config({ path: resolve(process.cwd(), '../../.env') });
 
@@ -21,9 +21,11 @@ void (async () => {
     });
 
     console.log('Migrating...');
-    await migrate(db, {
+
+    await migrate(db as NodePgDatabase, {
         migrationsFolder: './migrations',
     });
+
     console.log('Migrations complete!');
     await pool.end();
     console.log('Client connection ended!');

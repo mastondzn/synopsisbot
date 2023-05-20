@@ -1,10 +1,10 @@
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 import { EventEmitter } from 'eventemitter3';
 
-import { type NodePgDatabase, updateAuthedUserById } from '@synopsis/db';
+import { type Database, updateAuthedUserById } from '@synopsis/db';
 
 export interface BotAuthProviderOptions {
-    db: NodePgDatabase;
+    db: Database;
     clientId: string;
     clientSecret: string;
     twitchId: string;

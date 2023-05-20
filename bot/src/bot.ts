@@ -5,7 +5,7 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
-import { type NodePgDatabase, type Pool } from '@synopsis/db';
+import { type Database, type Pool } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import {
@@ -29,7 +29,7 @@ export interface BotOptions {
     modules: Collection<string, BotModule>;
     authProvider: BotAuthProvider;
     botToken: string;
-    db: NodePgDatabase;
+    db: Database;
     pool: Pool;
 }
 
@@ -39,7 +39,7 @@ export class Bot {
     authProvider: BotAuthProvider;
     eventSub: EventSubWsListener;
 
-    db: NodePgDatabase;
+    db: Database;
     pool: Pool;
     cache: Redis;
 

@@ -4,12 +4,12 @@ import { z } from 'zod';
 
 import {
     and,
+    type Database,
     eq,
     globalPermissions as globalPermissionsTable,
     localPermissions as localPermissionsTable,
     type NewGlobalPermission,
     type NewLocalPermission,
-    type NodePgDatabase,
 } from '@synopsis/db';
 
 export const localLevels = [
@@ -99,9 +99,9 @@ export interface PermissionContext {
 
 export class PermissionProvider {
     private redis: Redis;
-    private db: NodePgDatabase;
+    private db: Database;
 
-    constructor(redis: Redis, db: NodePgDatabase) {
+    constructor(redis: Redis, db: Database) {
         this.redis = redis;
         this.db = db;
     }

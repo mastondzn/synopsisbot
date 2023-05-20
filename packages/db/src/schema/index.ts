@@ -1,5 +1,5 @@
-export * from './authed-users';
-export * from './channels';
-export * from './command-users';
-export * from './permissions';
-export * from './states';
+import type * as schema from './schema';
+
+export type DatabaseSchema = typeof schema;
+export * from './schema';
+export * as schema from './schema';
