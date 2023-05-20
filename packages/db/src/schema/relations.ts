@@ -14,12 +14,18 @@ export const commandUsersRelations = relations(commandUsers, () => ({}));
 export const globalPermissionsRelations = relations(globalPermissions, () => ({}));
 export const statesRelations = relations(states, () => ({}));
 
-export const channelsRelations = relations(channels, ({ many }) => ({
-    localPermissions: many(localPermissions),
-}));
-export const localPermissionsRelations = relations(localPermissions, ({ one }) => ({
-    channel: one(channels, {
-        references: [channels.twitchId],
-        fields: [localPermissions.channelId],
-    }),
-}));
+export const channelsRelations = relations(
+    channels, //
+    ({ many }) => ({
+        localPermissions: many(localPermissions),
+    })
+);
+export const localPermissionsRelations = relations(
+    localPermissions, //
+    ({ one }) => ({
+        channel: one(channels, {
+            references: [channels.twitchId],
+            fields: [localPermissions.channelId],
+        }),
+    })
+);
