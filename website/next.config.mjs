@@ -24,7 +24,6 @@ const config = {
     },
     experimental: {
         outputFileTracingRoot: join(__dirname, '../'),
-        appDir: true,
     },
 };
 
