@@ -2,7 +2,7 @@ import { type ChatClient } from '@kararty/dank-twitch-irc';
 import { type ApiClient } from '@twurple/api';
 import { type Redis } from 'ioredis';
 
-import { type NodePgDatabase } from '@synopsis/db';
+import { type Database } from '@synopsis/db';
 
 import { type Bot } from '~/bot';
 
@@ -20,7 +20,7 @@ type ScriptTypeBuilder<K extends string, V> = Base & {
 };
 
 export type BotScript = ScriptTypeBuilder<'bot', Bot>;
-export type DatabaseScript = ScriptTypeBuilder<'db', NodePgDatabase>;
+export type DatabaseScript = ScriptTypeBuilder<'db', Database>;
 export type CacheScript = ScriptTypeBuilder<'cache', Redis>;
 export type TwitchApiScript = ScriptTypeBuilder<'api', ApiClient>;
 export type TwitchChatScript = ScriptTypeBuilder<'chat', ChatClient>;

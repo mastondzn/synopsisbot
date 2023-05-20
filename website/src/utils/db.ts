@@ -1,9 +1,9 @@
-import { makeDatabase, type NodePgDatabase } from '@synopsis/db';
+import { type Database, makeDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/next';
 
-let cachedDb: NodePgDatabase | undefined;
+let cachedDb: Database | undefined;
 
-export const getDb = (): NodePgDatabase => {
+export const getDb = (): Database => {
     if (!cachedDb) {
         const { db } = makeDatabase({
             host: env.DB_HOST,

@@ -1,5 +1,8 @@
-export * from './authed-users';
-export * from './channels';
-export * from './command-users';
-export * from './permissions';
-export * from './states';
+import * as relations from './relations';
+import { tables } from './tables';
+
+export const schema = { ...tables, ...relations };
+export type DatabaseSchema = typeof schema;
+
+export * from './relations';
+export * from './tables';

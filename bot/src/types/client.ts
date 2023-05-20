@@ -9,7 +9,7 @@ import { type ApiClient } from '@twurple/api';
 import { type EventSubWsListener } from '@twurple/eventsub-ws';
 import { type Redis } from 'ioredis';
 
-import { type NodePgDatabase } from '@synopsis/db';
+import { type Database } from '@synopsis/db';
 
 import { type KnownKeys, type Prettify } from './general';
 import { type parseCommandParams } from '~/helpers/command';
@@ -52,7 +52,7 @@ export type EventHandlerParams<T extends ChatClientEventsList> = Parameters<Even
 export interface BotContext {
     chat: ChatClient;
     api: ApiClient;
-    db: NodePgDatabase;
+    db: Database;
     cache: Redis;
     authProvider: BotAuthProvider;
     eventSub: EventSubWsListener;
