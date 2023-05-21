@@ -9,6 +9,7 @@ export const metadata = {
     description: 'A twitch bot for having fun in chat.',
     icons: {
         icon: '/favicon.ico',
+        shortcut: '/favicon-16x16.png',
         apple: '/apple-touch-icon.png',
     },
     themeColor: [
