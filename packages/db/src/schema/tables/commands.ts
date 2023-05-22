@@ -7,23 +7,29 @@ export const commands = pgTable('commands', {
     aliases: varchar('aliases', { length: 64 }).array(),
     usage: varchar('usage', { length: 4096 }),
 
-    userCooldown: integer('cooldown').default(10),
-    globalCooldown: integer('global_cooldown').default(10),
+    userCooldown: integer('user_cooldown').default(10).notNull(),
+    globalCooldown: integer('global_cooldown').default(10).notNull(),
 
     localPermission: varchar('permission', {
         length: 64,
         enum: ['broadcaster', 'ambassador', 'moderator', 'vip', 'normal', 'banned'],
-    }).default('normal'),
+    })
+        .default('normal')
+        .notNull(),
 
     globalPermission: varchar('global_permission', {
         length: 64,
         enum: ['owner', 'normal', 'banned'],
-    }).default('normal'),
+    })
+        .default('normal')
+        .notNull(),
 
     permissionMode: varchar('permission_mode', {
         length: 64,
         enum: ['any', 'all', 'custom'],
-    }).default('all'),
+    })
+        .default('all')
+        .notNull(),
 });
 export type Command = InferModel<typeof commands>;
 export type NewCommand = InferModel<typeof commands, 'insert'>;

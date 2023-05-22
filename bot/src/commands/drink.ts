@@ -17,7 +17,10 @@ export const command: BotCommand = {
     description: 'Get a random drink and gain hydration points!',
     usage: [
         'drink', //
+        'Have a drink!',
+        '',
         'drink points',
+        'Check how many hydration points you have.',
     ].join('\n'),
 
     run: async ({ db, reply, msg, params }) => {

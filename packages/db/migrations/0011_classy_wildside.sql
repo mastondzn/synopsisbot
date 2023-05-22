@@ -1,0 +1,1 @@
+ALTER TABLE "commands" RENAME COLUMN "cooldown" TO "user_cooldown";

@@ -1,11 +1,26 @@
 'use client';
 
+import { IconMoon, IconSun } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 import { Button, type ButtonProps } from './button';
 
-export function ThemeSwitcher(props: ButtonProps) {
+export function ThemeSwitch({ ...props }: Omit<ButtonProps, 'children'>) {
+    const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return (
+            <Button {...props}>
+                <IconMoon className="h-6 w-6" />
+            </Button>
+        );
+    }
 
     return (
         <Button
@@ -13,10 +28,16 @@ export function ThemeSwitcher(props: ButtonProps) {
             onClick={() => {
                 if (theme === 'dark') {
                     setTheme('light');
-                } else {
+                } else if (theme === 'light') {
                     setTheme('dark');
                 }
             }}
-        />
+        >
+            {theme === 'dark' ? ( //
+                <IconMoon className="h-6 w-6" />
+            ) : theme === 'light' ? (
+                <IconSun className="h-6 w-6" />
+            ) : null}
+        </Button>
     );
 }

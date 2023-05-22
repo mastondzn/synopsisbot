@@ -20,12 +20,12 @@ export const module: BotModule = {
                 description: command.description ?? null,
                 aliases: command.aliases ?? null,
                 usage: command.usage ?? null,
-                userCooldown: command.cooldown?.user ?? null,
-                globalCooldown: command.cooldown?.global ?? null,
-                permissionMode: command.permission?.mode ?? null,
+                ...(command.cooldown?.user ? { userCooldown: command.cooldown.user } : {}),
+                ...(command.cooldown?.global ? { globalCooldown: command.cooldown.global } : {}),
+                ...(command.permission?.mode ? { permissionMode: command.permission.mode } : {}),
 
-                localPermission: permission.local ?? null,
-                globalPermission: permission.global ?? null,
+                ...(permission.local ? { localPermission: permission.local } : {}),
+                ...(permission.global ? { globalPermission: permission.global } : {}),
             } satisfies NewCommand;
         });
 
