@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 import { Button, type ButtonProps } from './button';
+import { Skeleton } from './skeleton';
 
 export function ThemeSwitch({ ...props }: Omit<ButtonProps, 'children'>) {
     const [mounted, setMounted] = useState(false);
@@ -17,7 +18,7 @@ export function ThemeSwitch({ ...props }: Omit<ButtonProps, 'children'>) {
     if (!mounted) {
         return (
             <Button {...props}>
-                <IconMoon className="h-6 w-6" />
+                <Skeleton className="h-6 w-6 rounded-full" />
             </Button>
         );
     }
