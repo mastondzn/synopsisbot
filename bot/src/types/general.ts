@@ -1,4 +1,6 @@
-export type SomeCallback = (...args: unknown[]) => unknown;
+export type SomeFunction = (...args: never[]) => unknown;
+
+export type SomeAsyncFunction = (...args: never[]) => Promise<unknown>;
 
 export type Resolvable<T> = T | (() => T) | Promise<T> | (() => Promise<T>);
 

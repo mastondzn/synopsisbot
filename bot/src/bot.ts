@@ -1,5 +1,5 @@
 import { type Collection } from '@discordjs/collection';
-import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
+import { AlternateMessageModifier, type ChatClient } from '@kararty/dank-twitch-irc';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
@@ -15,6 +15,7 @@ import {
     type BotUtils,
 } from './types/client';
 import { type BotAuthProvider } from './utils/auth-provider';
+import { BotChatClient } from './utils/client';
 import { CommandCooldownManager } from './utils/cooldown';
 import { IdLoginPairProvider } from './utils/id-login-pair';
 import { LiveStatusManager } from './utils/live-manager';
@@ -71,7 +72,7 @@ export class Bot {
         this.api = new ApiClient({ authProvider: this.authProvider });
         console.log(logPrefix, 'api client initialized');
 
-        this.chat = new ChatClient({
+        this.chat = new BotChatClient({
             username: env.TWITCH_BOT_USERNAME,
             password: `oauth:${botToken}`,
             rateLimits: 'default',

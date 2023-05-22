@@ -109,21 +109,15 @@ export const event: BotEventHandler = {
             await command.run(commandContext);
             console.log(logPrefix, `command ${command.name} executed successfully`);
         } catch (error) {
+            const when = Date.now();
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 logPrefix,
-                `error executing command ${command.name} from ${msg.senderUsername} in ${channel} ("${text}"): ${errorMessage}`
+                `error executing command ${command.name} from ${msg.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`
             );
             console.error(error);
 
-            const errorMessageToChat = `Something went wrong :/ (${errorMessage})`;
-            await reply(errorMessageToChat).catch((error) => {
-                const errorMessage = error instanceof Error ? error.message : 'unknown error';
-                console.error(
-                    logPrefix,
-                    `error sending error message to ${msg.senderUsername} in ${channel}: ${errorMessage}`
-                );
-            });
+            await reply(`Something went wrong :/ (${when})`).catch();
         }
     },
 };
