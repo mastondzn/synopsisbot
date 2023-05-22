@@ -117,7 +117,7 @@ export const event: BotEventHandler = {
             );
             console.error(error);
 
-            await reply(`Something went wrong :/ (${when})`).catch();
+            await reply(`Something went wrong :/ (${when})`);
         }
     },
 };
