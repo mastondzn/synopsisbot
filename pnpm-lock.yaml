@@ -56,14 +56,14 @@ importers:
         specifier: 0.0.1
         version: link:../packages/scopes
       '@twurple/api':
-        specifier: 6.2.0
-        version: 6.2.0(@twurple/auth@6.1.2)
+        specifier: 6.2.1
+        version: 6.2.1(@twurple/auth@6.1.2)
       '@twurple/auth':
         specifier: 6.1.2
         version: 6.1.2
       '@twurple/eventsub-ws':
         specifier: 6.2.0
-        version: 6.2.0(@twurple/api@6.2.0)
+        version: 6.2.0(@twurple/api@6.2.1)
       dotenv:
         specifier: 16.0.3
         version: 16.0.3
@@ -317,8 +317,8 @@ importers:
         specifier: 10.27.1
         version: 10.27.1
       '@twurple/api':
-        specifier: 6.2.0
-        version: 6.2.0(@twurple/auth@6.1.2)
+        specifier: 6.2.1
+        version: 6.2.1(@twurple/auth@6.1.2)
       '@twurple/auth':
         specifier: 6.1.2
         version: 6.1.2
@@ -2005,21 +2005,14 @@ packages:
       - encoding
     dev: false
 
-  /@twurple/api@6.2.0(@twurple/auth@6.1.2):
-    resolution: {integrity: sha512-z7Tm52waqejPPM0an/Dvh/MaoZ13q1IusNJ9yCrsZqb2nF389W7PWV2jlWv9dk7I2geCkVIkKSb0tORBHkLmdw==}
-    peerDependencies:
-      '@twurple/auth': 6.2.0
+  /@twurple/api-call@6.2.1:
+    resolution: {integrity: sha512-w5SdEKbb6O7tScEo2FymlHMJ0hMYic9PJ8Gy43XzuNa7fbBpR06Um6aG9FUY7OmxnP7pWqhB3p1wSBV3+19b0Q==}
     dependencies:
-      '@d-fischer/cache-decorators': 3.0.2
-      '@d-fischer/detect-node': 3.0.1
-      '@d-fischer/logger': 4.2.2
-      '@d-fischer/rate-limiter': 0.7.4
+      '@d-fischer/cross-fetch': 4.1.0
+      '@d-fischer/qs': 7.0.2
       '@d-fischer/shared-utils': 3.6.3
-      '@d-fischer/typed-event-emitter': 3.3.1
-      '@twurple/api-call': 6.2.0
-      '@twurple/auth': 6.1.2
-      '@twurple/common': 6.2.0
-      retry: 0.13.1
+      '@twurple/common': 6.2.1
+      '@types/node-fetch': 2.6.3
       tslib: 2.5.0
     transitivePeerDependencies:
       - encoding
@@ -2039,6 +2032,26 @@ packages:
       '@twurple/api-call': 6.2.0
       '@twurple/auth': 6.2.0
       '@twurple/common': 6.2.0
+      retry: 0.13.1
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@twurple/api@6.2.1(@twurple/auth@6.1.2):
+    resolution: {integrity: sha512-ewyoQiuAmqcmg/ZKwilqqnIQMGZgH7bdCDc/S3T49LcpzykYacyVhjyhHsPNHFZM7C+tcJUVSFMd1OSAjpVoIw==}
+    peerDependencies:
+      '@twurple/auth': 6.2.1
+    dependencies:
+      '@d-fischer/cache-decorators': 3.0.2
+      '@d-fischer/detect-node': 3.0.1
+      '@d-fischer/logger': 4.2.2
+      '@d-fischer/rate-limiter': 0.7.4
+      '@d-fischer/shared-utils': 3.6.3
+      '@d-fischer/typed-event-emitter': 3.3.1
+      '@twurple/api-call': 6.2.1
+      '@twurple/auth': 6.1.2
+      '@twurple/common': 6.2.1
       retry: 0.13.1
       tslib: 2.5.0
     transitivePeerDependencies:
@@ -2085,6 +2098,14 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@twurple/common@6.2.1:
+    resolution: {integrity: sha512-ek9AYxnRUE86veaF1uQZYQOrZDZCSXLuSPryPItha7JlSwEeIYQQm0Y746cHDVKwcPQiNYJuzeDdnA6OYkNs4w==}
+    dependencies:
+      '@d-fischer/shared-utils': 3.6.3
+      klona: 2.0.6
+      tslib: 2.5.0
+    dev: false
+
   /@twurple/eventsub-base@6.2.0:
     resolution: {integrity: sha512-H++PE3bwFfPsakKZOd03HLPvd2tE6N0tU68E8Kxaj4YTjcARqemtPUEgsreRE8ZwQGMdhoAOKXnEJENpsrnWRg==}
     dependencies:
@@ -2099,7 +2120,7 @@ packages:
       - encoding
     dev: false
 
-  /@twurple/eventsub-ws@6.2.0(@twurple/api@6.2.0):
+  /@twurple/eventsub-ws@6.2.0(@twurple/api@6.2.1):
     resolution: {integrity: sha512-AiP4We/yDeSE3C3xgKS/frIzFs3Pt65ns9CcJGsiUZTDhswGJHdtfIgI/PFJHFT374tFXasVs9M11GlsttRxlw==}
     peerDependencies:
       '@twurple/api': 6.2.0
@@ -2108,7 +2129,7 @@ packages:
       '@d-fischer/logger': 4.2.2
       '@d-fischer/shared-utils': 3.6.3
       '@d-fischer/typed-event-emitter': 3.3.1
-      '@twurple/api': 6.2.0(@twurple/auth@6.1.2)
+      '@twurple/api': 6.2.1(@twurple/auth@6.1.2)
       '@twurple/auth': 6.2.0
       '@twurple/common': 6.2.0
       '@twurple/eventsub-base': 6.2.0
