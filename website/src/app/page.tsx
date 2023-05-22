@@ -16,7 +16,7 @@ export default function Page() {
                 <Link
                     href="https://twitch.tv/mastondzn"
                     target="_blank"
-                    className="dark:text-blue-500 text-blue-900"
+                    className="dark:text-blue-500 text-blue-700"
                 >
                     me
                 </Link>{' '}
