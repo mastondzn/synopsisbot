@@ -13,10 +13,7 @@ export async function retry<T>(
     let lastError: Error | undefined;
     for (let i = 0; i < retries; i++) {
         try {
-            const result = await fn();
-
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return result;
+            return await fn();
         } catch (error) {
             lastError = error instanceof Error ? error : new Error('Unknown error');
 
