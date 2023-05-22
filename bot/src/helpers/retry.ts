@@ -8,10 +8,8 @@ export interface RetryOptions {
 
 export async function retry<T>(
     fn: () => PromiseLike<T> | T,
-    options: RetryOptions
+    { retries, delay, onRetry }: RetryOptions
 ): Promise<Awaited<T>> {
-    const { retries, delay, onRetry } = options;
-
     let lastError: Error | undefined;
     for (let i = 0; i < retries; i++) {
         try {
