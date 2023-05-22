@@ -1,5 +1,6 @@
 import { commands as commandsTable, type NewCommand } from '@synopsis/db';
 
+import { getCommandPermissions } from '~/helpers/command';
 import { type BotModule } from '~/types/client';
 
 export const module: BotModule = {
@@ -7,13 +8,7 @@ export const module: BotModule = {
     priority: 0,
     register: async ({ commands, db }) => {
         const dbCommands = commands.map((command) => {
-            const permission =
-                command.permission?.mode === 'all' || command.permission?.mode === 'any'
-                    ? {
-                          local: command.permission.local,
-                          global: command.permission.global,
-                      }
-                    : ({ local: 'normal', global: 'normal' } as const);
+            const permission = getCommandPermissions(command);
 
             return {
                 name: command.name,
@@ -24,8 +19,8 @@ export const module: BotModule = {
                 ...(command.cooldown?.global ? { globalCooldown: command.cooldown.global } : {}),
                 ...(command.permission?.mode ? { permissionMode: command.permission.mode } : {}),
 
-                ...(permission.local ? { localPermission: permission.local } : {}),
-                ...(permission.global ? { globalPermission: permission.global } : {}),
+                localPermission: permission.local,
+                globalPermission: permission.global,
             } satisfies NewCommand;
         });
 
