@@ -10,7 +10,7 @@ export async function retry<T>(
     fn: () => PromiseLike<T> | T,
     options: RetryOptions
 ): Promise<Awaited<T>> {
-    const { retries, delay = 0, onRetry } = options;
+    const { retries, delay, onRetry } = options;
 
     let lastError: Error | undefined;
     for (let i = 0; i < retries; i++) {
