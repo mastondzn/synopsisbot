@@ -39,19 +39,19 @@
         "typecheck": "turbo run typecheck"
     },
     "dependencies": {
-        "@commitlint/cli": "^17.6.1",
-        "@commitlint/config-conventional": "^17.6.1",
-        "@commitlint/types": "^17.4.4",
-        "@manypkg/cli": "^0.20.0",
-        "@types/node": "^18.15.11",
-        "prettier": "^2.8.7",
-        "prettier-plugin-tailwindcss": "^0.3.0",
-        "rimraf": "^5.0.0",
-        "turbo": "^1.8.8",
-        "typescript": "^5.0.4"
+        "@commitlint/cli": "17.6.1",
+        "@commitlint/config-conventional": "17.6.1",
+        "@commitlint/types": "17.4.4",
+        "@manypkg/cli": "0.20.0",
+        "@types/node": "18.15.11",
+        "prettier": "2.8.7",
+        "prettier-plugin-tailwindcss": "0.3.0",
+        "rimraf": "5.0.0",
+        "turbo": "1.8.8",
+        "typescript": "5.0.4"
     },
     "packageManager": "pnpm@8.5.1",
     "engines": {
-        "node": ">=18"
+        "node": "20.2.0"
     }
 }

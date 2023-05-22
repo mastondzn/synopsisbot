@@ -44,15 +44,15 @@
     "devDependencies": {
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
-        "eslint": "^8.40.0",
-        "eslint-define-config": "^1.17.0",
-        "tsup": "^6.7.0"
+        "eslint": "8.40.0",
+        "eslint-define-config": "1.17.0",
+        "tsup": "6.7.0"
     },
     "dependencies": {
-        "@t3-oss/env-core": "^0.3.0",
-        "@t3-oss/env-nextjs": "^0.3.0",
-        "dotenv": "^16.0.3",
-        "is-docker": "2",
-        "zod": "^3.21.4"
+        "@t3-oss/env-core": "0.3.1",
+        "@t3-oss/env-nextjs": "0.3.1",
+        "dotenv": "16.0.3",
+        "is-docker": "2.2.1",
+        "zod": "3.21.4"
     }
 }
