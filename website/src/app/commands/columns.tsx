@@ -22,7 +22,7 @@ export const columns: ColumnDef<Command>[] = [
 
             return (
                 <Linked name={name}>
-                    <p className="font-bold dark:text-blue-500 text-blue-900 py-3 px-5">{name}</p>
+                    <p className="font-bold dark:text-blue-500 text-blue-900 py-3 px-4">{name}</p>
                 </Linked>
             );
         },
@@ -35,7 +35,7 @@ export const columns: ColumnDef<Command>[] = [
 
             return (
                 <Linked name={name}>
-                    <p className="py-3 px-5">{row.getValue<string>('description')}</p>
+                    <p className="py-3 px-4">{row.getValue<string>('description')}</p>
                 </Linked>
             );
         },
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Command>[] = [
 
             return (
                 <Linked name={name}>
-                    <p className="py-3 px-5">{row.getValue<string>('aliases')}</p>
+                    <p className="py-3 px-4">{row.getValue<string>('aliases')}</p>
                 </Linked>
             );
         },
