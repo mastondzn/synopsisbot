@@ -1,30 +1,32 @@
-import { IconBrandGithub, IconBrandTwitch, IconMail } from '@tabler/icons-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
-import synopsisWhite from '../../public/synopsiswhite.png';
 import { Button } from '~/components/button';
+import { PageBase } from '~/components/page-base';
 
 export default function Page() {
     return (
-        <div className="container flex min-h-screen flex-col items-center justify-center gap-3">
-            <Image src={synopsisWhite} className="mb-2 w-[500px]" alt="" />
-            <h2 className="scroll-m-20 pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0">
-                {'Website is currently under construction ⛏️'}
+        <PageBase>
+            <h2 className="text-xl font-medium text-center max-w-[600px]">
+                {
+                    "Hello! Synopsis Bot is a Twitch chat bot with a limited set of commands. But it's in development and growing!"
+                }
             </h2>
-            <div className="flex flex-row gap-10">
-                {[
-                    { link: 'https://twitch.tv/synopsisbot', Icon: IconBrandTwitch },
-                    { link: 'https://github.com/synopsisgg/bot', Icon: IconBrandGithub },
-                    { link: 'mailto:contact@synopsis.gg', Icon: IconMail },
-                ].map(({ link, Icon }, i) => (
-                    <Link href={link} target="_blank" rel="noreferrer" key={i}>
-                        <Button variant="outline" size="lg" className="h-fit w-fit px-5 py-3">
-                            <Icon className="h-6 w-6" />
-                        </Button>
-                    </Link>
-                ))}
-            </div>
-        </div>
+            <p className="text-center max-w-[400px] mt-[-20px]">
+                Currently, you cannot add the bot to a channel yourself, you can ask{' '}
+                <Link
+                    href="https://twitch.tv/mastondzn"
+                    target="_blank"
+                    className="dark:text-blue-500 text-blue-900"
+                >
+                    me
+                </Link>{' '}
+                to add it for you though!
+            </p>
+            <Link href="/commands">
+                <Button variant="default">
+                    <p className="font-semibold">{'✨ See the available commands!'}</p>
+                </Button>
+            </Link>
+        </PageBase>
     );
 }

@@ -2,10 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink, loggerLink } from '@trpc/client';
+import { ThemeProvider } from 'next-themes';
 import { useState } from 'react';
 import superjson from 'superjson';
 
-import { ThemeProvider } from '~/components/theme';
 import { trpc } from '~/utils/hooks/trpc';
 
 export function Providers({ children }: { children: React.ReactNode }) {

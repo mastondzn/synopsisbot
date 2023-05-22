@@ -11,7 +11,10 @@ export const command: BotCommand = {
     },
     usage: [
         'manage ban <user>', //
+        'Sets the user to banned permission, preventing them from using the bot in the current channel.',
+
         'manage unban <user>',
+        'Sets the user to normal permission, re-allowing them to use the bot in the current channel.',
     ].join('\n'),
 
     run: async (ctx) => {

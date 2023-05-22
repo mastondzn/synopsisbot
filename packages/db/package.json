@@ -6,10 +6,12 @@
     "scripts": {
         "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
         "check": "drizzle-kit check:pg --config=drizzle.config.ts",
+        "drop": "drizzle-kit drop --config=drizzle.config.ts",
         "migrate": "tsx -r tsconfig-paths/register scripts/migrate.ts",
         "db:generate": "pnpm generate",
         "db:check": "pnpm check",
         "db:migrate": "pnpm migrate",
+        "db:drop": "pnpm migrate",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"
