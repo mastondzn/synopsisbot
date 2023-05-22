@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 import { getDb } from '~/utils/db';
 
 async function getCommand(name: string) {
@@ -12,7 +14,7 @@ export default async function Page({ params }: { params: { command: string } }) 
     const command = await getCommand(params.command);
 
     if (!command) {
-        return <div>Command not found</div>;
+        return redirect('/404');
     }
 
     return <div>{command.name}</div>;
