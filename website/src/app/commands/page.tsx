@@ -4,6 +4,7 @@ import { PageBase } from '~/components/page-base';
 import { getDb } from '~/utils/db';
 
 export const revalidate = 600;
+export const dynamic = 'force-dynamic';
 
 async function getCommands() {
     const db = getDb();
