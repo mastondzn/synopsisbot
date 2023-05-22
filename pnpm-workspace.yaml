@@ -1,4 +1,4 @@
 packages:
-    - 'bot'
-    - 'website'
-    - 'packages/*'
+    - './bot'
+    - './website'
+    - './packages/*'
