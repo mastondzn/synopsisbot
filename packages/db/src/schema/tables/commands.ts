@@ -8,7 +8,7 @@ export const commands = pgTable('commands', {
     usage: varchar('usage', { length: 4096 }),
 
     userCooldown: integer('user_cooldown').default(10).notNull(),
-    globalCooldown: integer('global_cooldown').default(10).notNull(),
+    globalCooldown: integer('global_cooldown').default(3).notNull(),
 
     localPermission: varchar('permission', {
         length: 64,
