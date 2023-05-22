@@ -11,14 +11,19 @@ import { tw } from '~/utils/tw';
 export function Header() {
     return (
         <Link href="/">
-            <Image src={synopsisBlack} className="w-[350px] dark:invert" alt="" priority={true} />
+            <Image
+                src={synopsisBlack}
+                className="w-[350px] dark:invert pt-8"
+                alt=""
+                priority={true}
+            />
         </Link>
     );
 }
 
 export function Footer() {
     return (
-        <div className="flex flex-row gap-7">
+        <div className="flex flex-row gap-7 pb-8">
             {[
                 { link: 'https://twitch.tv/synopsisbot', Icon: IconBrandTwitch },
                 { link: 'https://github.com/synopsisgg/bot', Icon: IconBrandGithub },
