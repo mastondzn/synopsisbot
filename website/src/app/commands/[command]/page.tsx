@@ -5,6 +5,8 @@ import { Separator } from '~/components/separator';
 import { getDb } from '~/utils/db';
 import { tw } from '~/utils/tw';
 
+export const revalidate = 3600;
+
 async function getCommand(name: string) {
     const db = getDb();
     const command = await db.query.commands.findFirst({
