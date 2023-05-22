@@ -6,7 +6,7 @@ import { PageBase } from '~/components/page-base';
 export default function Page() {
     return (
         <PageBase>
-            <h2 className="text-xl font-medium text-center max-w-[500px]">
+            <h2 className="text-xl font-medium text-center max-w-[600px]">
                 {
                     "Hello! Synopsis Bot is a Twitch chat bot with a limited set of commands. But it's in development and growing!"
                 }
