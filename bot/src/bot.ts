@@ -1,5 +1,5 @@
 import { type Collection } from '@discordjs/collection';
-import { AlternateMessageModifier, type ChatClient } from '@kararty/dank-twitch-irc';
+import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
@@ -15,12 +15,12 @@ import {
     type BotUtils,
 } from './types/client';
 import { type BotAuthProvider } from './utils/auth-provider';
-import { BotChatClient } from './utils/client';
 import { CommandCooldownManager } from './utils/cooldown';
 import { IdLoginPairProvider } from './utils/id-login-pair';
 import { LiveStatusManager } from './utils/live-manager';
 import { PermissionProvider } from './utils/permissions';
 import { PrometheusExposer } from './utils/prometheus';
+import { RetryMixin } from './utils/retry-mixin';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
 
@@ -72,12 +72,13 @@ export class Bot {
         this.api = new ApiClient({ authProvider: this.authProvider });
         console.log(logPrefix, 'api client initialized');
 
-        this.chat = new BotChatClient({
+        this.chat = new ChatClient({
             username: env.TWITCH_BOT_USERNAME,
             password: `oauth:${botToken}`,
             rateLimits: 'default',
         });
         this.chat.use(new AlternateMessageModifier(this.chat));
+        this.chat.use(new RetryMixin());
         console.log(logPrefix, 'chat client initialized');
 
         this.eventSub = new EventSubWsListener({
