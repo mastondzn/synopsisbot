@@ -23,7 +23,7 @@
         "@trpc/react-query": "10.27.1",
         "@trpc/server": "10.27.1",
         "@twurple/api": "6.2.1",
-        "@twurple/auth": "6.1.2",
+        "@twurple/auth": "6.2.1",
         "class-variance-authority": "0.6.0",
         "clsx": "1.2.1",
         "ioredis": "5.3.2",
