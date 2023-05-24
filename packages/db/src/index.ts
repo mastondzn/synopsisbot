@@ -1,23 +1,11 @@
-import { type DrizzleConfig } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client, type ClientConfig, Pool, type PoolConfig } from 'pg';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres, { type Sql } from 'postgres';
 
 import { schema } from './schema';
-import { type Database } from './types';
+import { type Database, type DatabaseOptions } from './types';
 
-export const makeDatabase = (
-    options: Omit<DrizzleConfig, 'schema'> & PoolConfig
-): { db: Database; pool: Pool } => {
-    const pool = new Pool(options);
-    const db = drizzle(pool, { ...options, schema });
-
-    return { db, pool };
-};
-
-export const makeDatabaseClient = (
-    options: Omit<DrizzleConfig, 'schema'> & ClientConfig //
-): { db: Database; client: Client } => {
-    const client = new Client(options);
+export const createDatabase = (options: DatabaseOptions): { db: Database; client: Sql } => {
+    const client = postgres(options);
     const db = drizzle(client, { ...options, schema });
 
     return { db, client };
@@ -26,6 +14,5 @@ export const makeDatabaseClient = (
 export * from './types';
 export * from './schema';
 export * from './helpers';
-export * from 'drizzle-orm/node-postgres';
+export * from 'drizzle-orm/postgres-js';
 export * from 'drizzle-orm';
-export { type Pool } from 'pg';

@@ -20,7 +20,6 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "18.15.11",
-        "@types/pg": "8.6.6",
         "drizzle-kit": "0.18.0",
         "eslint": "8.40.0",
         "eslint-define-config": "1.17.0",
@@ -30,7 +29,7 @@
     "dependencies": {
         "@synopsis/env": "0.0.1",
         "dotenv": "16.0.3",
-        "drizzle-orm": "0.26.0",
-        "pg": "8.10.0"
+        "drizzle-orm": "0.26.1",
+        "postgres": "^3.3.4"
     }
 }
