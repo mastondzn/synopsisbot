@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { getAuthedUserByIdThrows, makeDatabase } from '@synopsis/db';
+import { createDatabase, getAuthedUserByIdThrows } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { Bot } from './bot';
@@ -19,14 +19,12 @@ void (async () => {
         `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`
     );
 
-    const { db, pool } = makeDatabase({
+    const { db } = createDatabase({
         host: env.DB_HOST,
         user: env.DB_USERNAME,
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
     });
-    console.log(logPrefix, 'database connection created');
-
     const botUser = await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID);
 
     const authProvider = new BotAuthProvider({
@@ -40,6 +38,13 @@ void (async () => {
     if (!botToken) throw new Error('could not obtain token from auth provider');
     console.log(logPrefix, 'bot token loaded');
 
-    new Bot({ commands, events, modules, db, pool, authProvider, botToken: botToken.accessToken });
+    new Bot({
+        commands,
+        events,
+        modules,
+        db,
+        authProvider,
+        botToken: botToken.accessToken,
+    });
     console.log(logPrefix, 'bot initialized');
 })();

@@ -1,32 +1,32 @@
 import { resolve } from 'node:path';
 
 import { config } from 'dotenv';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
 import { envSchema } from '@synopsis/env';
 
-import { makeDatabase, type NodePgDatabase } from '~/index';
+import { createDatabase } from '~/index';
 
 config({ path: resolve(process.cwd(), '../../.env') });
 
-void (async () => {
+async function main() {
     const env = envSchema.parse(process.env);
 
-    const { db, pool } = makeDatabase({
+    const { db } = createDatabase({
         host: env.DB_HOST,
         user: env.DB_USERNAME,
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
         logger: true,
+        max: 1,
     });
 
     console.log('Migrating...');
-
-    await migrate(db as NodePgDatabase, {
+    await migrate(db, {
         migrationsFolder: './migrations',
     });
 
     console.log('Migrations complete!');
-    await pool.end();
-    console.log('Client connection ended!');
-})();
+}
+
+void main();

@@ -5,7 +5,7 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
-import { type Database, type Pool } from '@synopsis/db';
+import { type Database } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import {
@@ -14,13 +14,15 @@ import {
     type BotModule,
     type BotUtils,
 } from './types/client';
-import { type BotAuthProvider } from './utils/auth-provider';
-import { CommandCooldownManager } from './utils/cooldown';
-import { IdLoginPairProvider } from './utils/id-login-pair';
-import { LiveStatusManager } from './utils/live-manager';
-import { PermissionProvider } from './utils/permissions';
-import { PrometheusExposer } from './utils/prometheus';
-import { RetryMixin } from './utils/retry-mixin';
+import {
+    type BotAuthProvider,
+    CommandCooldownManager,
+    IdLoginPairProvider,
+    LiveStatusManager,
+    PermissionProvider,
+    PrometheusExposer,
+    RetryMixin,
+} from './utils';
 
 const logPrefix = chalk.bgCyanBright('[bot]');
 
@@ -31,7 +33,6 @@ export interface BotOptions {
     authProvider: BotAuthProvider;
     botToken: string;
     db: Database;
-    pool: Pool;
 }
 
 export class Bot {
@@ -41,7 +42,6 @@ export class Bot {
     eventSub: EventSubWsListener;
 
     db: Database;
-    pool: Pool;
     cache: Redis;
 
     events: Collection<string, BotEventHandler>;
@@ -49,9 +49,8 @@ export class Bot {
     modules: Collection<string, BotModule>;
     utils: BotUtils;
 
-    constructor({ events, commands, modules, db, pool, botToken, authProvider }: BotOptions) {
+    constructor({ events, commands, modules, db, botToken, authProvider }: BotOptions) {
         this.db = db;
-        this.pool = pool;
 
         this.cache = new Redis({
             host: env.REDIS_HOST,
@@ -64,7 +63,6 @@ export class Bot {
         this.modules = modules;
 
         this.db = db;
-        this.pool = pool;
 
         this.authProvider = authProvider;
         console.log(logPrefix, 'auth provider initialized');
@@ -124,6 +122,6 @@ export class Bot {
     }
 
     async stop(): Promise<void> {
-        await Promise.all([this.cache.quit(), this.pool.end(), this.chat.destroy()]);
+        await Promise.all([this.cache.quit(), this.chat.destroy()]);
     }
 }
