@@ -1,5 +1,5 @@
 import { parseUserParameter, runDeepCommand } from '~/helpers/command';
-import { type BotCommand } from '~/types/client';
+import { type BotCommand, type CommandFragment } from '~/types/client';
 
 export const command: BotCommand = {
     name: 'manage',
@@ -17,31 +17,30 @@ export const command: BotCommand = {
         'Sets the user to normal permission, re-allowing them to use the bot in the current channel.',
     ].join('\n'),
 
-    run: async (ctx) => {
+    async *run(ctx): AsyncGenerator<CommandFragment> {
         const {
-            reply,
             msg,
             utils: { permissions },
         } = ctx;
 
         const user = await parseUserParameter(ctx, 1, true);
         if (!user.ok) {
-            return await reply(user.reason);
+            return yield { reply: user.reason };
         }
 
         const isBroadcaster = msg.channelName === user.login;
         const isSelf = msg.senderUsername === user.login;
-        if (isBroadcaster) return await reply("You can't ban the broadcaster.");
-        if (isSelf) return await reply("You can't ban yourself.");
+        if (isBroadcaster) return yield { reply: "You can't ban the broadcaster." };
+        if (isSelf) return yield { reply: "You can't ban yourself." };
 
         const channel = { login: msg.channelName, id: msg.channelID };
 
         const isAmbassador =
             (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
-        if (isAmbassador) return await reply(`You can't ban ${user.login}.`);
+        if (isAmbassador) return yield { reply: `You can't ban ${user.login}.` };
 
         const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
-        if (isOwner) return await reply(`You can't ban ${user.login}.`);
+        if (isOwner) return yield { reply: `You can't ban ${user.login}.` };
 
         const context = { channel, user };
 
@@ -53,29 +52,31 @@ export const command: BotCommand = {
             commands: {
                 ban: async () => {
                     if (currentPermission === 'banned') {
-                        return await reply(
-                            `User ${user.login} is already banned from using the bot locally.`
-                        );
+                        return {
+                            reply: `User ${user.login} is already banned from using the bot locally.`,
+                        };
                     }
                     await permissions.setLocalPermission('banned', context);
-                    return await reply(
-                        `Banned user ${user.login} from using the bot in this channel.`
-                    );
+                    return {
+                        reply: `Banned user ${user.login} from using the bot in this channel.`,
+                    };
                 },
 
                 unban: async () => {
                     if (currentPermission === 'normal') {
-                        return await reply(
-                            `User ${user.login} is not currently banned from using the bot locally.`
-                        );
+                        return {
+                            reply: `User ${user.login} is not currently banned from using the bot locally.`,
+                        };
                     }
                     await permissions.setLocalPermission('normal', context);
-                    return await reply(
-                        `Unbanned user ${user.login} from using the bot in this channel.`
-                    );
+                    return {
+                        reply: `Unbanned user ${user.login} from using the bot in this channel.`,
+                    };
                 },
             },
-            onNotFound: () => reply('Invalid subcommand.'),
+            onNotFound: () => ({
+                reply: 'Invalid subcommand.',
+            }),
         });
     },
 };

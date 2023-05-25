@@ -94,18 +94,17 @@ export const event: BotEventHandler = {
         console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
         const reply = (text: string) => chat.reply(channel, msg.messageID, text);
-        const say = (text: string) => chat.say(channel, text);
+        // const say = (text: string) => chat.say(channel, text);
 
         const commandContext: BotCommandContext = {
             ...ctx,
             msg,
-            reply,
-            say,
             cancel,
             params: parseCommandParams(text),
         };
 
         try {
+            // TODO:...
             await command.run(commandContext);
             console.log(logPrefix, `command ${command.name} executed successfully`);
         } catch (error) {
