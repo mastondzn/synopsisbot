@@ -16,7 +16,7 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "@types/jest": "29.5.1",
-        "@types/node": "18.15.11",
+        "@types/node": "18.16.14",
         "@types/pg": "8.6.6",
         "chalk": "5.2.0",
         "eslint": "8.40.0",
