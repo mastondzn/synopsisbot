@@ -1,7 +1,11 @@
-import { type BotCommandContext, type BotCommandFunction } from '~/types/client';
+import {
+    type BotCommandContext,
+    type BotCommandFunction,
+    type BotCommandResult,
+} from '~/types/client';
 
 export interface DeepCommandRecord {
-    [key: string]: (() => Promise<void> | void) | DeepCommandRecord;
+    [key: string]: (() => BotCommandResult) | DeepCommandRecord;
 }
 
 export function getPaths(subcommands: DeepCommandRecord): string[][] {
@@ -32,7 +36,7 @@ export function runDeepCommand({
     ctx: BotCommandContext;
     commands: DeepCommandRecord;
     onNotFound: BotCommandFunction;
-}): Promise<void> | void {
+}): BotCommandResult {
     const params = ctx.params.list;
     const paths = getPaths(commands);
 

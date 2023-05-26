@@ -4,11 +4,11 @@ import postgres, { type Sql } from 'postgres';
 import { schema } from './schema';
 import { type Database, type DatabaseOptions } from './types';
 
-export const createDatabase = (options: DatabaseOptions): { db: Database; client: Sql } => {
-    const client = postgres(options);
-    const db = drizzle(client, { ...options, schema });
+export const createDatabase = (options: DatabaseOptions): { db: Database; sql: Sql } => {
+    const sql = postgres(options);
+    const db = drizzle(sql, { ...options, schema });
 
-    return { db, client };
+    return { db, sql };
 };
 
 export * from './types';

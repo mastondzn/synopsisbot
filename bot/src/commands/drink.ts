@@ -16,19 +16,38 @@ export const command: BotCommand = {
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [
-        'drink', //
+        'drink',
         'Have a drink!',
         '',
         'drink points',
         'Check how many hydration points you have.',
     ].join('\n'),
 
-    run: async ({ db, reply, msg, params }) => {
-        let [user] = await db
-            .select()
-            .from(commandUsers)
-            .where(eq(commandUsers.twitchId, msg.senderUserID))
-            .limit(1);
+    subcommands: [
+        {
+            path: ['points'],
+            run: async ({ db, msg }) => {
+                const user = await db.query.commandUsers.findFirst({
+                    where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
+                });
+
+                if (!user) {
+                    return {
+                        reply: 'You have no hydration points!',
+                    };
+                }
+
+                return {
+                    reply: `You have ${user.hydrationPoints} hydration points!`,
+                };
+            },
+        },
+    ],
+
+    run: async ({ db, msg }) => {
+        let user = await db.query.commandUsers.findFirst({
+            where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
+        });
 
         if (!user) {
             [user] = await db
@@ -41,14 +60,6 @@ export const command: BotCommand = {
         }
         if (!user) throw new Error('Failed to create command user');
 
-        if (params.list.at(0)?.toLowerCase() === 'points') {
-            return await reply(
-                `You have ${user.hydrationPoints} hydration points${
-                    user.hydrationPoints > 0 ? '!' : '.'
-                }`
-            );
-        }
-
         if (hydratedRecently(user)) {
             const timeLeft = ms(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -58,7 +69,7 @@ export const command: BotCommand = {
                     secondsDecimalDigits: 0,
                 }
             );
-            return await reply(`You are already hydrated! Try again in ${timeLeft}.`);
+            return { reply: `You are already hydrated! Try again in ${timeLeft}.` };
         }
 
         const { beverage, modifier, points } = rollBeverageWithModifier();
@@ -84,6 +95,6 @@ export const command: BotCommand = {
             '(3h cooldown...)'
         );
 
-        return await reply(lines.join(' '));
+        return { reply: lines.join(' ') };
     },
 };

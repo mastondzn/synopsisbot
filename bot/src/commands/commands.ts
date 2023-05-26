@@ -5,7 +5,7 @@ import { pleasesGlobal, pleasesLocal } from '~/utils/permissions';
 export const command: BotCommand = {
     name: 'commands',
     description: 'List commands available to you.',
-    run: async ({ msg, commands, reply, utils: { permissions } }) => {
+    run: async ({ msg, commands, utils: { permissions } }) => {
         const { local, global } = await permissions.getPermission(msg);
 
         const availableCommands = commands
@@ -28,6 +28,6 @@ export const command: BotCommand = {
             .map((command) => command.name)
             .join(', ');
 
-        await reply(`Commands currently available to you: ${availableCommands}.`);
+        return { reply: `Commands currently available to you: ${availableCommands}.` };
     },
 };

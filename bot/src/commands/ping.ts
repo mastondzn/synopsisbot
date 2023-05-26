@@ -9,7 +9,7 @@ export const command: BotCommand = {
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
     aliases: ['pong'],
-    run: async ({ reply, params }) => {
+    run: ({ params }) => {
         const lines = [];
 
         if (params.command === 'pong') lines.push('MrDestructoid Ping!');
@@ -25,6 +25,6 @@ export const command: BotCommand = {
             })}.`
         );
 
-        return await reply(lines.join(' '));
+        return { reply: lines.join(' ') };
     },
 };

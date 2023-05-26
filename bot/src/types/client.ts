@@ -79,12 +79,33 @@ export type BotEventHandler = ChatClientEventsList extends infer T
 export type BotCommandContext = BotContext & {
     msg: PrivmsgMessage;
     params: ReturnType<typeof parseCommandParams>;
-    reply: (text: string) => Promise<void>;
-    say: (text: string) => Promise<void>;
     cancel: () => Promise<void>;
 };
 
-export type BotCommandFunction = (ctx: BotCommandContext) => Promise<void> | void;
+export type CommandFragment =
+    | {
+          say: string;
+      }
+    | {
+          reply: string;
+      }
+    | {
+          action: string;
+      };
+
+export type BotCommandResult =
+    | Promise<CommandFragment | undefined>
+    | CommandFragment
+    | AsyncGenerator<CommandFragment>
+    | Generator<CommandFragment>
+    | undefined;
+
+export type BotCommandFunction = (ctx: BotCommandContext) => BotCommandResult;
+
+export interface BotSubcommand {
+    path: string[];
+    run: BotCommandFunction;
+}
 
 export interface BotCommand {
     name: string;
@@ -95,6 +116,7 @@ export interface BotCommand {
         user: number; // seconds
         global: number; // seconds
     };
+    subcommands?: BotSubcommand[];
     permission?:
         | {
               local?: LocalLevel;
