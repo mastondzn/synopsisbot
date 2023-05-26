@@ -94,14 +94,18 @@ export type CommandFragment =
       };
 
 export type BotCommandResult =
-    | Promise<CommandFragment>
+    | Promise<CommandFragment | undefined>
     | CommandFragment
     | AsyncGenerator<CommandFragment>
     | Generator<CommandFragment>
-    | undefined
-    | Promise<undefined>;
+    | undefined;
 
 export type BotCommandFunction = (ctx: BotCommandContext) => BotCommandResult;
+
+export interface BotSubcommand {
+    path: string[];
+    run: BotCommandFunction;
+}
 
 export interface BotCommand {
     name: string;
@@ -112,6 +116,7 @@ export interface BotCommand {
         user: number; // seconds
         global: number; // seconds
     };
+    subcommands?: BotSubcommand[];
     permission?:
         | {
               local?: LocalLevel;
