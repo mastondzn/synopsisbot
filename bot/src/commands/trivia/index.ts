@@ -24,8 +24,6 @@ export const command: BotCommand = {
             return yield { reply: 'Failed to fetch a question.. :/' };
         }
 
-        console.log(trivia);
-
         const correctAnswer = trivia.correct_answer;
         const answers = shuffle([trivia.correct_answer, ...trivia.incorrect_answers]);
         const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
