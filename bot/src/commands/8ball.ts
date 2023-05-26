@@ -5,11 +5,9 @@ export const command: BotCommand = {
     name: '8ball',
     description: 'Ask the magic 8ball a question!',
     aliases: ['8b'],
-    run: async ({ reply, params }) => {
+    run: ({ params }) => {
         if (!params.text) {
-            return await reply(
-                'You must ask a question! The magic 8ball cannot read your mind. 🎱'
-            );
+            return { reply: 'You must ask a question! The magic 8ball cannot read your mind. 🎱' };
         }
 
         const responses = [
@@ -35,6 +33,6 @@ export const command: BotCommand = {
             'Very doubtful.',
         ];
 
-        return await reply(`${pickOne(responses)} 🎱`);
+        return { reply: `${pickOne(responses)} 🎱` };
     },
 };
