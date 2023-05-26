@@ -5,7 +5,12 @@ import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
-import { type BotCommandContext, type BotEventHandler } from '~/types/client';
+import {
+    type BotCommandContext,
+    type BotEventHandler,
+    type BotSubcommand,
+    type CommandFragment,
+} from '~/types/client';
 
 const botPrefix = 'sb ';
 
@@ -19,9 +24,9 @@ const hasDevProcess = async (redis: Redis): Promise<boolean> => {
 export const event: BotEventHandler = {
     event: 'PRIVMSG',
     handler: async (ctx) => {
-        const { params, chat, commands, utils, db, cache } = ctx;
+        const { chat, commands, utils, db, cache } = ctx;
         const { cooldownManager, statusManager, permissions } = utils;
-        const [msg] = params;
+        const msg = ctx.params[0];
 
         const text = msg.messageText;
         const channel = msg.channelName;
@@ -94,18 +99,50 @@ export const event: BotEventHandler = {
         console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
         const reply = (text: string) => chat.reply(channel, msg.messageID, text);
-        // const say = (text: string) => chat.say(channel, text);
+        const me = (text: string) => chat.me(channel, text);
+        const say = (text: string) => chat.say(channel, text);
+        const params = parseCommandParams(text);
 
         const commandContext: BotCommandContext = {
             ...ctx,
             msg,
             cancel,
-            params: parseCommandParams(text),
+            params,
+        };
+
+        const consumeFragment = async ({ fragment }: { fragment: CommandFragment }) => {
+            if ('reply' in fragment) {
+                return reply(fragment.reply);
+            } else if ('action' in fragment) {
+                return me(fragment.action);
+            } else if ('say' in fragment) {
+                return say(fragment.say);
+            }
         };
 
         try {
-            // TODO:...
-            await command.run(commandContext);
+            const subcommand: BotSubcommand | undefined = command.subcommands?.find(
+                ({ path }) => path.join(' ') === params.list.slice(0, path.length).join(' ')
+            );
+
+            const commandResult = subcommand
+                ? await subcommand.run(commandContext)
+                : await command.run(commandContext);
+
+            if (!commandResult) {
+                //
+            } else if (
+                'reply' in commandResult ||
+                'action' in commandResult ||
+                'say' in commandResult
+            ) {
+                await consumeFragment({ fragment: commandResult });
+            } else {
+                for await (const fragment of commandResult) {
+                    await consumeFragment({ fragment });
+                }
+            }
+
             console.log(logPrefix, `command ${command.name} executed successfully`);
         } catch (error) {
             const when = Date.now();

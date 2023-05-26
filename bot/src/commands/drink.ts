@@ -3,7 +3,7 @@ import ms from 'pretty-ms';
 import { type CommandUser, commandUsers, eq } from '@synopsis/db';
 
 import { rollBeverageWithModifier } from '~/data/beverages';
-import { type BotCommand, type BotSubcommand } from '~/types/client';
+import { type BotCommand } from '~/types/client';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
 
@@ -12,39 +12,37 @@ const hydratedRecently = (commandUser: CommandUser): boolean => {
     return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
 };
 
-const subcommands: BotSubcommand[] = [
-    {
-        path: ['points'],
-        run: async ({ db, msg }) => {
-            const user = await db.query.commandUsers.findFirst({
-                where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
-            });
-
-            if (!user) {
-                return {
-                    reply: 'You have no hydration points!',
-                };
-            }
-
-            return {
-                reply: `You have ${user.hydrationPoints} hydration points!`,
-            };
-        },
-    },
-];
-
 export const command: BotCommand = {
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [
-        'drink', //
+        'drink',
         'Have a drink!',
         '',
         'drink points',
         'Check how many hydration points you have.',
     ].join('\n'),
 
-    subcommands,
+    subcommands: [
+        {
+            path: ['points'],
+            run: async ({ db, msg }) => {
+                const user = await db.query.commandUsers.findFirst({
+                    where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
+                });
+
+                if (!user) {
+                    return {
+                        reply: 'You have no hydration points!',
+                    };
+                }
+
+                return {
+                    reply: `You have ${user.hydrationPoints} hydration points!`,
+                };
+            },
+        },
+    ],
 
     run: async ({ db, msg }) => {
         let user = await db.query.commandUsers.findFirst({
