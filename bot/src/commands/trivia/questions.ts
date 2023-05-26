@@ -37,7 +37,6 @@ export async function getTrivia(): Promise<Trivia> {
     const response = await fetch(
         'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986'
     );
-    const json = (await response.json()) as unknown;
-    const result = responseSchema.parse(json);
+    const result = responseSchema.parse(await response.json());
     return result.results[0];
 }
