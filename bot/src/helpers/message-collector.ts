@@ -28,7 +28,7 @@ export const collectMessage = ({
 };
 
 export interface CollectMessagesOptions extends CollectMessageOptions {
-    exitOn?: MessageFilter;
+    exitOn?: (msg: PrivmsgMessage, collected: PrivmsgMessage[]) => unknown;
 }
 
 export const collectMessages = ({
@@ -44,7 +44,7 @@ export const collectMessages = ({
 
             messages.push(msg);
 
-            if (exitOn?.(msg)) {
+            if (exitOn?.(msg, messages)) {
                 chat.removeListener('PRIVMSG', handler);
                 resolve(messages);
             }
