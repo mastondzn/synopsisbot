@@ -34,7 +34,7 @@ export const command: BotCommand = {
 
         const answersAsString = answers
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .map((answer, i) => `${alphabet[i]!}. ${decodeURIComponent(answer)}`)
+            .map((answer, i) => `${alphabet[i]!}. ${answer}`)
             .join(', ')
             .replace(/, ([^,]*)$/, ', or $1');
 
