@@ -1,8 +1,262 @@
-import { type ChannelMode, channels as channelsTable, eq } from '@synopsis/db';
+import { channels as channelsTable, eq } from '@synopsis/db';
 
-import { parseUserParameter, runDeepCommand } from '~/helpers/command';
-import { collectMessage } from '~/helpers/message-collector';
-import { type BotCommand } from '~/types/client';
+import { parseUserParameter } from '~/helpers/command';
+import { type BotCommand, type BotSubcommand } from '~/types/client';
+
+const subcommands: BotSubcommand[] = [
+    {
+        path: ['join'],
+        run: async (ctx) => {
+            const { params, db, chat } = ctx;
+
+            const channel = await parseUserParameter(ctx, 1, true);
+            if (!channel.ok) return { reply: channel.reason };
+
+            const desiredMode = params.list.at(2)?.toLowerCase();
+            const mode =
+                desiredMode === 'offlineonly'
+                    ? 'offlineonly'
+                    : desiredMode === 'readonly'
+                    ? 'readonly'
+                    : desiredMode === 'all'
+                    ? 'all'
+                    : 'offlineonly';
+
+            if (desiredMode && mode !== desiredMode) {
+                return {
+                    reply: 'Invalid channel mode. Must be one of: "offlineonly", "readonly" or "all". Defaults to offlineonly.',
+                };
+            }
+
+            const channelFromDb = await db.query.channels.findFirst({
+                where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
+            });
+
+            if (channelFromDb && channelFromDb.mode === mode) {
+                await chat.join(channel.login);
+                return {
+                    reply: `Channel ${channel.login} is already present in the database with same mode. Attempted to join again.`,
+                };
+            }
+
+            if (channelFromDb && channelFromDb.mode !== mode) {
+                await db
+                    .update(channelsTable)
+                    .set({ mode })
+                    .where(eq(channelsTable.twitchId, channel.id));
+                await chat.join(channel.login);
+                return {
+                    reply: `Channel ${channel.login} is already present in the database. Updated mode from ${channelFromDb.mode} to ${mode} and attempted to join again.`,
+                };
+            }
+
+            if (!channelFromDb) {
+                await db.insert(channelsTable).values({
+                    twitchId: channel.id,
+                    twitchLogin: channel.login,
+                    mode,
+                });
+                await chat.join(channel.login);
+                return { reply: `Joined channel ${channel.login} in ${mode} mode.` };
+            }
+            return;
+        },
+    },
+    {
+        path: ['part'],
+        run: async (ctx) => {
+            const { chat, db } = ctx;
+
+            const channel = await parseUserParameter(ctx, 1, true);
+            if (!channel.ok) return { reply: channel.reason };
+
+            const channelFromDb = await db.query.channels.findFirst({
+                where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
+            });
+
+            if (!channelFromDb) {
+                await chat.part(channel.login);
+                return {
+                    reply: `Channel ${channel.login} is not present in the database. Attempted to leave from chat anyway.`,
+                };
+            }
+
+            await chat.part(channel.login);
+            await db.delete(channelsTable).where(eq(channelsTable.twitchId, channel.id));
+            return { reply: `Left channel ${channel.login} and deleted settings from database.` };
+        },
+    },
+    {
+        path: ['global', 'ban'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const user = await parseUserParameter(ctx, 2, true);
+            if (!user.ok) return { reply: user.reason };
+
+            const currentPermission = await permissions.getGlobalPermission(user.id);
+            if (currentPermission === 'banned') {
+                return { reply: `${user.login} is already banned globally.` };
+            }
+
+            await permissions.setGlobalPermission('banned', { user });
+            return { reply: `Banned user ${user.login} globally from using the bot.` };
+        },
+    },
+    {
+        path: ['global', 'unban'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const user = await parseUserParameter(ctx, 2, true);
+            if (!user.ok) return { reply: user.reason };
+
+            const currentPermission = await permissions.getGlobalPermission(user.id);
+            if (currentPermission === 'normal') {
+                return { reply: `${user.login} is not currently banned globally.` };
+            }
+
+            await permissions.setGlobalPermission('normal', { user });
+            return { reply: `Unbanned user ${user.login} globally from using the bot.` };
+        },
+    },
+    {
+        path: ['local', 'ban'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const [channel, user] = await Promise.all([
+                parseUserParameter(ctx, 2, true),
+                parseUserParameter(ctx, 3, true),
+            ]);
+
+            if (!channel.ok) {
+                return { reply: channel.reason };
+            }
+            if (!user.ok) {
+                return { reply: user.reason };
+            }
+
+            const context = { channel, user };
+
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+
+            if (currentPermission === 'banned') {
+                return {
+                    reply: `User ${user.login} is already banned in channel ${channel.login}.`,
+                };
+            }
+            await permissions.setLocalPermission('banned', context);
+            return {
+                reply: `Banned user ${user.login} from using the bot in channel ${channel.login}.`,
+            };
+        },
+    },
+    {
+        path: ['local', 'unban'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const [channel, user] = await Promise.all([
+                parseUserParameter(ctx, 2, true),
+                parseUserParameter(ctx, 3, true),
+            ]);
+
+            if (!channel.ok) {
+                return { reply: channel.reason };
+            }
+            if (!user.ok) {
+                return { reply: user.reason };
+            }
+
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+
+            if (currentPermission === 'normal') {
+                return {
+                    reply: `User ${user.login} is not currently banned in channel ${channel.login}.`,
+                };
+            }
+            await permissions.setLocalPermission('normal', { channel, user });
+            return {
+                reply: `Unbanned user ${user.login} from using the bot in channel ${channel.login}.`,
+            };
+        },
+    },
+    {
+        path: ['local', 'ambassador'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const [channel, user] = await Promise.all([
+                parseUserParameter(ctx, 2, true),
+                parseUserParameter(ctx, 3, true),
+            ]);
+
+            if (!channel.ok) {
+                return { reply: channel.reason };
+            }
+            if (!user.ok) {
+                return { reply: user.reason };
+            }
+
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+
+            if (currentPermission === 'ambassador') {
+                return {
+                    reply: `User ${user.login} is already an ambassador in channel ${channel.login}.`,
+                };
+            }
+            await permissions.setLocalPermission('ambassador', { channel, user });
+            return { reply: `Set user ${user.login} as ambassador in channel ${channel.login}.` };
+        },
+    },
+    {
+        path: ['local', 'unambassador'],
+        run: async (ctx) => {
+            const {
+                utils: { permissions },
+            } = ctx;
+
+            const [channel, user] = await Promise.all([
+                parseUserParameter(ctx, 2, true),
+                parseUserParameter(ctx, 3, true),
+            ]);
+
+            if (!channel.ok) {
+                return { reply: channel.reason };
+            }
+            if (!user.ok) {
+                return { reply: user.reason };
+            }
+
+            const context = { channel, user };
+
+            const currentPermission =
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+
+            if (currentPermission === 'normal') {
+                return {
+                    reply: `User ${user.login} is not currently an ambassador in channel ${channel.login}.`,
+                };
+            }
+            await permissions.setLocalPermission('normal', context);
+            return { reply: `Unset user ${user.login} as ambassador in channel ${channel.login}.` };
+        },
+    },
+];
 
 export const command: BotCommand = {
     name: 'owner',
@@ -10,10 +264,7 @@ export const command: BotCommand = {
     permission: { global: 'owner' },
     usage: [
         'owner part <channel>',
-        'Parts the bot from the specified channel. Prompts for confirmation.',
-        '',
-        'owner part <channel> confirm',
-        'Parts the bot from the specified channel without needing confirmation.',
+        'Parts the bot from the specified channel.',
         '',
         'owner join <channel>',
         'owner join <channel> offlineonly',
@@ -32,300 +283,5 @@ export const command: BotCommand = {
         'Locally bans, unbans, promotes or demotes a user in the specified channel. "_" can be used to target current channel.',
     ].join('\n'),
 
-    run: (ctx) => {
-        const {
-            reply,
-            params,
-            db,
-            chat,
-            msg,
-            utils: { permissions },
-        } = ctx;
-
-        return runDeepCommand({
-            ctx,
-            commands: {
-                join: async () => {
-                    const channelParameter = await parseUserParameter(ctx, 1, true);
-
-                    if (!channelParameter.ok) return await reply(channelParameter.reason);
-
-                    const { login: channel, id: channelId } = channelParameter;
-
-                    let isOfflineOnlyMode = params.list.at(2)?.toLowerCase() === 'offlineonly';
-                    const isReadOnlyMode = params.list.at(2)?.toLowerCase() === 'readonly';
-                    const isAllMode = params.list.at(2)?.toLowerCase() === 'all';
-
-                    if (params.list.at(2) && !isOfflineOnlyMode && !isReadOnlyMode && !isAllMode) {
-                        return await reply(
-                            'Invalid channel mode. Must be one of: "offlineonly", "readonly" or "all". Defaults to offlineonly.'
-                        );
-                    }
-
-                    if (!isAllMode && !isReadOnlyMode && !isOfflineOnlyMode)
-                        isOfflineOnlyMode = true;
-
-                    const mode: ChannelMode = isOfflineOnlyMode
-                        ? 'offlineonly'
-                        : isReadOnlyMode
-                        ? 'readonly'
-                        : 'all';
-
-                    const [dbChannel] = await db
-                        .select()
-                        .from(channelsTable)
-                        .where(eq(channelsTable.twitchId, channelId))
-                        .limit(1);
-
-                    if (dbChannel && dbChannel.mode === mode) {
-                        await chat.join(channel);
-                        return await reply(
-                            `Channel ${channel} is already present in the database with same mode. Attempted to join again.`
-                        );
-                    }
-
-                    if (dbChannel && dbChannel.mode !== mode) {
-                        await db
-                            .update(channelsTable)
-                            .set({ mode })
-                            .where(eq(channelsTable.twitchId, channelId));
-                        await chat.join(channel);
-
-                        return await reply(
-                            `Channel ${channel} is already present in the database. Updated mode from ${dbChannel.mode} to ${mode} and attempted to join again.`
-                        );
-                    }
-
-                    if (!dbChannel) {
-                        await db.insert(channelsTable).values({
-                            twitchId: channelId,
-                            twitchLogin: channel,
-                            mode,
-                        });
-                        await chat.join(channel);
-
-                        return await reply(`Joined channel ${channel} in ${mode} mode.`);
-                    }
-                },
-
-                //
-
-                part: async () => {
-                    const channelExtractionResult = await parseUserParameter(ctx, 1, true);
-
-                    if (!channelExtractionResult.ok)
-                        return await reply(channelExtractionResult.reason);
-
-                    const { login: channel, id: channelId } = channelExtractionResult;
-
-                    const isConfirmed = params.list.at(3)?.toLowerCase() === 'confirm';
-                    if (params.list.at(3) && !isConfirmed) {
-                        return await reply(
-                            'Invalid 3rd argument. Must be "confirm" or nothing. Defaults to prompting for confirmation.'
-                        );
-                    }
-
-                    const [dbChannel] = await db
-                        .select()
-                        .from(channelsTable)
-                        .where(eq(channelsTable.twitchId, channelId))
-                        .limit(1);
-
-                    if (!dbChannel) {
-                        await chat.part(channel);
-                        return await reply(
-                            `Channel ${channel} is not present in the database. Attempted to leave from chat anyway.`
-                        );
-                    }
-
-                    if (!isConfirmed) {
-                        await reply(
-                            [
-                                // TODO: change this to the truth
-                                `Are you sure you want the bot to leave channel ${channel}?`,
-                                'This will delete the channel data, including the ambassador list and probably other channel settings.',
-                                `You can instead change the channel mode to readonly using "sb owner bot join ${channel} readonly"`,
-                                'Type "confirm" in the next 15s to confirm.',
-                            ].join(' ')
-                        );
-
-                        const message = await collectMessage({
-                            filter: (incoming) =>
-                                incoming.senderUserID === msg.senderUserID &&
-                                incoming.messageText.trim() === 'confirm',
-                            timeout: 15,
-                            chat,
-                        }).catch(() => 'timeout' as const);
-
-                        if (message === 'timeout') return;
-                    }
-
-                    await chat.part(channel);
-                    await db.delete(channelsTable).where(eq(channelsTable.twitchId, channelId));
-                    return await reply(
-                        `Left channel ${channel} and deleted settings from database.`
-                    );
-                },
-
-                //
-
-                global: {
-                    ban: async () => {
-                        const user = await parseUserParameter(ctx, 2, true);
-                        if (!user.ok) return await reply(user.reason);
-
-                        const currentPermission = await permissions.getGlobalPermission(user.id);
-
-                        if (currentPermission === 'banned') {
-                            return await reply(`${user.login} is already banned globally.`);
-                        }
-
-                        await permissions.setGlobalPermission('banned', { user });
-                        return await reply(
-                            `Banned user ${user.login} globally from using the bot.`
-                        );
-                    },
-
-                    unban: async () => {
-                        const user = await parseUserParameter(ctx, 2, true);
-                        if (!user.ok) return await reply(user.reason);
-
-                        const currentPermission = await permissions.getGlobalPermission(user.id);
-
-                        if (currentPermission === 'normal') {
-                            return await reply(`${user.login} is not currently banned globally.`);
-                        }
-
-                        await permissions.setGlobalPermission('normal', { user });
-                        return await reply(
-                            `Unbanned user ${user.login} globally from using the bot.`
-                        );
-                    },
-                },
-
-                //
-
-                local: {
-                    ban: async () => {
-                        const [channel, user] = await Promise.all([
-                            parseUserParameter(ctx, 2, true),
-                            parseUserParameter(ctx, 3, true),
-                        ]);
-
-                        if (!channel.ok) {
-                            return await reply(channel.reason);
-                        }
-                        if (!user.ok) {
-                            return await reply(user.reason);
-                        }
-
-                        const context = { channel, user };
-
-                        const currentPermission =
-                            (await permissions.getDbLocalPermission(channel.id, user.id)) ??
-                            'normal';
-
-                        if (currentPermission === 'banned') {
-                            return await reply(
-                                `User ${user.login} is already banned in channel ${channel.login}.`
-                            );
-                        }
-                        await permissions.setLocalPermission('banned', context);
-                        return await reply(
-                            `Banned user ${user.login} from using the bot in channel ${channel.login}.`
-                        );
-                    },
-                    unban: async () => {
-                        const [channel, user] = await Promise.all([
-                            parseUserParameter(ctx, 2, true),
-                            parseUserParameter(ctx, 3, true),
-                        ]);
-
-                        if (!channel.ok) {
-                            return await reply(channel.reason);
-                        }
-                        if (!user.ok) {
-                            return await reply(user.reason);
-                        }
-
-                        const context = { channel, user };
-
-                        const currentPermission =
-                            (await permissions.getDbLocalPermission(channel.id, user.id)) ??
-                            'normal';
-
-                        if (currentPermission === 'normal') {
-                            return await reply(
-                                `User ${user.login} is not currently banned in channel ${channel.login}.`
-                            );
-                        }
-                        await permissions.setLocalPermission('normal', context);
-                        return await reply(
-                            `Unbanned user ${user.login} from using the bot in channel ${channel.login}.`
-                        );
-                    },
-
-                    ambassador: async () => {
-                        const [channel, user] = await Promise.all([
-                            parseUserParameter(ctx, 2, true),
-                            parseUserParameter(ctx, 3, true),
-                        ]);
-
-                        if (!channel.ok) {
-                            return await reply(channel.reason);
-                        }
-                        if (!user.ok) {
-                            return await reply(user.reason);
-                        }
-
-                        const context = { channel, user };
-
-                        const currentPermission =
-                            (await permissions.getDbLocalPermission(channel.id, user.id)) ??
-                            'normal';
-
-                        if (currentPermission === 'ambassador') {
-                            return await reply(
-                                `User ${user.login} is already an ambassador in channel ${channel.login}.`
-                            );
-                        }
-                        await permissions.setLocalPermission('ambassador', context);
-                        return await reply(
-                            `Set user ${user.login} as ambassador in channel ${channel.login}.`
-                        );
-                    },
-                    unambassador: async () => {
-                        const [channel, user] = await Promise.all([
-                            parseUserParameter(ctx, 2, true),
-                            parseUserParameter(ctx, 3, true),
-                        ]);
-
-                        if (!channel.ok) {
-                            return await reply(channel.reason);
-                        }
-                        if (!user.ok) {
-                            return await reply(user.reason);
-                        }
-
-                        const context = { channel, user };
-
-                        const currentPermission =
-                            (await permissions.getDbLocalPermission(channel.id, user.id)) ??
-                            'normal';
-
-                        if (currentPermission === 'normal') {
-                            return await reply(
-                                `User ${user.login} is not currently an ambassador in channel ${channel.login}.`
-                            );
-                        }
-                        await permissions.setLocalPermission('normal', context);
-                        return await reply(
-                            `Unset user ${user.login} as ambassador in channel ${channel.login}.`
-                        );
-                    },
-                },
-            },
-            onNotFound: async () => await reply('Invalid subcommand.'),
-        });
-    },
+    run: () => ({ reply: "Please specify a subcommand such as 'sb owner join ...'" }),
 };
