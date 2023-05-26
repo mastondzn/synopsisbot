@@ -45,7 +45,7 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "8.40.0",
-        "eslint-define-config": "1.17.0",
+        "eslint-define-config": "1.20.0",
         "tsup": "6.7.0"
     },
     "dependencies": {
