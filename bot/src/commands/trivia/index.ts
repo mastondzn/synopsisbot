@@ -48,6 +48,8 @@ export const command: BotCommand = {
             chat,
             timeout: 30,
             filter: (m) => {
+                if (m.channelName !== msg.channelName) return false;
+
                 const incoming = m.messageText.toLowerCase().trim();
 
                 const isValidAnswer = answers
