@@ -36,7 +36,8 @@
         "format:check": "prettier -c \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml}\"",
         "lint": "turbo run lint",
         "lint:fix": "turbo run lint -- --fix",
-        "typecheck": "turbo run typecheck"
+        "typecheck": "turbo run typecheck",
+        "preinstall": "npx only-allow pnpm"
     },
     "dependencies": {
         "@commitlint/cli": "17.6.3",
@@ -44,6 +45,7 @@
         "@commitlint/types": "17.4.4",
         "@manypkg/cli": "0.20.0",
         "@types/node": "18.16.14",
+        "only-allow": "^1.1.1",
         "prettier": "2.8.7",
         "prettier-plugin-tailwindcss": "0.3.0",
         "rimraf": "5.0.0",
