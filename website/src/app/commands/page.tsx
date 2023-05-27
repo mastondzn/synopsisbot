@@ -16,7 +16,7 @@ async function getCommands() {
             description: command.description ?? '-',
             aliases: command.aliases?.length ? command.aliases.join(', ') : '-',
         }))
-        .sort();
+        .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export default async function Page() {
