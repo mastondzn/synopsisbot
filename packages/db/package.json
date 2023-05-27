@@ -30,6 +30,6 @@
         "@synopsis/env": "0.0.1",
         "dotenv": "16.0.3",
         "drizzle-orm": "0.26.1",
-        "postgres": "^3.3.4"
+        "postgres": "3.3.4"
     }
 }
