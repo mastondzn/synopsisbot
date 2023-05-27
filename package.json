@@ -45,7 +45,7 @@
         "@commitlint/types": "17.4.4",
         "@manypkg/cli": "0.20.0",
         "@types/node": "18.16.16",
-        "only-allow": "^1.1.1",
+        "only-allow": "1.1.1",
         "prettier": "2.8.7",
         "prettier-plugin-tailwindcss": "0.3.0",
         "rimraf": "5.0.0",
