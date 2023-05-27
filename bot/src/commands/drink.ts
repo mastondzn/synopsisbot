@@ -62,7 +62,6 @@ export const command: BotCommand = {
 
         if (hydratedRecently(user)) {
             const timeLeft = ms(
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 defaultCooldown - (Date.now() - user.hydratedAt!.getTime()), //
                 {
                     unitCount: 2,

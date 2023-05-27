@@ -22,6 +22,5 @@ export async function retry<T>(
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     throw lastError!;
 }

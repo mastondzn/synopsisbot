@@ -13,7 +13,6 @@ export function getPaths(subcommands: DeepCommandRecord): string[][] {
 
     const keys = Object.keys(subcommands);
     for (const key of keys) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const value = subcommands[key]!;
         if (typeof value === 'function') {
             paths.push([key]);

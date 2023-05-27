@@ -29,11 +29,9 @@ export const command: BotCommand = {
         const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 
         const correctIndex = answers.indexOf(correctAnswer);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const correctLetter = alphabet[correctIndex]!.toLowerCase();
 
         const answersAsString = answers
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             .map((answer, i) => `${alphabet[i]!}. ${answer}`)
             .join(', ')
             .replace(/, ([^,]*)$/, ', or $1');
@@ -59,21 +57,18 @@ export const command: BotCommand = {
                     .map((letter) => letter.toLowerCase())
                     .includes(incoming);
 
-                const accept = isValidAnswer || isValidLetter;
-
-                if (accept && isValidAnswer) {
+                if (isValidAnswer) {
                     const letterIndex = answers
                         .map((answer) => answer.toLowerCase())
                         .indexOf(incoming);
 
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const letter = alphabet[letterIndex]!;
                     exhaustedAnswers.add(letter);
-                } else if (accept && isValidLetter) {
+                } else if (isValidLetter) {
                     exhaustedAnswers.add(incoming);
                 }
 
-                return accept;
+                return isValidAnswer || isValidLetter;
             },
             exitOn: (m) => {
                 const incoming = m.messageText.toLowerCase().trim();
