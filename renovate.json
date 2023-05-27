@@ -1,6 +1,28 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:base"],
+    "extends": ["config:base", "group:definitelyTyped"],
+    "packageRules": [
+        {
+            "matchPackagePatterns": ["@twurple/*"],
+            "matchSourceUrls": ["https://github.com/twurple/twurple"],
+            "groupName": "twurple"
+        },
+        {
+            "matchPackagePatterns": ["@radix-ui/*"],
+            "matchSourceUrls": ["https://github.com/radix-ui/primitives"],
+            "groupName": "radix-ui"
+        },
+        {
+            "matchPackagePatterns": ["drizzle-*"],
+            "matchSourceUrls": ["https://github.com/drizzle-team/drizzle-orm"],
+            "groupName": "drizzle"
+        },
+        {
+            "matchPackagePatterns": ["eslint"],
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "eslint"
+        }
+    ],
     "rangeStrategy": "pin",
     "ignoreDeps": ["node"]
 }
