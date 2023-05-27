@@ -21,7 +21,7 @@
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "18.16.14",
         "drizzle-kit": "0.18.1",
-        "eslint": "8.40.0",
+        "eslint": "8.41.0",
         "eslint-define-config": "1.17.0",
         "tsconfig-paths": "4.2.0",
         "tsx": "3.12.7"
