@@ -14,7 +14,6 @@
         },
         {
             "matchPackagePatterns": ["drizzle-*"],
-            "matchSourceUrls": ["https://github.com/drizzle-team/drizzle-orm"],
             "groupName": "drizzle"
         },
         {
