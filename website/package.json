@@ -42,7 +42,7 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "@types/eslint": "8.37.0",
-        "@types/node": "18.16.14",
+        "@types/node": "18.16.16",
         "@types/react": "18.2.6",
         "@types/react-dom": "18.2.4",
         "autoprefixer": "10.4.14",
