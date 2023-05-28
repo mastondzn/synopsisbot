@@ -7,10 +7,10 @@ import { tw } from '~/utils/tw';
 
 export const revalidate = 3600;
 
-async function getCommand(name: string) {
+async function getCommand(wanted: string) {
     const db = getDb();
     const command = await db.query.commands.findFirst({
-        where: ({ name: nameField }, { eq }) => eq(nameField, name),
+        where: ({ name }, { eq }) => eq(name, wanted),
     });
     return command ?? null;
 }
@@ -22,16 +22,10 @@ export default async function Page({ params }: { params: { command: string } }) 
         return redirect('/404');
     }
 
-    const usage = (
-        command.usage
-            ? command.usage.split('\n')
-            : ['No special usage instructions. Use as normal.']
-    )
-        .map((line) => line.trim())
-        .map((line) => ({
-            line,
-            isExample: line.startsWith(command.name),
-        }));
+    const usage = command.usage?.split('\n').map((line) => ({
+        line: line.trim(),
+        isExample: line.startsWith(command.name),
+    })) ?? [{ line: 'No special usage instructions. Use as normal.', isExample: false }];
 
     return (
         <PageBase>
