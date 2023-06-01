@@ -1,0 +1,4 @@
+{
+    "schema": "7tv.graphql",
+    "documents": "src/**/*.ts"
+}

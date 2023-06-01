@@ -1,0 +1,30 @@
+{
+    "name": "@synopsis/emotes",
+    "version": "0.0.1",
+    "private": true,
+    "main": "src/index.ts",
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "typecheck": "tsc --noEmit",
+        "codegen": "graphql-codegen --config codegen.ts"
+    },
+    "devDependencies": {
+        "@graphql-codegen/cli": "4.0.0",
+        "@graphql-codegen/client-preset": "4.0.0",
+        "@graphql-codegen/introspection": "4.0.0",
+        "@graphql-codegen/typescript-graphql-request": "^5.0.0",
+        "@synopsis/eslint-config": "0.0.1",
+        "@synopsis/tsconfig": "0.0.1",
+        "@types/node": "18.16.16",
+        "eslint": "8.41.0",
+        "eslint-define-config": "1.20.0",
+        "tsconfig-paths": "4.2.0",
+        "tsx": "3.12.7",
+        "typescript": "5.0.4"
+    },
+    "dependencies": {
+        "graphql": "^16.6.0",
+        "graphql-request": "^6.1.0"
+    }
+}

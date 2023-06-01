@@ -146,6 +146,9 @@ module.exports = defineConfig({
                 'unicorn/prefer-module': 'off',
                 'unicorn/prefer-top-level-await': 'off',
                 'unicorn/prefer-event-target': 'off',
+                'unicorn/template-indent': ['error', { indent: 4 }],
+                'unicorn/no-abusive-eslint-disable': 'off',
+
                 '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
                 '@typescript-eslint/no-non-null-assertion': 'off',
             },
