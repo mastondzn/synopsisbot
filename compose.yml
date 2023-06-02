@@ -184,6 +184,9 @@ services:
             dockerfile: ./website/Dockerfile
         env_file:
             - .env
+        depends_on:
+            - db
+            - cache
         restart: unless-stopped
         ports:
             - 3001:3000
@@ -202,6 +205,9 @@ services:
             dockerfile: ./bot/Dockerfile
         env_file:
             - .env
+        depends_on:
+            - db
+            - cache
         restart: unless-stopped
         labels:
             - traefik.enable=false
