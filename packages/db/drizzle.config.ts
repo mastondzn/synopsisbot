@@ -1,13 +1,6 @@
-import { resolve } from 'node:path';
-
-import { config } from 'dotenv';
 import type { Config } from 'drizzle-kit';
 
-import { envSchema } from '@synopsis/env';
-
-config({ path: resolve(process.cwd(), '../../.env') });
-
-const env = envSchema.parse(process.env);
+import { env } from '@synopsis/env/node';
 
 export default {
     schema: './src/schema/index.ts',
