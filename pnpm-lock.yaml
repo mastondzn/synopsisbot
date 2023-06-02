@@ -289,9 +289,6 @@ importers:
       '@synopsis/scopes':
         specifier: 0.0.1
         version: link:../packages/scopes
-      '@t3-oss/env-nextjs':
-        specifier: 0.3.1
-        version: 0.3.1(typescript@5.0.4)(zod@3.21.4)
       '@tabler/icons-react':
         specifier: 2.20.0
         version: 2.20.0(react@18.2.0)

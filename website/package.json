@@ -6,7 +6,7 @@
         "build": "pnpm with-env next build",
         "dev": "pnpm with-env next dev",
         "start": "pnpm with-env next start",
-        "lint": "next lint",
+        "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
         "typecheck": "tsc --noEmit",
         "with-env": "dotenv -e ../.env --"
     },
@@ -16,7 +16,6 @@
         "@synopsis/db": "0.0.1",
         "@synopsis/env": "0.0.1",
         "@synopsis/scopes": "0.0.1",
-        "@t3-oss/env-nextjs": "0.3.1",
         "@tabler/icons-react": "2.20.0",
         "@tanstack/react-query": "4.29.7",
         "@tanstack/react-table": "8.9.1",
