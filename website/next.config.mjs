@@ -13,15 +13,6 @@ const config = {
     reactStrictMode: true,
     output: 'standalone',
     transpilePackages: ['@synopsis/db', '@synopsis/scopes'],
-    webpack: (config, { webpack }) => {
-        config.plugins.push(
-            new webpack.IgnorePlugin({
-                resourceRegExp: /pg-native/,
-                contextRegExp: /\/pg\//,
-            })
-        );
-        return config;
-    },
     experimental: {
         outputFileTracingRoot: join(__dirname, '../'),
     },
