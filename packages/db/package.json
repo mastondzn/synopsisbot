@@ -30,7 +30,7 @@
     },
     "dependencies": {
         "@synopsis/env": "0.0.1",
-        "drizzle-orm": "0.26.1",
+        "drizzle-orm": "0.26.5",
         "postgres": "3.3.4"
     }
 }

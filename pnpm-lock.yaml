@@ -138,8 +138,8 @@ importers:
         specifier: 0.0.1
         version: link:../env
       drizzle-orm:
-        specifier: 0.26.1
-        version: 0.26.1(postgres@3.3.4)
+        specifier: 0.26.5
+        version: 0.26.5(postgres@3.3.4)
       postgres:
         specifier: 3.3.4
         version: 3.3.4
@@ -3376,13 +3376,14 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.26.1(postgres@3.3.4):
-    resolution: {integrity: sha512-PgHPBJ4BUi/xWEjBbaYo4eiVC7hIwPtSEAVO3QuGMzLV+YwD2jPyV2Y7nvP1jHZlA4IV9wLmkcpicBO/255XFg==}
+  /drizzle-orm@0.26.5(postgres@3.3.4):
+    resolution: {integrity: sha512-ajjbOIoXqldWoWBn0RbVQCCT732R4Ad+gUjUrlmMpzWYwgnbG/qqPy84NhHntQ/MR//z3xfvT1Z2fD8uCAPX3g==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
       '@libsql/client': '*'
       '@neondatabase/serverless': '>=0.1'
+      '@opentelemetry/api': ^1.4.1
       '@planetscale/database': '>=1'
       '@types/better-sqlite3': '*'
       '@types/pg': '*'
@@ -3405,6 +3406,8 @@ packages:
       '@libsql/client':
         optional: true
       '@neondatabase/serverless':
+        optional: true
+      '@opentelemetry/api':
         optional: true
       '@planetscale/database':
         optional: true
