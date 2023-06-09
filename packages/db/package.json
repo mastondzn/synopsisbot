@@ -21,7 +21,7 @@
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "18.16.16",
-        "dotenv-cli": "^7.2.1",
+        "dotenv-cli": "7.2.1",
         "drizzle-kit": "0.18.1",
         "eslint": "8.42.0",
         "eslint-define-config": "1.20.0",
