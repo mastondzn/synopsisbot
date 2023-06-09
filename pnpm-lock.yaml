@@ -105,7 +105,7 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       dotenv-cli:
-        specifier: ^7.2.1
+        specifier: 7.2.1
         version: 7.2.1
       eslint:
         specifier: 8.42.0
@@ -154,7 +154,7 @@ importers:
         specifier: 18.16.16
         version: 18.16.16
       dotenv-cli:
-        specifier: ^7.2.1
+        specifier: 7.2.1
         version: 7.2.1
       drizzle-kit:
         specifier: 0.18.1
@@ -219,7 +219,7 @@ importers:
         version: 8.8.0(eslint@8.42.0)
       eslint-config-turbo:
         specifier: latest
-        version: 1.10.2(eslint@8.42.0)
+        version: 1.10.3(eslint@8.42.0)
       eslint-define-config:
         specifier: 1.20.0
         version: 1.20.0
@@ -375,7 +375,7 @@ importers:
         specifier: 10.4.14
         version: 10.4.14(postcss@8.4.23)
       dotenv-cli:
-        specifier: ^7.2.1
+        specifier: 7.2.1
         version: 7.2.1
       eslint:
         specifier: 8.42.0
@@ -3898,13 +3898,13 @@ packages:
       eslint: 8.42.0
     dev: false
 
-  /eslint-config-turbo@1.10.2(eslint@8.42.0):
-    resolution: {integrity: sha512-BaCnpn2GM0rTFLuTVplqY8n+3ttWcu/vEmfjJ2BNBVmwX6ALZoJQfL26ZW6VucRk0psTUJALeo+aPrf3VKEJXA==}
+  /eslint-config-turbo@1.10.3(eslint@8.42.0):
+    resolution: {integrity: sha512-ggzPfTJfMsMS383oZ4zfTP1zQvyMyiigOQJRUnLt1nqII6SKkTzdKZdwmXRDHU24KFwUfEFtT6c8vnm2VhL0uQ==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 8.42.0
-      eslint-plugin-turbo: 1.10.2(eslint@8.42.0)
+      eslint-plugin-turbo: 1.10.3(eslint@8.42.0)
     dev: false
 
   /eslint-define-config@1.20.0:
@@ -4068,8 +4068,8 @@ packages:
       eslint: 8.42.0
     dev: false
 
-  /eslint-plugin-turbo@1.10.2(eslint@8.42.0):
-    resolution: {integrity: sha512-Kxsy4zlKLrGkEqZgcAQtu16YqU/g0mV1vYa9/VweF+MSnWWQsEzsJ1qlzTfXV6N9VqGmkuLiyWOA84sRUklOOg==}
+  /eslint-plugin-turbo@1.10.3(eslint@8.42.0):
+    resolution: {integrity: sha512-g3Mnnk7el1FqxHfqbE/MayLvCsYjA/vKmAnUj66kV4AlM7p/EZqdt42NMcMSKtDVEm0w+utQkkzWG2Xsa0Pd/g==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
