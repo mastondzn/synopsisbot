@@ -13,7 +13,7 @@ export function Header() {
         <Link href="/">
             <Image
                 src={synopsisBlack}
-                className="w-[350px] dark:invert pt-8"
+                className="w-[350px] pt-8 dark:invert"
                 alt=""
                 priority={true}
             />
@@ -30,16 +30,12 @@ export function Footer() {
                 { link: 'mailto:contact@synopsis.gg', Icon: IconMail },
             ].map(({ link, Icon }, i) => (
                 <Link href={link} target="_blank" rel="noreferrer" key={i}>
-                    <Button
-                        variant="ghost"
-                        size="lg"
-                        className="h-fit w-fit px-3 py-3 rounded-full"
-                    >
+                    <Button variant="ghost" size="lg" className="h-fit w-fit rounded-full p-3">
                         <Icon className="h-6 w-6" />
                     </Button>
                 </Link>
             ))}
-            <ThemeSwitch variant="ghost" className="h-fit w-fit px-3 py-3 rounded-full" />
+            <ThemeSwitch variant="ghost" className="h-fit w-fit rounded-full p-3" />
         </div>
     );
 }
@@ -48,7 +44,7 @@ export function PageBase({ children, className }: PropsWithChildren<{ className?
     return (
         <div
             className={tw(
-                'container min-h-screen flex flex-col items-center justify-center mx-auto gap-8',
+                'container mx-auto flex min-h-screen flex-col items-center justify-center gap-8',
                 className
             )}
         >

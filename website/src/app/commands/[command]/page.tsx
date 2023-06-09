@@ -31,14 +31,14 @@ export default async function Page({ params }: { params: { command: string } }) 
         <PageBase>
             <div className="max-w-[500px]">
                 <div className="space-y-1">
-                    <h4 className="font-bold text-3xl pb-2 leading-none">{command.name}</h4>
+                    <h4 className="pb-2 text-3xl font-bold leading-none">{command.name}</h4>
                     <p className="text-lg">{command.description ?? 'No command description.'}</p>
                 </div>
                 <Separator className="my-4" />
-                <h4 className="font-medium text-lg">Usage</h4>
+                <h4 className="text-lg font-medium">Usage</h4>
                 {usage.map(({ line, isExample }, i) => {
                     return isExample ? (
-                        <p key={i} className={tw('font-semibold text-primary pt-2')}>
+                        <p key={i} className={tw('pt-2 font-semibold text-primary')}>
                             {line}
                         </p>
                     ) : (
@@ -48,14 +48,14 @@ export default async function Page({ params }: { params: { command: string } }) 
                     );
                 })}
                 <Separator className="my-4" />
-                <h4 className="font-medium text-lg mb-2">Aliases</h4>
+                <h4 className="mb-2 text-lg font-medium">Aliases</h4>
                 <p>
                     {command.aliases?.length
                         ? command.aliases.join(', ')
                         : 'No additional command aliases.'}
                 </p>
                 <Separator className="my-4" />
-                <h4 className="font-medium text-lg mb-2">Permissions</h4>
+                <h4 className="mb-2 text-lg font-medium">Permissions</h4>
                 <p>
                     {command.permissionMode === 'custom'
                         ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
@@ -64,7 +64,7 @@ export default async function Page({ params }: { params: { command: string } }) 
                         : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
                 </p>
                 <Separator className="my-4" />
-                <h4 className="font-medium text-lg mb-2">Cooldown</h4>
+                <h4 className="mb-2 text-lg font-medium">Cooldown</h4>
                 <p>{`User cooldown: ${command.userCooldown} seconds`}</p>
                 <p>{`Global cooldown: ${command.globalCooldown} seconds`}</p>
             </div>

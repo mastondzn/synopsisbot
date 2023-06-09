@@ -6,17 +6,17 @@ import { PageBase } from '~/components/page-base';
 export default function Page() {
     return (
         <PageBase>
-            <h2 className="text-xl font-medium text-center max-w-[550px]">
+            <h2 className="max-w-[550px] text-center text-xl font-medium">
                 {
                     "Hello! Synopsis Bot is a Twitch chat bot with a limited set of commands. But it's in development and growing!"
                 }
             </h2>
-            <p className="text-center max-w-[400px] mt-[-20px]">
+            <p className="mt-[-20px] max-w-[400px] text-center">
                 Currently, you cannot add the bot to a channel yourself, you can ask{' '}
                 <Link
                     href="https://twitch.tv/mastondzn"
                     target="_blank"
-                    className="dark:text-blue-500 text-blue-700"
+                    className="text-blue-700 dark:text-blue-500"
                 >
                     me
                 </Link>{' '}
