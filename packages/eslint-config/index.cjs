@@ -3,8 +3,24 @@ const { defineConfig } = require('eslint-define-config');
 const fs = require('node:fs');
 
 /** @type {import('type-fest').PackageJson} */
-const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-const hasReact = packageJson.dependencies?.react !== undefined;
+const packageJson = JSON.parse(
+    fs.readFileSync(`${process.cwd()}/package.json`, 'utf8') //
+);
+
+/**
+ * @param {string} name
+ * @returns {boolean}
+ */
+const hasDependency = (name) => {
+    return (
+        packageJson.dependencies?.[name] !== undefined ||
+        packageJson.devDependencies?.[name] !== undefined
+    );
+};
+
+const hasReact = hasDependency('react');
+const hasTailwind = hasDependency('tailwindcss');
+const hasNext = hasDependency('next');
 
 module.exports = defineConfig({
     extends: [
@@ -20,15 +36,21 @@ module.exports = defineConfig({
     },
     overrides: [
         {
-            // TS files
-            files: ['*.ts', '*.tsx'],
+            files: ['*.ts', '*.tsx', '*.d.ts', '*.cts', '*.mts'],
             parser: '@typescript-eslint/parser',
             parserOptions: {
                 project: `${process.cwd()}/tsconfig.json`,
             },
-            plugins: ['simple-import-sort', '@typescript-eslint'],
+            plugins: [
+                'simple-import-sort',
+                '@typescript-eslint',
+                'import',
+                'react',
+                'react-hooks',
+                'tailwindcss',
+            ],
             extends: (() => {
-                let configs = [
+                const configs = [
                     'plugin:import/typescript',
                     'plugin:@typescript-eslint/recommended',
                     'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -36,16 +58,21 @@ module.exports = defineConfig({
                 ];
 
                 if (hasReact) {
-                    configs = [
-                        ...configs,
+                    configs.push(
                         'plugin:react/recommended',
                         'plugin:react/jsx-runtime',
-                        'plugin:react-hooks/recommended',
-                    ];
+                        'plugin:react-hooks/recommended'
+                    );
+                }
+
+                if (hasTailwind) {
+                    configs.push('plugin:tailwindcss/recommended');
+                }
+                if (hasNext) {
+                    configs.push('next', 'next/core-web-vitals');
                 }
 
                 configs.push('prettier');
-
                 return configs;
             })(),
             settings: {
@@ -56,11 +83,11 @@ module.exports = defineConfig({
                     typescript: true,
                     node: true,
                 },
+                tailwindcss: {
+                    callees: ['tw', 'clsx', 'twMerge', 'cva', 'cn'],
+                },
             },
             rules: {
-                // Prefer shorthand object notation
-                'object-shorthand': ['error', 'always'],
-
                 'simple-import-sort/imports': [
                     'error',
                     {
@@ -90,14 +117,6 @@ module.exports = defineConfig({
                                 String.raw`^[^.].*\u0000$`,
                                 String.raw`^~/.*\u0000$`,
                             ],
-                            // // Type imports group at the bottom (sorted the same as the groups but in a single group)
-                            // [
-                            //     String.raw`^node:.*\u0000$`,
-                            //     String.raw`^@?\w.*\u0000$`,
-                            //     String.raw`^@synopsis/.*\u0000$`,
-                            //     String.raw`^[^.].*\u0000$`,
-                            //     String.raw`^\..*\u0000$`,
-                            // ],
                         ],
                     },
                 ],
@@ -126,6 +145,10 @@ module.exports = defineConfig({
                     return ['error', ...jestGlobals.map((global) => ({ name: global, message }))];
                 })(),
 
+                // Prefer shorthand object notation
+                'object-shorthand': ['error', 'always'],
+
+                '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
                 '@typescript-eslint/consistent-type-imports': [
                     'error',
                     {
@@ -146,8 +169,11 @@ module.exports = defineConfig({
                 'unicorn/prefer-module': 'off',
                 'unicorn/prefer-top-level-await': 'off',
                 'unicorn/prefer-event-target': 'off',
+
                 '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
                 '@typescript-eslint/no-non-null-assertion': 'off',
+
+                'tailwindcss/classnames-order': 'error',
             },
         },
         {

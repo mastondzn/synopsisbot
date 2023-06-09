@@ -1,23 +1,23 @@
 {
-    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "eslint.codeActionsOnSave.mode": "all",
+    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./website"],
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/.turbo": true,
+        "**/CVS": true,
         "**/node_modules": true,
-        "**/.turbo": true
+        "**/Thumbs.db": true
     },
+    "prettier.prettierPath": "./node_modules/prettier",
     "search.exclude": {
-        "**/bower_components": true,
         "**/*.code-search": true,
+        "**/bower_components": true,
         "pnpm-lock.yaml": true
     },
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./website"],
-    "eslint.codeActionsOnSave.mode": "all",
-    "prettier.prettierPath": "./node_modules/prettier"
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
