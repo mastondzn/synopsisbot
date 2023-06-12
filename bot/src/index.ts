@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { createDatabase, getAuthedUserByIdThrows } from '@synopsis/db';
+import { createDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { Bot } from './bot';
@@ -25,7 +25,7 @@ void (async () => {
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
     });
-    const botUser = await getAuthedUserByIdThrows(db, env.TWITCH_BOT_ID);
+    const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 
     const authProvider = new BotAuthProvider({
         clientId: env.TWITCH_CLIENT_ID,

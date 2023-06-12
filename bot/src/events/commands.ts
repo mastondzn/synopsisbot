@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { type Redis } from 'ioredis';
 
-import { getChannelModeByLogin } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
@@ -49,7 +48,7 @@ export const event: BotEventHandler = {
         const wantedPermissions = getCommandPermissions(command);
 
         const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
-            getChannelModeByLogin(db, channel),
+            db.find.channelModeByLogin(channel),
             statusManager.isLive(channel),
             cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
 

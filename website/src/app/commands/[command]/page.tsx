@@ -2,13 +2,12 @@ import { redirect } from 'next/navigation';
 
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
-import { getDb } from '~/utils/db';
+import { db } from '~/utils/db';
 import { tw } from '~/utils/tw';
 
 export const revalidate = 3600;
 
 async function getCommand(wanted: string) {
-    const db = getDb();
     const command = await db.query.commands.findFirst({
         where: ({ name }, { eq }) => eq(name, wanted),
     });
