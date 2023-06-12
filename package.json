@@ -22,6 +22,7 @@
     ],
     "scripts": {
         "start:bot": "turbo run start --filter=@synopsis/bot",
+        "build": "turbo run build",
         "build:website": "turbo run build --filter=@synopsis/website",
         "build:bot": "turbo run build --filter=@synopsis/bot",
         "db:generate": "turbo run db:generate",
