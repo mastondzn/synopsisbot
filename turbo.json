@@ -3,11 +3,11 @@
     "pipeline": {
         "build": {
             "outputs": ["dist/**", ".next/**"],
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build", "^db:generate"]
         },
         "@synopsis/website#build": {
             "outputs": ["dist/**", ".next/**"],
-            "dependsOn": ["^build"],
+            "dependsOn": ["^build", "^db:generate"],
             "env": [
                 "NEXT_PUBLIC_TWITCH_CLIENT_ID",
                 "NEXT_PUBLIC_TWITCH_BOT_USERNAME",
@@ -16,21 +16,21 @@
             ]
         },
         "dev": {
-            "dependsOn": ["^build"],
+            "dependsOn": ["^build", "^db:generate"],
             "cache": false
         },
         "start": {
-            "dependsOn": ["^build"],
+            "dependsOn": ["^build", "^db:generate"],
             "cache": false
         },
         "lint": {
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build", "^db:generate"]
         },
         "lint:fix": {
-            "dependsOn": ["^build"]
+            "dependsOn": ["^build", "^db:generate"]
         },
         "typecheck": {
-            "dependsOn": ["build", "^build"]
+            "dependsOn": ["build", "^build", "^db:generate"]
         },
         "db:migrate": {
             "outputs": ["migrations/**"],

@@ -1,22 +1,4 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres, { type Sql } from 'postgres';
+import { PrismaClient } from '@prisma/client';
 
-import { EditHelpers } from './helpers/edit';
-import { FindHelpers } from './helpers/find';
-import { schema } from './schema';
-import { type Database, type DatabaseOptions } from './types';
-
-export const createDatabase = (options: DatabaseOptions): { db: Database; sql: Sql } => {
-    const sql = postgres(options);
-    const db = drizzle(sql, { ...options, schema });
-
-    const find = new FindHelpers(db);
-    const edit = new EditHelpers(db);
-
-    return { db: Object.assign(db, { find, edit }), sql };
-};
-
-export * from './types';
-export * from './schema';
-export * from 'drizzle-orm/postgres-js';
-export * from 'drizzle-orm';
+export type Database = PrismaClient;
+export * from '@prisma/client';

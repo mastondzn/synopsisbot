@@ -2,11 +2,10 @@ import { getTokenInfo } from '@twurple/auth';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import { authedUsers, type NewAuthedUser } from '@synopsis/db';
 import { env } from '@synopsis/env/next';
+import { db } from '@synopsis/db/next';
 
 import { consumeState } from '~/utils/auth';
-import { db } from '~/utils/db';
 import { setJWTCookie } from '~/utils/encode';
 import { json, redirect } from '~/utils/responses';
 import { getUrl } from '~/utils/url';
@@ -107,7 +106,7 @@ export const GET = async (req: NextRequest) => {
         );
     }
 
-    const user: NewAuthedUser = {
+    const user = {
         twitchId: tokenInfo.userId,
         twitchLogin: tokenInfo.userName,
         accessToken,
@@ -117,10 +116,11 @@ export const GET = async (req: NextRequest) => {
         obtainedAt: new Date(),
     };
 
-    await db
-        .insert(authedUsers)
-        .values(user)
-        .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
+    await db.authedUser.upsert({
+        where: { twitchId: tokenInfo.userId },
+        create: { ...user },
+        update: { ...user },
+    });
 
     return await setJWTCookie(
         redirect(getUrl()), //

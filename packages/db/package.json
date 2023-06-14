@@ -3,15 +3,27 @@
     "version": "0.0.1",
     "private": true,
     "main": "src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./next": "./src/next.ts",
+        "./node": "./src/node.ts"
+    },
+    "typesVersions": {
+        "*": {
+            "next": [
+                "src/next.ts"
+            ],
+            "node": [
+                "dist/node.ts"
+            ]
+        }
+    },
     "scripts": {
-        "generate": "pnpm with-env drizzle-kit generate:pg --config=drizzle.config.ts",
-        "check": "pnpm with-env drizzle-kit check:pg --config=drizzle.config.ts",
-        "migrate": "pnpm with-env tsx -r tsconfig-paths/register scripts/migrate.ts",
-        "drop": "pnpm with-env drizzle-kit drop --config=drizzle.config.ts",
+        "generate": "pnpm with-env prisma generate",
+        "push": "pnpm with-env prisma db push --skip-generate",
         "db:generate": "pnpm generate",
-        "db:check": "pnpm check",
-        "db:migrate": "pnpm migrate",
-        "db:drop": "pnpm migrate",
+        "db:push": "pnpm push",
+        "dev": "pnpm with-env prisma studio --port 5556",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit",
@@ -22,15 +34,14 @@
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "18.16.16",
         "dotenv-cli": "7.2.1",
-        "drizzle-kit": "0.18.1",
         "eslint": "8.42.0",
         "eslint-define-config": "1.20.0",
+        "prisma": "^4.15.0",
         "tsconfig-paths": "4.2.0",
         "tsx": "3.12.7"
     },
     "dependencies": {
-        "@synopsis/env": "0.0.1",
-        "drizzle-orm": "0.26.5",
-        "postgres": "3.3.4"
+        "@prisma/client": "4.15.0",
+        "@synopsis/env": "0.0.1"
     }
 }

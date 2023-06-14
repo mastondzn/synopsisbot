@@ -1,13 +1,13 @@
 import { columns } from './columns';
 import { DataTable } from './table';
 import { PageBase } from '~/components/page-base';
-import { db } from '~/utils/db';
+import { db } from '@synopsis/db/next';
 
 export const revalidate = 600;
 export const dynamic = 'force-dynamic';
 
 async function getCommands() {
-    const commands = await db.query.commands.findMany();
+    const commands = await db.command.findMany();
 
     return commands
         .map((command) => ({

@@ -1,0 +1,153 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+model AuthedUser {
+  id           Int      @id @default(autoincrement()) @db.Integer
+  twitchId     String   @unique @db.Text
+  twitchLogin  String   @unique @db.Text
+  accessToken  String   @db.Text
+  refreshToken String   @db.Text
+  scopes       String[] @db.Text
+  expiresAt    DateTime @db.Timestamp
+  obtainedAt   DateTime @db.Timestamp
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+}
+
+enum ChannelMode {
+  ALL
+  OFFLINEONLY
+  LIVEONLY
+  READONLY
+}
+
+model Channel {
+  id          Int         @id @default(autoincrement()) @db.Integer
+  twitchId    String      @unique @db.Text
+  twitchLogin String      @unique @db.Text
+  mode        ChannelMode @default(OFFLINEONLY)
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+}
+
+model BotUser {
+  id          Int    @id @default(autoincrement()) @db.Integer
+  twitchId    String @unique @db.Text
+  twitchLogin String @unique @db.Text
+
+  // "sb drink"
+  hydration       Hydration?
+  hydrationEvents HydrationEvent[]
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  @@unique([id, twitchId, twitchLogin])
+}
+
+model Hydration {
+  id Int @unique @default(autoincrement()) @db.Integer
+
+  userId          Int              @unique @db.Integer
+  userTwitchId    String           @unique @db.Text
+  userTwitchLogin String           @unique @db.Text
+  user            BotUser          @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
+  points          Int              @default(0) @db.Integer
+  last            DateTime?        @db.Timestamp
+  events          HydrationEvent[]
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  @@unique([userId, userTwitchId, userTwitchLogin])
+}
+
+model HydrationEvent {
+  id           Int      @id @default(autoincrement()) @db.Integer
+  pointsGained Int      @db.Integer
+  message      String?  @db.Text
+  emoji        String?  @db.Text
+  timestamp    DateTime @db.Timestamp
+
+  userId          Int       @db.Integer
+  userTwitchId    String    @db.Text
+  userTwitchLogin String    @db.Text
+  user            BotUser   @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
+  hydrationId     Int       @db.Integer
+  hydration       Hydration @relation(fields: [hydrationId], references: [id])
+}
+
+enum GlobalPermissionLevel {
+  OWNER
+  NORMAL
+  BANNED
+}
+
+model GlobalPermission {
+  id          Int                   @id @default(autoincrement()) @db.Integer
+  twitchId    String                @unique @db.Text
+  twitchLogin String                @unique @db.Text
+  permission  GlobalPermissionLevel
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+}
+
+// if there is a mismatch between actual chat privileges and the database
+// the database should override
+enum LocalPermissionLevel {
+  BROADCASTER
+  AMBASSADOR
+  MODERATOR
+  VIP
+  SUBSCRIBER
+  NORMAL
+  BANNED
+}
+
+model LocalPermission {
+  id                 Int                  @id @default(autoincrement()) @db.Integer
+  twitchChannelId    String               @db.Text
+  twitchChannelLogin String               @db.Text
+  twitchUserId       String               @db.Text
+  twitchUserLogin    String               @db.Text
+  permission         LocalPermissionLevel
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  @@unique([twitchChannelId, twitchUserId])
+}
+
+enum CommandPermissionMode {
+  ALL
+  ANY
+  CUSTOM
+}
+
+model Command {
+  name             String                @id @db.Text
+  description      String?               @db.Text
+  aliases          String[]              @db.Text
+  usage            String?               @db.Text
+  userCooldown     Int                   @default(10) @db.Integer
+  globalCooldown   Int                   @default(3) @db.Integer
+  localPermission  LocalPermissionLevel  @default(NORMAL)
+  globalPermission GlobalPermissionLevel @default(NORMAL)
+  permissionMode   CommandPermissionMode @default(ALL)
+}
+
+model AuthState {
+  id        Int      @id @default(autoincrement()) @db.Integer
+  state     String   @unique @db.Text
+  createdAt DateTime @default(now()) @db.Timestamp
+}

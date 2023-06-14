@@ -45,6 +45,7 @@ module.exports = defineConfig({
                 'simple-import-sort',
                 '@typescript-eslint',
                 'import',
+                'unicorn',
                 'react',
                 'react-hooks',
                 'tailwindcss',
