@@ -1,4 +1,4 @@
-import { env } from '@synopsis/env/node';
+import { env } from '@synopsis/env';
 
 import { type BotModule } from '~/types/client';
 

@@ -1,4 +1,4 @@
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 
 export const getUrl = () => {
     return env.NODE_ENV === 'production'

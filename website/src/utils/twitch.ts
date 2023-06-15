@@ -1,8 +1,8 @@
 import { ApiClient } from '@twurple/api';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 
-import { env } from '@synopsis/env/next';
 import { db } from '@synopsis/db/next';
+import { env } from '@synopsis/env';
 
 export const authProvider = new RefreshingAuthProvider({
     clientId: env.TWITCH_CLIENT_ID,

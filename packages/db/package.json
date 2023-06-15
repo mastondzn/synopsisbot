@@ -3,21 +3,6 @@
     "version": "0.0.1",
     "private": true,
     "main": "src/index.ts",
-    "exports": {
-        ".": "./src/index.ts",
-        "./next": "./src/next.ts",
-        "./node": "./src/node.ts"
-    },
-    "typesVersions": {
-        "*": {
-            "next": [
-                "src/next.ts"
-            ],
-            "node": [
-                "dist/node.ts"
-            ]
-        }
-    },
     "scripts": {
         "generate": "pnpm with-env prisma generate",
         "push": "pnpm with-env prisma db push --skip-generate",

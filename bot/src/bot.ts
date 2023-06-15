@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
 import { type Database } from '@synopsis/db';
-import { env } from '@synopsis/env/node';
+import { env } from '@synopsis/env';
 
 import {
     type BotCommand,

@@ -1,4 +1,4 @@
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 import { allScopes } from '@synopsis/scopes';
 
 import { createState } from '~/utils/auth';

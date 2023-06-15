@@ -2,8 +2,8 @@ import { getTokenInfo } from '@twurple/auth';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import { env } from '@synopsis/env/next';
 import { db } from '@synopsis/db/next';
+import { env } from '@synopsis/env';
 
 import { consumeState } from '~/utils/auth';
 import { setJWTCookie } from '~/utils/encode';

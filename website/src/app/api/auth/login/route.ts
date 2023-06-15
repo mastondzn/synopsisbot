@@ -1,4 +1,4 @@
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 
 import { createState } from '~/utils/auth';
 import { redirect } from '~/utils/responses';

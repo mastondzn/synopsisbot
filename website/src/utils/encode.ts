@@ -1,7 +1,7 @@
 import { SignJWT } from 'jose';
 import { type NextResponse } from 'next/server';
 
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 
 import { JWT_COOKIE_KEY, type JwtShape } from './decode';
 

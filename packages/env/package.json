@@ -5,36 +5,6 @@
     "main": "dist/index.js",
     "module": "dist/index.mjs",
     "types": "dist/index.d.ts",
-    "typesVersions": {
-        "*": {
-            "next": [
-                "dist/next.d.ts"
-            ],
-            "node": [
-                "dist/node.d.ts"
-            ]
-        }
-    },
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "default": "./dist/index.js"
-        },
-        "./next": {
-            "types": "./dist/next.d.ts",
-            "import": "./dist/next.mjs",
-            "require": "./dist/next.js",
-            "default": "./dist/next.js"
-        },
-        "./node": {
-            "types": "./dist/node.d.ts",
-            "import": "./dist/node.mjs",
-            "require": "./dist/node.js",
-            "default": "./dist/node.js"
-        }
-    },
     "scripts": {
         "build": "tsup src/index.ts src/node.ts src/next.ts --format cjs,esm --sourcemap && tsc --emitDeclarationOnly --declaration --declarationMap --outdir dist",
         "lint": "eslint .",

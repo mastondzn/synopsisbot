@@ -1,7 +1,7 @@
 import { type NextRequest, type NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 
 import { getRedis } from '~/utils/redis';
 import { json } from '~/utils/responses';

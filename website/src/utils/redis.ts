@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 
-import { env } from '@synopsis/env/next';
+import { env } from '@synopsis/env';
 
 let cachedRedis: Redis | undefined;
 

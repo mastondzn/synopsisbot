@@ -77,9 +77,7 @@ module.exports = defineConfig({
                 return configs;
             })(),
             settings: {
-                react: {
-                    version: 'detect',
-                },
+                react: { version: 'detect' },
                 'import/resolver': {
                     typescript: true,
                     node: true,
@@ -158,12 +156,7 @@ module.exports = defineConfig({
                         fixStyle: 'inline-type-imports',
                     },
                 ],
-                '@typescript-eslint/no-misused-promises': [
-                    'error',
-                    {
-                        checksVoidReturn: false,
-                    },
-                ],
+                '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
 
                 'unicorn/no-null': 'off',
                 'unicorn/prevent-abbreviations': 'off',
