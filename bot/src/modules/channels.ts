@@ -8,8 +8,8 @@ export const module: BotModule = {
     name: 'channels',
     priority: 5,
     register: async ({ db, api, chat }) => {
-        const allChannels = await db.query.channels.findMany({
-            columns: { twitchId: true },
+        const allChannels = await db.channel.findMany({
+            select: { twitchId: true },
         });
 
         const channelIds = allChannels.map(({ twitchId }) => twitchId);

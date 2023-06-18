@@ -1,4 +1,4 @@
-import { channels, eq } from '@synopsis/db';
+import { type ChannelMode } from '@synopsis/db';
 
 import { parseUserParameter } from '~/helpers/command';
 import { type BotSubcommand } from '~/types/client';
@@ -12,15 +12,15 @@ export const subcommands: BotSubcommand[] = [
             const channel = await parseUserParameter(ctx, 1, true);
             if (!channel.ok) return { reply: channel.reason };
 
-            const desiredMode = params.list.at(2)?.toLowerCase();
-            const mode =
-                desiredMode === 'offlineonly'
-                    ? 'offlineonly'
-                    : desiredMode === 'readonly'
-                    ? 'readonly'
-                    : desiredMode === 'all'
-                    ? 'all'
-                    : 'offlineonly';
+            const desiredMode = params.list.at(2)?.toUpperCase();
+            const mode: ChannelMode =
+                desiredMode === 'OFFLINEONLY'
+                    ? 'OFFLINEONLY'
+                    : desiredMode === 'READONLY'
+                    ? 'READONLY'
+                    : desiredMode === 'ALL'
+                    ? 'ALL'
+                    : 'OFFLINEONLY';
 
             if (desiredMode && mode !== desiredMode) {
                 return {
@@ -28,11 +28,11 @@ export const subcommands: BotSubcommand[] = [
                 };
             }
 
-            const channelFromDb = await db.query.channels.findFirst({
-                where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
+            const channelFromDb = await db.channel.findFirst({
+                where: { twitchId: channel.id },
             });
 
-            if (channelFromDb && channelFromDb.mode === mode) {
+            if (channelFromDb && channelFromDb.mode === mode.toUpperCase()) {
                 await chat.join(channel.login);
                 return {
                     reply: `Channel ${channel.login} is already present in the database with same mode. Attempted to join again.`,
@@ -40,7 +40,10 @@ export const subcommands: BotSubcommand[] = [
             }
 
             if (channelFromDb && channelFromDb.mode !== mode) {
-                await db.update(channels).set({ mode }).where(eq(channels.twitchId, channel.id));
+                await db.channel.update({
+                    where: { twitchId: channel.id },
+                    data: { mode },
+                });
                 await chat.join(channel.login);
                 return {
                     reply: `Channel ${channel.login} is already present in the database. Updated mode from ${channelFromDb.mode} to ${mode} and attempted to join again.`,
@@ -48,10 +51,8 @@ export const subcommands: BotSubcommand[] = [
             }
 
             if (!channelFromDb) {
-                await db.insert(channels).values({
-                    twitchId: channel.id,
-                    twitchLogin: channel.login,
-                    mode,
+                await db.channel.create({
+                    data: { twitchId: channel.id, twitchLogin: channel.login, mode },
                 });
                 await chat.join(channel.login);
                 return { reply: `Joined channel ${channel.login} in ${mode} mode.` };
@@ -67,8 +68,8 @@ export const subcommands: BotSubcommand[] = [
             const channel = await parseUserParameter(ctx, 1, true);
             if (!channel.ok) return { reply: channel.reason };
 
-            const channelFromDb = await db.query.channels.findFirst({
-                where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
+            const channelFromDb = await db.channel.findFirst({
+                where: { twitchId: channel.id },
             });
 
             if (!channelFromDb) {
@@ -79,7 +80,7 @@ export const subcommands: BotSubcommand[] = [
             }
 
             await chat.part(channel.login);
-            await db.delete(channels).where(eq(channels.twitchId, channel.id));
+            await db.channel.delete({ where: { twitchId: channel.id } });
             return { reply: `Left channel ${channel.login} and deleted settings from database.` };
         },
     },

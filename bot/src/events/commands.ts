@@ -28,7 +28,7 @@ export const event: BotEventHandler = {
         const msg = ctx.params[0];
 
         const text = msg.messageText;
-        const channel = msg.channelName;
+        const channel = { login: msg.channelName, id: msg.channelID };
 
         if (!msg.messageText.startsWith(botPrefix)) return;
 
@@ -36,7 +36,7 @@ export const event: BotEventHandler = {
         if (!commandIdentifier) return;
 
         const inDefaultChannel = //
-            [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
+            [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel.login);
 
         const command = commands.find(
             (c) => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier)
@@ -48,9 +48,15 @@ export const event: BotEventHandler = {
         const wantedPermissions = getCommandPermissions(command);
 
         const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
-            db.find.channelModeByLogin(channel),
-            statusManager.isLive(channel),
-            cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
+            db.channel.findFirst({ where: { twitchId: channel.id } }).then((c) => c?.mode),
+
+            statusManager.isLive(channel.login),
+
+            cooldownManager.isOnCooldown({
+                command,
+                channel: channel.login,
+                userName: msg.senderUsername,
+            }),
 
             // if we're in production and theres a dev process running don't reply to commands in default channels
             hasDevProcess(cache).then(
@@ -59,9 +65,9 @@ export const event: BotEventHandler = {
             ),
 
             // scuffed
-            wantedPermissions.mode === 'custom'
+            wantedPermissions.mode === 'CUSTOM'
                 ? Promise.resolve(true)
-                : wantedPermissions.mode === 'all'
+                : wantedPermissions.mode === 'ALL'
                 ? permissions.pleasesGlobalAndLocal(
                       wantedPermissions.global,
                       wantedPermissions.local,
@@ -79,13 +85,18 @@ export const event: BotEventHandler = {
             isOnCooldown ||
             !isPermitted ||
             !mode ||
-            mode === 'readonly' ||
-            (mode === 'offlineonly' && isLive);
+            mode === 'READONLY' ||
+            (mode === 'OFFLINEONLY' && isLive);
 
         const cancel = () =>
-            cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+            cooldownManager.clearCooldown({
+                command,
+                channel: channel.login,
+                userName: msg.senderUsername,
+            });
 
-        if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+        if (!mode)
+            console.warn(logPrefix, `mode for channel ${channel.login} not found in database`);
         if (dontExecute) {
             await cancel();
             return;
@@ -93,13 +104,13 @@ export const event: BotEventHandler = {
 
         console.log(
             logPrefix,
-            `executing command ${command.name} from ${msg.senderUsername} in ${channel}`
+            `executing command ${command.name} from ${msg.senderUsername} in ${channel.login}`
         );
         console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
 
-        const reply = (text: string) => chat.reply(channel, msg.messageID, text);
-        const me = (text: string) => chat.me(channel, text);
-        const say = (text: string) => chat.say(channel, text);
+        const reply = (text: string) => chat.reply(channel.login, msg.messageID, text);
+        const me = (text: string) => chat.me(channel.login, text);
+        const say = (text: string) => chat.say(channel.login, text);
         const params = parseCommandParams(text);
 
         const commandContext: BotCommandContext = {
@@ -148,7 +159,7 @@ export const event: BotEventHandler = {
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 logPrefix,
-                `error executing command ${command.name} from ${msg.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`
+                `error executing command ${command.name} from ${msg.senderUsername} in ${channel.login} (time: ${when}) ("${text}"): ${errorMessage}`
             );
             console.error(error);
 

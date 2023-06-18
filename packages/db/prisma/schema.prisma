@@ -9,9 +9,10 @@ datasource db {
 }
 
 model AuthedUser {
-  id           Int      @id @default(autoincrement()) @db.Integer
-  twitchId     String   @unique @db.Text
-  twitchLogin  String   @unique @db.Text
+  id          Int    @id @default(autoincrement()) @db.Integer
+  twitchId    String @unique @db.Text
+  twitchLogin String @unique @db.Text
+
   accessToken  String   @db.Text
   refreshToken String   @db.Text
   scopes       String[] @db.Text
@@ -35,8 +36,12 @@ model Channel {
   twitchLogin String      @unique @db.Text
   mode        ChannelMode @default(OFFLINEONLY)
 
+  localPermissions LocalPermission[]
+
   createdAt DateTime @default(now()) @db.Timestamp
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  @@unique([id, twitchId, twitchLogin])
 }
 
 model BotUser {
@@ -47,6 +52,9 @@ model BotUser {
   // "sb drink"
   hydration       Hydration?
   hydrationEvents HydrationEvent[]
+
+  globalPermission GlobalPermission?
+  localPermissions LocalPermission[]
 
   createdAt DateTime @default(now()) @db.Timestamp
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
@@ -78,12 +86,16 @@ model HydrationEvent {
   emoji        String?  @db.Text
   timestamp    DateTime @db.Timestamp
 
-  userId          Int       @db.Integer
-  userTwitchId    String    @db.Text
-  userTwitchLogin String    @db.Text
-  user            BotUser   @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
-  hydrationId     Int       @db.Integer
-  hydration       Hydration @relation(fields: [hydrationId], references: [id])
+  userId          Int     @db.Integer
+  userTwitchId    String  @db.Text
+  userTwitchLogin String  @db.Text
+  user            BotUser @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
+
+  hydrationId Int       @db.Integer
+  hydration   Hydration @relation(fields: [hydrationId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Timestamp
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
 }
 
 enum GlobalPermissionLevel {
@@ -93,13 +105,19 @@ enum GlobalPermissionLevel {
 }
 
 model GlobalPermission {
-  id          Int                   @id @default(autoincrement()) @db.Integer
-  twitchId    String                @unique @db.Text
-  twitchLogin String                @unique @db.Text
-  permission  GlobalPermissionLevel
+  id Int @id @default(autoincrement()) @db.Integer
+
+  userId          Int     @unique @db.Integer
+  userTwitchId    String  @unique @db.Text
+  userTwitchLogin String  @unique @db.Text
+  user            BotUser @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
+
+  permission GlobalPermissionLevel
 
   createdAt DateTime @default(now()) @db.Timestamp
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
+
+  @@unique([userId, userTwitchId, userTwitchLogin])
 }
 
 // if there is a mismatch between actual chat privileges and the database
@@ -115,17 +133,24 @@ enum LocalPermissionLevel {
 }
 
 model LocalPermission {
-  id                 Int                  @id @default(autoincrement()) @db.Integer
-  twitchChannelId    String               @db.Text
-  twitchChannelLogin String               @db.Text
-  twitchUserId       String               @db.Text
-  twitchUserLogin    String               @db.Text
-  permission         LocalPermissionLevel
+  id Int @id @default(autoincrement()) @db.Integer
+
+  userId          Int     @db.Integer
+  userTwitchId    String  @db.Text
+  userTwitchLogin String  @db.Text
+  user            BotUser @relation(fields: [userId, userTwitchId, userTwitchLogin], references: [id, twitchId, twitchLogin])
+
+  channelId          Int     @db.Integer
+  channelTwitchId    String  @db.Text
+  channelTwitchLogin String  @db.Text
+  channel            Channel @relation(fields: [channelId, channelTwitchId, channelTwitchLogin], references: [id, twitchId, twitchLogin])
+
+  permission LocalPermissionLevel
 
   createdAt DateTime @default(now()) @db.Timestamp
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp
 
-  @@unique([twitchChannelId, twitchUserId])
+  @@unique([userTwitchId, channelTwitchId])
 }
 
 enum CommandPermissionMode {

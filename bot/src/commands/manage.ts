@@ -5,9 +5,9 @@ export const command: BotCommand = {
     name: 'manage',
     description: 'Lets ambassadors or broadcasters manage the bot in their channels.',
     permission: {
-        local: 'ambassador',
-        global: 'owner',
-        mode: 'any',
+        local: 'AMBASSADOR',
+        global: 'OWNER',
+        mode: 'ANY',
     },
     usage: [
         'manage ban <user>', //

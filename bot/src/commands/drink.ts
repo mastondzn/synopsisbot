@@ -1,15 +1,15 @@
 import ms from 'pretty-ms';
 
-import { type CommandUser, commandUsers, eq } from '@synopsis/db';
+import { type Hydration } from '@synopsis/db';
 
 import { rollBeverageWithModifier } from '~/data/beverages';
 import { type BotCommand } from '~/types/client';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
 
-const hydratedRecently = (commandUser: CommandUser): boolean => {
-    if (!commandUser.hydratedAt) return false;
-    return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
+const hydratedRecently = (hydrationData: Hydration): boolean => {
+    if (!hydrationData.last) return false;
+    return Date.now() - hydrationData.last.getTime() < defaultCooldown;
 };
 
 export const command: BotCommand = {
@@ -27,42 +27,46 @@ export const command: BotCommand = {
         {
             path: ['points'],
             run: async ({ db, msg }) => {
-                const user = await db.query.commandUsers.findFirst({
-                    where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
+                const hydration = await db.hydration.findFirst({
+                    where: { userTwitchId: msg.senderUserID },
                 });
 
-                if (!user) {
+                if (!hydration?.points) {
                     return {
                         reply: 'You have no hydration points!',
                     };
                 }
 
                 return {
-                    reply: `You have ${user.hydrationPoints} hydration points!`,
+                    reply: `You have ${hydration.points} hydration points!`,
                 };
             },
         },
     ],
 
     run: async ({ db, msg }) => {
-        let user = await db.query.commandUsers.findFirst({
-            where: (commandUsers, { eq }) => eq(commandUsers.twitchId, msg.senderUserID),
+        let hydration = await db.hydration.findFirst({
+            where: { userTwitchId: msg.senderUserID },
         });
 
-        if (!user) {
-            [user] = await db
-                .insert(commandUsers)
-                .values({
+        if (!hydration) {
+            const user = await db.botUser.upsert({
+                where: { twitchId: msg.senderUserID, twitchLogin: msg.senderUsername },
+                create: {
                     twitchId: msg.senderUserID,
                     twitchLogin: msg.senderUsername,
-                })
-                .returning();
-        }
-        if (!user) throw new Error('Failed to create command user');
+                    hydration: {},
+                },
+                include: { hydration: true },
+                update: {},
+            });
 
-        if (hydratedRecently(user)) {
+            hydration = user.hydration!;
+        }
+
+        if (hydratedRecently(hydration)) {
             const timeLeft = ms(
-                defaultCooldown - (Date.now() - user.hydratedAt!.getTime()), //
+                defaultCooldown - (Date.now() - hydration.last!.getTime()), //
                 {
                     unitCount: 2,
                     secondsDecimalDigits: 0,
@@ -72,16 +76,15 @@ export const command: BotCommand = {
         }
 
         const { beverage, modifier, points } = rollBeverageWithModifier();
-        const pointsNow = Math.round(user.hydrationPoints + points);
+        const pointsNow = Math.round(hydration.points + points);
 
-        await db
-            .update(commandUsers)
-            .set({
-                hydratedAt: new Date(),
-                hydrationPoints: pointsNow,
-                twitchLogin: msg.senderUsername,
-            })
-            .where(eq(commandUsers.twitchId, msg.senderUserID));
+        await db.hydration.update({
+            where: { userTwitchId: msg.senderUserID },
+            data: {
+                last: new Date(),
+                points: pointsNow,
+            },
+        });
 
         const lines = [`${beverage.message} ${beverage.emoji}`];
         if (modifier) lines.push(modifier.message);

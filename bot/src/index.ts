@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { createDatabase } from '@synopsis/db';
+import { db } from '@synopsis/db';
 import { env } from '@synopsis/env';
 
 import { Bot } from './bot';
@@ -19,13 +19,9 @@ void (async () => {
         `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`
     );
 
-    const { db } = createDatabase({
-        host: env.DB_HOST,
-        user: env.DB_USERNAME,
-        password: env.DB_PASSWORD,
-        database: env.DB_NAME,
+    const botUser = await db.authedUser.findFirstOrThrow({
+        where: { twitchId: env.TWITCH_BOT_ID },
     });
-    const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 
     const authProvider = new BotAuthProvider({
         clientId: env.TWITCH_CLIENT_ID,

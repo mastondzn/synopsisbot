@@ -4,7 +4,7 @@ import { type BotCommand } from '~/types/client';
 export const command: BotCommand = {
     name: 'owner',
     description: 'Lets the owner do certain things. Like joining and parting channels.',
-    permission: { global: 'owner' },
+    permission: { global: 'OWNER' },
     usage: [
         'owner part <channel>',
         'Parts the bot from the specified channel.',

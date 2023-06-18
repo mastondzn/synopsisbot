@@ -9,7 +9,12 @@ import { type ApiClient } from '@twurple/api';
 import { type EventSubWsListener } from '@twurple/eventsub-ws';
 import { type Redis } from 'ioredis';
 
-import { type Database } from '@synopsis/db';
+import {
+    type CommandPermissionMode,
+    type Database,
+    type GlobalPermissionLevel,
+    type LocalPermissionLevel,
+} from '@synopsis/db';
 
 import { type KnownKeys, type Prettify } from './general';
 import { type parseCommandParams } from '~/helpers/command';
@@ -17,7 +22,7 @@ import { type BotAuthProvider } from '~/utils/auth-provider';
 import { type CommandCooldownManager } from '~/utils/cooldown';
 import { type IdLoginPairProvider } from '~/utils/id-login-pair';
 import { type LiveStatusManager } from '~/utils/live-manager';
-import { type GlobalLevel, type LocalLevel, type PermissionProvider } from '~/utils/permissions';
+import { type PermissionProvider } from '~/utils/permissions';
 import { type PrometheusExposer } from '~/utils/prometheus';
 
 type SpecificClientEventsList = KnownKeys<SpecificClientEvents>;
@@ -119,11 +124,11 @@ export interface BotCommand {
     subcommands?: BotSubcommand[];
     permission?:
         | {
-              local?: LocalLevel;
-              global?: GlobalLevel;
-              mode?: 'any' | 'all';
+              local?: LocalPermissionLevel;
+              global?: GlobalPermissionLevel;
+              mode?: Exclude<CommandPermissionMode, 'CUSTOM'>;
           }
-        | { mode: 'custom' };
+        | { mode: 'CUSTOM' };
     run: BotCommandFunction;
 }
 

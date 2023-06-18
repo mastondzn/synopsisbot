@@ -1,4 +1,4 @@
-import { commands as commandsTable, type NewCommand } from '@synopsis/db';
+import { type Prisma } from '@synopsis/db';
 
 import { getCommandPermissions } from '~/helpers/command';
 import { type BotModule } from '~/types/client';
@@ -7,13 +7,13 @@ export const module: BotModule = {
     name: 'db-commands',
     priority: 0,
     register: async ({ commands, db }) => {
-        const dbCommands = commands.map((command) => {
+        const commandsToInsert = commands.map((command) => {
             const permission = getCommandPermissions(command);
 
             return {
                 name: command.name,
                 description: command.description ?? null,
-                aliases: command.aliases ?? null,
+                aliases: command.aliases ?? [],
                 usage: command.usage ?? null,
                 ...(command.cooldown?.user ? { userCooldown: command.cooldown.user } : {}),
                 ...(command.cooldown?.global ? { globalCooldown: command.cooldown.global } : {}),
@@ -21,19 +21,14 @@ export const module: BotModule = {
 
                 localPermission: permission.local,
                 globalPermission: permission.global,
-            } satisfies NewCommand;
+            } satisfies Prisma.CommandCreateInput;
         });
 
-        for (const command of dbCommands) {
-            await db
-                .insert(commandsTable) //
-                .values(command)
-                .onConflictDoUpdate({
-                    target: commandsTable.name,
-                    set: command,
-                });
-        }
+        const upsertAgs: Prisma.CommandUpsertArgs[] = commandsToInsert.map((command) => {
+            return { where: { name: command.name }, create: command, update: command };
+        });
 
+        await db.$transaction(upsertAgs.map((args) => db.command.upsert(args)));
         console.log('[module:db-commands] set commands info in db');
     },
 };

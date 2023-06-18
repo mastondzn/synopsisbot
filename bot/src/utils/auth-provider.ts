@@ -21,13 +21,16 @@ export class BotAuthProvider extends RefreshingAuthProvider {
 
     constructor(options: BotAuthProviderOptions) {
         const onRefresh = async (userId: string, token: AccessToken) => {
-            await options.db.edit.authedUserById(userId, {
-                accessToken: token.accessToken,
-                scopes: token.scope,
-                ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
-                ...(token.expiresIn
-                    ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) }
-                    : {}),
+            await options.db.authedUser.update({
+                where: { twitchId: userId },
+                data: {
+                    accessToken: token.accessToken,
+                    scopes: token.scope,
+                    ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
+                    ...(token.expiresIn
+                        ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) }
+                        : {}),
+                },
             });
 
             this.events.emit('refresh', { ...token, userId });

@@ -12,12 +12,12 @@ export const command: BotCommand = {
             .filter((command) => {
                 const wantedPermissions = getCommandPermissions(command);
 
-                if (wantedPermissions.mode === 'any')
+                if (wantedPermissions.mode === 'ANY')
                     return (
                         pleasesGlobal(wantedPermissions.global, global) ||
                         pleasesLocal(wantedPermissions.local, local)
                     );
-                if (wantedPermissions.mode === 'all')
+                if (wantedPermissions.mode === 'ALL')
                     return (
                         pleasesGlobal(wantedPermissions.global, global) &&
                         pleasesLocal(wantedPermissions.local, local)
