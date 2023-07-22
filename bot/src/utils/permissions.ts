@@ -1,41 +1,34 @@
 import { type PrivmsgMessage } from '@kararty/dank-twitch-irc';
-import { type Redis } from 'ioredis';
 import { z } from 'zod';
 
 import {
-    and,
     type Database,
-    eq,
-    globalPermissions as globalPermissionsTable,
-    localPermissions as localPermissionsTable,
-    type NewGlobalPermission,
-    type NewLocalPermission,
+    GlobalPermissionLevel,
+    LocalPermissionLevel,
+    type Prisma,
 } from '@synopsis/db';
 
 export const localLevels = [
-    'broadcaster',
-    'ambassador',
-    'moderator',
-    'vip',
-    'normal',
-    'banned',
+    LocalPermissionLevel.BROADCASTER,
+    LocalPermissionLevel.AMBASSADOR,
+    LocalPermissionLevel.MODERATOR,
+    LocalPermissionLevel.VIP,
+    LocalPermissionLevel.SUBSCRIBER,
+    LocalPermissionLevel.NORMAL,
+    LocalPermissionLevel.BANNED,
 ] as const;
-export const localLevelsFromMessage = ['broadcaster', 'moderator', 'vip'] as const;
-export const localLevelsFromDatabase = ['banned', 'ambassador'] as const;
 export const localLevelSchema = z.enum(localLevels);
 
-export type LocalLevelFromMessage = (typeof localLevelsFromMessage)[number];
-export type LocalLevelFromDatabase = (typeof localLevelsFromDatabase)[number];
-export type LocalLevel = (typeof localLevels)[number];
-
-export const globalLevelsFromDatabase = ['banned', 'owner'] as const;
-export const globalLevels = ['owner', 'normal', 'banned'] as const;
+export const globalLevels = [
+    GlobalPermissionLevel.OWNER,
+    GlobalPermissionLevel.NORMAL,
+    GlobalPermissionLevel.BANNED,
+] as const;
 export const globalLevelSchema = z.enum(globalLevels);
 
-export type GlobalLevelFromDatabase = (typeof globalLevelsFromDatabase)[number];
-export type GlobalLevel = (typeof globalLevels)[number];
-
-export const determineHighestLocalLevel = (...levels: LocalLevel[]): LocalLevel => {
+export const determineHighestLocalLevel = (
+    ...levels: LocalPermissionLevel[]
+): LocalPermissionLevel => {
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = localLevels.indexOf(level);
@@ -49,7 +42,9 @@ export const determineHighestLocalLevel = (...levels: LocalLevel[]): LocalLevel 
     return level;
 };
 
-export const determineHighestGlobalLevel = (...levels: GlobalLevel[]): GlobalLevel => {
+export const determineHighestGlobalLevel = (
+    ...levels: GlobalPermissionLevel[]
+): GlobalPermissionLevel => {
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = globalLevels.indexOf(level);
@@ -69,7 +64,10 @@ export const determineHighestGlobalLevel = (...levels: GlobalLevel[]): GlobalLev
  * @param actualLevel The level the user actually has
  * @returns wether or not the user has a high enough level
  */
-export const pleasesLocal = (wantedLevel: LocalLevel, actualLevel: LocalLevel): boolean => {
+export const pleasesLocal = (
+    wantedLevel: LocalPermissionLevel,
+    actualLevel: LocalPermissionLevel
+): boolean => {
     return determineHighestLocalLevel(wantedLevel, actualLevel) === actualLevel;
 };
 
@@ -78,7 +76,10 @@ export const pleasesLocal = (wantedLevel: LocalLevel, actualLevel: LocalLevel): 
  * @param actualLevel the level the user actually has
  * @returns wether or not the user has a high enough level
  */
-export const pleasesGlobal = (wantedLevel: GlobalLevel, actualLevel: GlobalLevel): boolean => {
+export const pleasesGlobal = (
+    wantedLevel: GlobalPermissionLevel,
+    actualLevel: GlobalPermissionLevel
+): boolean => {
     return determineHighestGlobalLevel(wantedLevel, actualLevel) === actualLevel;
 };
 
@@ -98,103 +99,71 @@ export interface PermissionContext {
 }
 
 export class PermissionProvider {
-    private redis: Redis;
+    // private redis: Redis;
     private db: Database;
 
-    constructor(redis: Redis, db: Database) {
-        this.redis = redis;
+    constructor(db: Database) {
         this.db = db;
-    }
-
-    private localKey(channelId: string, userId: string): string {
-        return `perm:local:${channelId}:${userId}`;
-    }
-
-    private globalKey(userId: string): string {
-        return `perm:global:${userId}`;
-    }
-
-    private async getCacheGlobal(userId: string) {
-        const cacheResult = await this.redis.get(this.globalKey(userId));
-        const validated = globalLevelSchema.safeParse(cacheResult);
-
-        if (!validated.success) return null;
-        return validated.data;
-    }
-
-    private async setCacheGlobal(userId: string, level: GlobalLevel) {
-        await this.redis.set(this.globalKey(userId), level, 'EX', 10 * 60);
     }
 
     async getDbLocalPermission(
         channelId: string,
         userId: string
-    ): Promise<LocalLevelFromDatabase | null> {
-        const [result] = await this.db
-            .select({
-                permission: localPermissionsTable.permission,
-            })
-            .from(localPermissionsTable)
-            .where(
-                and(
-                    eq(localPermissionsTable.channelId, channelId),
-                    eq(localPermissionsTable.userId, userId)
-                )
-            )
-            .limit(1);
+    ): Promise<LocalPermissionLevel | null> {
+        const result = await this.db.localPermission.findFirst({
+            where: {
+                channelTwitchId: channelId,
+                userTwitchId: userId,
+            },
+            select: {
+                permission: true,
+            },
+        });
 
         return result?.permission ?? null;
     }
 
-    private async getDbGlobalPermission(userId: string): Promise<GlobalLevelFromDatabase | null> {
-        const [result] = await this.db
-            .select({
-                permission: globalPermissionsTable.permission,
-            })
-            .from(globalPermissionsTable)
-            .where(eq(globalPermissionsTable.userId, userId))
-            .limit(1);
+    private async getDbGlobalPermission(userId: string): Promise<GlobalPermissionLevel | null> {
+        const result = await this.db.globalPermission.findFirst({
+            where: { userTwitchId: userId },
+            select: { permission: true },
+        });
 
         return result?.permission ?? null;
     }
 
-    async getGlobalPermission(userId: string, skipCache?: boolean): Promise<GlobalLevel> {
-        if (!skipCache) {
-            const cached = await this.getCacheGlobal(userId);
-            if (cached) return cached;
-        }
-
-        const permission = (await this.getDbGlobalPermission(userId)) ?? 'normal';
-        void this.setCacheGlobal(userId, permission);
+    async getGlobalPermission(userId: string): Promise<GlobalPermissionLevel> {
+        const permission = (await this.getDbGlobalPermission(userId)) ?? 'NORMAL';
         return permission;
     }
 
-    private getLocalPermissionFromMessage(msg: PrivmsgMessage): LocalLevelFromMessage | null {
+    private getLocalPermissionFromMessage(msg: PrivmsgMessage): LocalPermissionLevel | null {
         const { isMod, channelName, senderUsername, badges } = msg;
         const isBroadcaster = channelName === senderUsername;
         const isVip = badges.hasVIP;
 
-        if (isBroadcaster) return 'broadcaster';
-        if (isMod) return 'moderator';
-        if (isVip) return 'vip';
+        if (isBroadcaster) return LocalPermissionLevel.BROADCASTER;
+        if (isMod) return LocalPermissionLevel.MODERATOR;
+        if (isVip) return LocalPermissionLevel.VIP;
         return null;
     }
 
-    async getLocalPermission(msg: PrivmsgMessage): Promise<LocalLevel> {
+    async getLocalPermission(msg: PrivmsgMessage): Promise<LocalPermissionLevel> {
         const localFromMessage = this.getLocalPermissionFromMessage(msg);
         const localFromDatabase = await this.getDbLocalPermission(msg.channelID, msg.senderUserID);
-        if (localFromDatabase === 'banned') return 'banned';
+
+        if (localFromDatabase === LocalPermissionLevel.BANNED) return LocalPermissionLevel.BANNED;
 
         const permission =
             localFromDatabase && localFromMessage
                 ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
-                : localFromDatabase ?? localFromMessage ?? 'normal';
+                : localFromDatabase ?? localFromMessage ?? LocalPermissionLevel.NORMAL;
         return permission;
     }
 
     async getPermission(msg: PrivmsgMessage): Promise<{
-        local: LocalLevel;
-        global: GlobalLevel;
+        local: LocalPermissionLevel;
+        global: GlobalPermissionLevel;
     }> {
         const [local, global] = await Promise.all([
             this.getLocalPermission(msg),
@@ -211,52 +180,56 @@ export class PermissionProvider {
      * @returns
      */
     async setLocalPermission(
-        permission: LocalLevelFromDatabase | 'normal',
+        permission: LocalPermissionLevel,
         { channel, user }: PermissionContext
     ): Promise<void> {
         const existingDbPermission = await this.getDbLocalPermission(channel.id, user.id);
         if (existingDbPermission === permission) return;
 
-        if (permission === 'normal') {
+        if (permission === LocalPermissionLevel.NORMAL) {
             if (!existingDbPermission) return;
-            await Promise.all([
-                this.db
-                    .delete(localPermissionsTable)
-                    .where(
-                        and(
-                            eq(localPermissionsTable.channelId, channel.id),
-                            eq(localPermissionsTable.userId, user.id)
-                        )
-                    ),
-                this.redis.del(this.localKey(channel.id, user.id)),
-            ]);
+
+            await this.db.localPermission.delete({
+                where: {
+                    userTwitchId_channelTwitchId: {
+                        channelTwitchId: channel.id,
+                        userTwitchId: user.id,
+                    },
+                },
+            });
             return;
         }
 
-        const dbPermission: NewLocalPermission = {
-            channelLogin: channel.login,
-            channelId: channel.id,
-            userId: user.id,
-            userLogin: user.login,
+        const dbPermission: Prisma.LocalPermissionCreateInput = {
+            channel: {
+                connectOrCreate: {
+                    where: { twitchId: channel.id },
+                    create: { twitchId: channel.id, twitchLogin: channel.login },
+                },
+            },
+            user: {
+                connectOrCreate: {
+                    where: { twitchId: user.id },
+                    create: { twitchId: user.id, twitchLogin: user.login },
+                },
+            },
             permission,
         };
 
         if (!existingDbPermission) {
-            await Promise.all([this.db.insert(localPermissionsTable).values(dbPermission)]);
+            await this.db.localPermission.create({ data: dbPermission });
             return;
         }
 
-        await Promise.all([
-            this.db
-                .update(localPermissionsTable)
-                .set(dbPermission)
-                .where(
-                    and(
-                        eq(localPermissionsTable.channelId, channel.id),
-                        eq(localPermissionsTable.userId, user.id)
-                    )
-                ),
-        ]);
+        await this.db.localPermission.update({
+            where: {
+                userTwitchId_channelTwitchId: {
+                    channelTwitchId: channel.id,
+                    userTwitchId: user.id,
+                },
+            },
+            data: dbPermission,
+        });
         return;
     }
 
@@ -264,59 +237,55 @@ export class PermissionProvider {
      * @param permission the permission level we want to set
      * @param identifier the user id or the message object
      */
-    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User }) {
+    async setGlobalPermission(permission: GlobalPermissionLevel, { user }: { user: User }) {
         const existingDbPermission = await this.getDbGlobalPermission(user.id);
 
-        if (permission === 'normal') {
+        if (permission === GlobalPermissionLevel.NORMAL) {
             if (!existingDbPermission) return;
-            await Promise.all([
-                this.db
-                    .delete(globalPermissionsTable)
-                    .where(eq(globalPermissionsTable.userId, user.id)),
-                this.setCacheGlobal(user.id, permission),
-            ]);
+            await this.db.globalPermission.delete({
+                where: { userTwitchId: user.id },
+            });
             return;
         }
 
-        const dbPermission: NewGlobalPermission = {
+        const dbPermission: Prisma.GlobalPermissionCreateInput = {
             permission,
-            userId: user.id,
-            userLogin: user.login,
+            user: {
+                connectOrCreate: {
+                    where: { twitchId: user.id },
+                    create: { twitchId: user.id, twitchLogin: user.login },
+                },
+            },
         };
 
         if (!existingDbPermission) {
-            await Promise.all([
-                this.db.insert(globalPermissionsTable).values(dbPermission),
-                this.setCacheGlobal(user.id, permission),
-            ]);
-
+            await this.db.globalPermission.create({ data: dbPermission });
             return;
         }
 
-        await Promise.all([
-            this.db
-                .update(globalPermissionsTable)
-                .set(dbPermission)
-                .where(eq(globalPermissionsTable.userId, user.id)),
-            this.setCacheGlobal(user.id, permission),
-        ]);
-
+        await this.db.globalPermission.update({
+            data: dbPermission,
+            where: { userTwitchId: user.id },
+        });
         return;
     }
 
-    async pleasesLocal(wantedPermission: LocalLevel, msg: PrivmsgMessage): Promise<boolean> {
+    async pleasesLocal(
+        wantedPermission: LocalPermissionLevel,
+        msg: PrivmsgMessage
+    ): Promise<boolean> {
         const current = await this.getLocalPermission(msg);
         return pleasesLocal(wantedPermission, current);
     }
 
-    async pleasesGlobal(wantedPermission: GlobalLevel, userId: string): Promise<boolean> {
+    async pleasesGlobal(wantedPermission: GlobalPermissionLevel, userId: string): Promise<boolean> {
         const current = await this.getGlobalPermission(userId);
         return pleasesGlobal(wantedPermission, current);
     }
 
     async pleasesGlobalAndLocal(
-        wantedGlobalPermission: GlobalLevel,
-        wantedLocalPermission: LocalLevel,
+        wantedGlobalPermission: GlobalPermissionLevel,
+        wantedLocalPermission: LocalPermissionLevel,
         msg: PrivmsgMessage
     ): Promise<boolean> {
         const [global, local] = await Promise.all([
@@ -328,15 +297,17 @@ export class PermissionProvider {
     }
 
     async pleasesGlobalOrLocal(
-        wantedGlobalPermission: GlobalLevel,
-        wantedLocalPermission: LocalLevel,
+        wantedGlobalPermission: GlobalPermissionLevel,
+        wantedLocalPermission: LocalPermissionLevel,
         msg: PrivmsgMessage
     ): Promise<boolean> {
         const { global, local } = await this.getPermission(msg);
 
         if (
-            (global === 'banned' && wantedGlobalPermission !== 'banned') ||
-            (local === 'banned' && wantedLocalPermission !== 'banned')
+            (global === GlobalPermissionLevel.BANNED &&
+                wantedGlobalPermission !== GlobalPermissionLevel.BANNED) ||
+            (local === LocalPermissionLevel.BANNED &&
+                wantedLocalPermission !== LocalPermissionLevel.BANNED)
         ) {
             return false;
         }

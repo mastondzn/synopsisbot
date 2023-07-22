@@ -95,11 +95,11 @@ export const subcommands: BotSubcommand[] = [
             if (!user.ok) return { reply: user.reason };
 
             const currentPermission = await permissions.getGlobalPermission(user.id);
-            if (currentPermission === 'banned') {
+            if (currentPermission === 'BANNED') {
                 return { reply: `${user.login} is already banned globally.` };
             }
 
-            await permissions.setGlobalPermission('banned', { user });
+            await permissions.setGlobalPermission('BANNED', { user });
             return { reply: `Banned user ${user.login} globally from using the bot.` };
         },
     },
@@ -114,11 +114,11 @@ export const subcommands: BotSubcommand[] = [
             if (!user.ok) return { reply: user.reason };
 
             const currentPermission = await permissions.getGlobalPermission(user.id);
-            if (currentPermission === 'normal') {
+            if (currentPermission === 'NORMAL') {
                 return { reply: `${user.login} is not currently banned globally.` };
             }
 
-            await permissions.setGlobalPermission('normal', { user });
+            await permissions.setGlobalPermission('NORMAL', { user });
             return { reply: `Unbanned user ${user.login} globally from using the bot.` };
         },
     },
@@ -144,14 +144,14 @@ export const subcommands: BotSubcommand[] = [
             const context = { channel, user };
 
             const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'NORMAL';
 
-            if (currentPermission === 'banned') {
+            if (currentPermission === 'NORMAL') {
                 return {
                     reply: `User ${user.login} is already banned in channel ${channel.login}.`,
                 };
             }
-            await permissions.setLocalPermission('banned', context);
+            await permissions.setLocalPermission('BANNED', context);
             return {
                 reply: `Banned user ${user.login} from using the bot in channel ${channel.login}.`,
             };
@@ -177,14 +177,14 @@ export const subcommands: BotSubcommand[] = [
             }
 
             const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'NORMAL';
 
-            if (currentPermission === 'normal') {
+            if (currentPermission === 'NORMAL') {
                 return {
                     reply: `User ${user.login} is not currently banned in channel ${channel.login}.`,
                 };
             }
-            await permissions.setLocalPermission('normal', { channel, user });
+            await permissions.setLocalPermission('NORMAL', { channel, user });
             return {
                 reply: `Unbanned user ${user.login} from using the bot in channel ${channel.login}.`,
             };
@@ -210,14 +210,14 @@ export const subcommands: BotSubcommand[] = [
             }
 
             const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'NORMAL';
 
-            if (currentPermission === 'ambassador') {
+            if (currentPermission === 'AMBASSADOR') {
                 return {
                     reply: `User ${user.login} is already an ambassador in channel ${channel.login}.`,
                 };
             }
-            await permissions.setLocalPermission('ambassador', { channel, user });
+            await permissions.setLocalPermission('AMBASSADOR', { channel, user });
             return { reply: `Set user ${user.login} as ambassador in channel ${channel.login}.` };
         },
     },
@@ -243,14 +243,14 @@ export const subcommands: BotSubcommand[] = [
             const context = { channel, user };
 
             const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'NORMAL';
 
-            if (currentPermission === 'normal') {
+            if (currentPermission === 'NORMAL') {
                 return {
                     reply: `User ${user.login} is not currently an ambassador in channel ${channel.login}.`,
                 };
             }
-            await permissions.setLocalPermission('normal', context);
+            await permissions.setLocalPermission('NORMAL', context);
             return { reply: `Unset user ${user.login} as ambassador in channel ${channel.login}.` };
         },
     },

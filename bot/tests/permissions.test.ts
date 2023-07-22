@@ -7,30 +7,30 @@ import {
 
 describe('permissions', () => {
     it('should return the highest local level', () => {
-        expect(determineHighestLocalLevel('normal', 'moderator')).toBe('moderator');
+        expect(determineHighestLocalLevel('NORMAL', 'MODERATOR')).toBe('MODERATOR');
     });
 
     it('should return the highest local level', () => {
-        expect(determineHighestGlobalLevel('normal', 'owner')).toBe('owner');
+        expect(determineHighestGlobalLevel('NORMAL', 'OWNER')).toBe('OWNER');
     });
 
     it('should return true if the user has a high enough local level', () => {
-        expect(pleasesLocal('normal', 'moderator')).toBe(true);
-        expect(pleasesLocal('normal', 'normal')).toBe(true);
+        expect(pleasesLocal('NORMAL', 'MODERATOR')).toBe(true);
+        expect(pleasesLocal('NORMAL', 'NORMAL')).toBe(true);
     });
 
     it('should return true if the user has a high enough global level', () => {
-        expect(pleasesGlobal('normal', 'owner')).toBe(true);
-        expect(pleasesGlobal('normal', 'normal')).toBe(true);
+        expect(pleasesGlobal('NORMAL', 'OWNER')).toBe(true);
+        expect(pleasesGlobal('NORMAL', 'NORMAL')).toBe(true);
     });
 
     it('should return false if the user does not have a high enough local level', () => {
-        expect(pleasesLocal('moderator', 'normal')).toBe(false);
-        expect(pleasesLocal('normal', 'banned')).toBe(false);
+        expect(pleasesLocal('MODERATOR', 'NORMAL')).toBe(false);
+        expect(pleasesLocal('NORMAL', 'BANNED')).toBe(false);
     });
 
     it('should return false if the user does not have a high enough global level', () => {
-        expect(pleasesGlobal('owner', 'normal')).toBe(false);
-        expect(pleasesGlobal('normal', 'banned')).toBe(false);
+        expect(pleasesGlobal('OWNER', 'NORMAL')).toBe(false);
+        expect(pleasesGlobal('NORMAL', 'BANNED')).toBe(false);
     });
 });

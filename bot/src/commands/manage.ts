@@ -39,21 +39,26 @@ export const command: BotCommand = {
                 const channel = { login: msg.channelName, id: msg.channelID };
 
                 const isAmbassador =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
+                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'AMBASSADOR';
+
                 if (isAmbassador) return { reply: `You can't ban ${user.login}.` };
 
-                const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
+                const isOwner = (await permissions.getGlobalPermission(user.id)) === 'OWNER';
+
                 if (isOwner) return { reply: `You can't ban ${user.login}.` };
 
                 const currentPermission =
                     (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
-                if (currentPermission === 'banned') {
+                if (currentPermission === 'BANNED') {
                     return {
                         reply: `User ${user.login} is already banned from using the bot locally.`,
                     };
                 }
-                await permissions.setLocalPermission('banned', { channel, user });
+                await permissions.setLocalPermission('BANNED', {
+                    channel,
+                    user,
+                });
                 return {
                     reply: `Banned user ${user.login} from using the bot in this channel.`,
                 };
@@ -80,21 +85,21 @@ export const command: BotCommand = {
                 const channel = { login: msg.channelName, id: msg.channelID };
 
                 const isAmbassador =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
+                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'AMBASSADOR';
                 if (isAmbassador) return { reply: `You can't ban ${user.login}.` };
 
-                const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
+                const isOwner = (await permissions.getGlobalPermission(user.id)) === 'OWNER';
                 if (isOwner) return { reply: `You can't ban ${user.login}.` };
 
                 const currentPermission =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                    (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'NORMAL';
 
-                if (currentPermission === 'normal') {
+                if (currentPermission === 'NORMAL') {
                     return {
                         reply: `User ${user.login} is not currently banned from using the bot locally.`,
                     };
                 }
-                await permissions.setLocalPermission('normal', { channel, user });
+                await permissions.setLocalPermission('NORMAL', { channel, user });
                 return {
                     reply: `Unbanned user ${user.login} from using the bot in this channel.`,
                 };

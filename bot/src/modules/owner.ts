@@ -7,7 +7,7 @@ export const module: BotModule = {
     description: 'sets the owner as a owner in the permissions provider',
     priority: 35,
     register: async ({ utils: { permissions } }) => {
-        await permissions.setGlobalPermission('owner', {
+        await permissions.setGlobalPermission('OWNER', {
             user: {
                 id: env.TWITCH_BOT_OWNER_ID,
                 login: env.TWITCH_BOT_OWNER_USERNAME,
