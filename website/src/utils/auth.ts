@@ -9,7 +9,7 @@ export const createState = async () => {
 };
 
 export const consumeState = async (state: string): Promise<{ ok: boolean }> => {
-    const result = await db.authState.delete({ where: { state } }).catch(() => false);
-    if (result) return { ok: false };
+    const result = await db.authState.delete({ where: { state }, select: { state: true } });
+    if (!result.state) return { ok: false };
     return { ok: true };
 };

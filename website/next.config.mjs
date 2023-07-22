@@ -7,6 +7,10 @@ import '@synopsis/env';
 const config = {
     reactStrictMode: true,
     transpilePackages: ['@synopsis/db', '@synopsis/scopes'],
+    webpack: (config, { webpack }) => {
+        config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^encoding$/ }));
+        return config;
+    },
 };
 
 export default config;
