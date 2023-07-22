@@ -2,7 +2,7 @@ import { getTokenInfo } from '@twurple/auth';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import { db } from '@synopsis/db/next';
+import { db } from '@synopsis/db';
 import { env } from '@synopsis/env';
 
 import { consumeState } from '~/utils/auth';

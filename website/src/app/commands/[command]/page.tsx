@@ -1,15 +1,16 @@
 import { redirect } from 'next/navigation';
 
+import { db } from '@synopsis/db';
+
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
-import { db } from '~/utils/db';
 import { tw } from '~/utils/tw';
 
 export const revalidate = 3600;
 
 async function getCommand(wanted: string) {
-    const command = await db.query.commands.findFirst({
-        where: ({ name }, { eq }) => eq(name, wanted),
+    const command = await db.command.findFirst({
+        where: { name: wanted },
     });
     return command ?? null;
 }
@@ -49,16 +50,16 @@ export default async function Page({ params }: { params: { command: string } }) 
                 <Separator className="my-4" />
                 <h4 className="mb-2 text-lg font-medium">Aliases</h4>
                 <p>
-                    {command.aliases?.length
+                    {command.aliases.length > 0
                         ? command.aliases.join(', ')
                         : 'No additional command aliases.'}
                 </p>
                 <Separator className="my-4" />
                 <h4 className="mb-2 text-lg font-medium">Permissions</h4>
                 <p>
-                    {command.permissionMode === 'custom'
+                    {command.permissionMode === 'CUSTOM'
                         ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
-                        : command.permissionMode === 'all'
+                        : command.permissionMode === 'ALL'
                         ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
                         : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
                 </p>

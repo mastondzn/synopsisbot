@@ -1,7 +1,7 @@
 import { ApiClient } from '@twurple/api';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 
-import { db } from '@synopsis/db/next';
+import { db } from '@synopsis/db';
 import { env } from '@synopsis/env';
 
 export const authProvider = new RefreshingAuthProvider({

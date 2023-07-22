@@ -1,7 +1,8 @@
+import { db } from '@synopsis/db';
+
 import { columns } from './columns';
 import { DataTable } from './table';
 import { PageBase } from '~/components/page-base';
-import { db } from '@synopsis/db/next';
 
 export const revalidate = 600;
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ async function getCommands() {
         .map((command) => ({
             name: command.name,
             description: command.description ?? '-',
-            aliases: command.aliases?.length ? command.aliases.join(', ') : '-',
+            aliases: command.aliases.length > 0 ? command.aliases.join(', ') : '-',
         }))
         .sort((a, b) => a.name.localeCompare(b.name));
 }
