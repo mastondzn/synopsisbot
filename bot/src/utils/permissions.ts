@@ -151,14 +151,7 @@ export class PermissionProvider {
     async getLocalPermission(msg: PrivmsgMessage): Promise<LocalPermissionLevel> {
         const localFromMessage = this.getLocalPermissionFromMessage(msg);
         const localFromDatabase = await this.getDbLocalPermission(msg.channelID, msg.senderUserID);
-
-        if (localFromDatabase === 'BANNED') return 'BANNED';
-
-        const permission =
-            localFromDatabase && localFromMessage
-                ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
-                : localFromDatabase ?? localFromMessage ?? 'NORMAL';
-        return permission;
+        return localFromDatabase ?? localFromMessage ?? 'NORMAL';
     }
 
     async getPermission(msg: PrivmsgMessage): Promise<{
