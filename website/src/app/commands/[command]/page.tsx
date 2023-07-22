@@ -60,8 +60,8 @@ export default async function Page({ params }: { params: { command: string } }) 
                     {command.permissionMode === 'CUSTOM'
                         ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
                         : command.permissionMode === 'ALL'
-                        ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
-                        : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
+                        ? `Requires ${command.localPermission.toLowerCase()} local level and ${command.globalPermission.toLowerCase()} global level.`
+                        : `Requires ${command.localPermission.toLowerCase()} local level or ${command.globalPermission.toLowerCase()} global level.`}
                 </p>
                 <Separator className="my-4" />
                 <h4 className="mb-2 text-lg font-medium">Cooldown</h4>
