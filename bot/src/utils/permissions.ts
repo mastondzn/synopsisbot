@@ -3,27 +3,27 @@ import { z } from 'zod';
 
 import {
     type Database,
-    GlobalPermissionLevel,
-    LocalPermissionLevel,
+    type GlobalPermissionLevel,
+    type LocalPermissionLevel,
     type Prisma,
 } from '@synopsis/db';
 
 export const localLevels = [
-    LocalPermissionLevel.BROADCASTER,
-    LocalPermissionLevel.AMBASSADOR,
-    LocalPermissionLevel.MODERATOR,
-    LocalPermissionLevel.VIP,
-    LocalPermissionLevel.SUBSCRIBER,
-    LocalPermissionLevel.NORMAL,
-    LocalPermissionLevel.BANNED,
-] as const;
+    'BROADCASTER',
+    'AMBASSADOR',
+    'MODERATOR',
+    'VIP',
+    'SUBSCRIBER',
+    'NORMAL',
+    'BANNED',
+] as const satisfies readonly LocalPermissionLevel[];
 export const localLevelSchema = z.enum(localLevels);
 
 export const globalLevels = [
-    GlobalPermissionLevel.OWNER,
-    GlobalPermissionLevel.NORMAL,
-    GlobalPermissionLevel.BANNED,
-] as const;
+    'OWNER',
+    'NORMAL',
+    'BANNED',
+] as const satisfies readonly GlobalPermissionLevel[];
 export const globalLevelSchema = z.enum(globalLevels);
 
 export const determineHighestLocalLevel = (
@@ -142,9 +142,9 @@ export class PermissionProvider {
         const isBroadcaster = channelName === senderUsername;
         const isVip = badges.hasVIP;
 
-        if (isBroadcaster) return LocalPermissionLevel.BROADCASTER;
-        if (isMod) return LocalPermissionLevel.MODERATOR;
-        if (isVip) return LocalPermissionLevel.VIP;
+        if (isBroadcaster) return 'BROADCASTER';
+        if (isMod) return 'MODERATOR';
+        if (isVip) return 'VIP';
         return null;
     }
 
@@ -152,12 +152,12 @@ export class PermissionProvider {
         const localFromMessage = this.getLocalPermissionFromMessage(msg);
         const localFromDatabase = await this.getDbLocalPermission(msg.channelID, msg.senderUserID);
 
-        if (localFromDatabase === LocalPermissionLevel.BANNED) return LocalPermissionLevel.BANNED;
+        if (localFromDatabase === 'BANNED') return 'BANNED';
 
         const permission =
             localFromDatabase && localFromMessage
                 ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
-                : localFromDatabase ?? localFromMessage ?? LocalPermissionLevel.NORMAL;
+                : localFromDatabase ?? localFromMessage ?? 'NORMAL';
         return permission;
     }
 
@@ -186,7 +186,7 @@ export class PermissionProvider {
         const existingDbPermission = await this.getDbLocalPermission(channel.id, user.id);
         if (existingDbPermission === permission) return;
 
-        if (permission === LocalPermissionLevel.NORMAL) {
+        if (permission === 'NORMAL') {
             if (!existingDbPermission) return;
 
             await this.db.localPermission.delete({
@@ -240,7 +240,7 @@ export class PermissionProvider {
     async setGlobalPermission(permission: GlobalPermissionLevel, { user }: { user: User }) {
         const existingDbPermission = await this.getDbGlobalPermission(user.id);
 
-        if (permission === GlobalPermissionLevel.NORMAL) {
+        if (permission === 'NORMAL') {
             if (!existingDbPermission) return;
             await this.db.globalPermission.delete({
                 where: { userTwitchId: user.id },
@@ -304,10 +304,8 @@ export class PermissionProvider {
         const { global, local } = await this.getPermission(msg);
 
         if (
-            (global === GlobalPermissionLevel.BANNED &&
-                wantedGlobalPermission !== GlobalPermissionLevel.BANNED) ||
-            (local === LocalPermissionLevel.BANNED &&
-                wantedLocalPermission !== LocalPermissionLevel.BANNED)
+            (global === 'BANNED' && wantedGlobalPermission !== 'BANNED') ||
+            (local === 'BANNED' && wantedLocalPermission !== 'BANNED')
         ) {
             return false;
         }
