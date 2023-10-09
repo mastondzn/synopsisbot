@@ -16,8 +16,8 @@
     "devDependencies": {
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
-        "@types/jest": "29.5.2",
-        "@types/node": "18.16.16",
+        "@types/jest": "29.5.5",
+        "@types/node": "18.18.4",
         "chalk": "5.2.0",
         "dotenv-cli": "7.2.1",
         "eslint": "8.42.0",
