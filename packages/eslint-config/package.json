@@ -22,7 +22,7 @@
     "devDependencies": {
         "@types/eslint": "8.40.1",
         "@types/node": "18.16.16",
-        "type-fest": "3.8.0",
+        "type-fest": "3.13.1",
         "typescript": "5.0.4"
     }
 }
