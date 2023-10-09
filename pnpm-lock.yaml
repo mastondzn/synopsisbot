@@ -256,8 +256,8 @@ importers:
         specifier: 18.16.16
         version: 18.16.16
       type-fest:
-        specifier: 3.8.0
-        version: 3.8.0
+        specifier: 3.13.1
+        version: 3.13.1
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -7672,8 +7672,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /type-fest@3.8.0:
-    resolution: {integrity: sha512-FVNSzGQz9Th+/9R6Lvv7WIAkstylfHN2/JYxkyhhmKFYh9At2DST8t6L6Lref9eYO8PXFTfG9Sg1Agg0K3vq3Q==}
+  /type-fest@3.13.1:
+    resolution: {integrity: sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==}
     engines: {node: '>=14.16'}
     dev: true
 
