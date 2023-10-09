@@ -45,8 +45,8 @@ importers:
         specifier: 1.5.1
         version: 1.5.1
       '@hono/node-server':
-        specifier: 1.0.1
-        version: 1.0.1
+        specifier: 1.2.0
+        version: 1.2.0
       '@kararty/dank-twitch-irc':
         specifier: 6.0.0
         version: 6.0.0
@@ -1292,8 +1292,8 @@ packages:
     resolution: {integrity: sha512-6SWlXpWU5AvId8Ac7zjzmIOqMOba/JWY8XZ4A7q7Gn1Vlfg/SFFIlrtHXt9nPn4op9ZPAkl91Jao+QQv3r/ukw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  /@hono/node-server@1.0.1:
-    resolution: {integrity: sha512-sNnTdguCJKclHdzyn054q/2/XO7EswUW3TPRQT3NSBpZwWl7EOLYAgnCImjIJHPawV71Y/R1fFyuCjJFWrnI9A==}
+  /@hono/node-server@1.2.0:
+    resolution: {integrity: sha512-aHT8lDMLpd7ioXJ1/057+h+oE/k7rCOWmjklYDsE0jE4CoNB9XzG4f8dRHvw4s5HJFocaYDiGgYM/V0kYbQ0ww==}
     engines: {node: '>=18.0.0'}
     dev: false
 
