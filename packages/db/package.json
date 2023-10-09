@@ -20,7 +20,7 @@
     "devDependencies": {
         "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
-        "@types/node": "18.16.16",
+        "@types/node": "18.18.4",
         "dotenv-cli": "7.2.1",
         "drizzle-kit": "0.18.1",
         "eslint": "8.42.0",
