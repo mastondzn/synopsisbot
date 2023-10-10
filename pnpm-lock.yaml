@@ -42,8 +42,8 @@ importers:
   bot:
     dependencies:
       '@discordjs/collection':
-        specifier: 1.5.1
-        version: 1.5.1
+        specifier: 1.5.3
+        version: 1.5.3
       '@hono/node-server':
         specifier: 1.2.0
         version: 1.2.0
@@ -1017,9 +1017,9 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /@discordjs/collection@1.5.1:
-    resolution: {integrity: sha512-aWEc9DCf3TMDe9iaJoOnO2+JVAjeRNuRxPZQA6GVvBf+Z3gqUuWYBy2NWh4+5CLYq5uoc3MOvUQ5H5m8CJBqOA==}
-    engines: {node: '>=16.9.0'}
+  /@discordjs/collection@1.5.3:
+    resolution: {integrity: sha512-SVb428OMd3WO1paV3rm6tSjM4wC+Kecaa1EUGX7vc6/fddvw/6lg90z4QtCqm21zvVe92vMMDt9+DkIvjXImQQ==}
+    engines: {node: '>=16.11.0'}
     dev: false
 
   /@esbuild-kit/cjs-loader@2.4.2:
