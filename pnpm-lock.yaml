@@ -140,10 +140,10 @@ importers:
         version: link:../env
       drizzle-orm:
         specifier: 0.26.5
-        version: 0.26.5(postgres@3.3.4)
+        version: 0.26.5(postgres@3.4.0)
       postgres:
-        specifier: 3.3.4
-        version: 3.3.4
+        specifier: 3.4.0
+        version: 3.4.0
     devDependencies:
       '@synopsis/eslint-config':
         specifier: 0.0.1
@@ -3412,7 +3412,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.26.5(postgres@3.3.4):
+  /drizzle-orm@0.26.5(postgres@3.4.0):
     resolution: {integrity: sha512-ajjbOIoXqldWoWBn0RbVQCCT732R4Ad+gUjUrlmMpzWYwgnbG/qqPy84NhHntQ/MR//z3xfvT1Z2fD8uCAPX3g==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -3474,7 +3474,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      postgres: 3.3.4
+      postgres: 3.4.0
     dev: false
 
   /duplexer3@0.1.5:
@@ -6477,8 +6477,8 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  /postgres@3.3.4:
-    resolution: {integrity: sha512-XVu0+d/Y56pl2lSaf0c7V19AhAEfpVrhID1IENWN8nf0xch6hFq6dAov5dtUX6ZD46wfr1TxvLhxLtV8WnNsOg==}
+  /postgres@3.4.0:
+    resolution: {integrity: sha512-d7UtSoCg4hUtzxM9aRi3J8BrM6t0h4bQmgAHG96cDCNpP9CnnWQRdRl7WWNvKs0oOaQU2InGoOi1jETmdZK02g==}
     dev: false
 
   /prebuild-install@7.1.1:
