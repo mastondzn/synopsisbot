@@ -54,7 +54,7 @@ services:
 
     grafana:
         <<: *logging
-        image: grafana/grafana:9.5.2
+        image: grafana/grafana:9.5.13
         container_name: grafana
         restart: unless-stopped
         ports:
