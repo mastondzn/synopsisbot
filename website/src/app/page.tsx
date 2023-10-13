@@ -12,15 +12,23 @@ export default function Page() {
                 }
             </h2>
             <p className="mt-[-20px] max-w-[400px] text-center">
-                Currently, you cannot add the bot to a channel yourself, you can ask{' '}
+                {'Currently, you cannot add the bot to a channel yourself, you can ask '}
                 <Link
                     href="https://twitch.tv/mastondzn"
                     target="_blank"
                     className="text-blue-700 dark:text-blue-500"
                 >
-                    me
-                </Link>{' '}
-                to add it for you though!
+                    {'me '}
+                </Link>
+                {'to add it for you though, or you can '}
+                <Link
+                    href="https://www.twitch.tv/popout/synopsisbot/chat"
+                    target="_blank"
+                    className="text-blue-700 dark:text-blue-500"
+                >
+                    {"try it out in the bot's twitch chat"}
+                </Link>
+                {'.'}
             </p>
             <Link href="/commands">
                 <Button variant="default">
