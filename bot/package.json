@@ -27,7 +27,7 @@
         "tsconfig-paths": "4.2.0",
         "tsx": "3.12.7",
         "typed-emitter": "2.1.0",
-        "typescript": "5.0.4"
+        "typescript": "5.2.2"
     },
     "dependencies": {
         "@discordjs/collection": "1.5.3",
