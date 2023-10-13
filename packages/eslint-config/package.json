@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@types/eslint": "8.40.1",
-        "@types/node": "18.18.4",
+        "@types/node": "18.18.5",
         "type-fest": "3.13.1",
         "typescript": "5.0.4"
     }
