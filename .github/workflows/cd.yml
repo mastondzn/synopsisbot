@@ -9,6 +9,8 @@ jobs:
     cd:
         if: github.repository == 'synopsisgg/bot'
         runs-on: ubuntu-latest
+        concurrency:
+            group: ${{ github.workflow }}
 
         steps:
             - name: Wait for CI to finish
