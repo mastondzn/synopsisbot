@@ -30,7 +30,7 @@
         "typescript": "5.0.4"
     },
     "dependencies": {
-        "@discordjs/collection": "1.5.1",
+        "@discordjs/collection": "1.5.3",
         "@hono/node-server": "1.2.0",
         "@kararty/dank-twitch-irc": "6.0.0",
         "@synopsis/db": "0.0.1",
