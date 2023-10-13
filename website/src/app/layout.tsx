@@ -20,22 +20,20 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <>
-            <html lang="en" suppressHydrationWarning>
-                <head />
-                <body
-                    className={tw(
-                        'min-h-screen bg-background font-sans antialiased',
-                        fontSans.variable
-                    )}
-                >
-                    <div className="relative flex min-h-screen flex-col">
-                        <div className="flex-1">
-                            <Providers>{children}</Providers>
-                        </div>
+        <html lang="en" suppressHydrationWarning>
+            <head />
+            <body
+                className={tw(
+                    'min-h-screen bg-background font-sans antialiased',
+                    fontSans.variable
+                )}
+            >
+                <div className="relative flex min-h-screen flex-col">
+                    <div className="flex-1">
+                        <Providers>{children}</Providers>
                     </div>
-                </body>
-            </html>
-        </>
+                </div>
+            </body>
+        </html>
     );
 }

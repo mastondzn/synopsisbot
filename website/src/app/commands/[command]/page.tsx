@@ -21,10 +21,14 @@ export default async function Page({ params }: { params: { command: string } }) 
         return redirect('/404');
     }
 
-    const usage = command.usage?.split('\n').map((line) => ({
-        line: line.trim(),
-        isExample: line.startsWith(command.name),
-    })) ?? [{ line: 'No special usage instructions. Use as normal.', isExample: false }];
+    const usage = command.usage?.split('\n').map((line) => {
+        const isExample = line.startsWith(command.name);
+
+        return {
+            line: isExample ? `sb ${line.trim()}` : line.trim(),
+            isExample,
+        };
+    }) ?? [{ line: 'No special usage instructions. Use as normal.', isExample: false }];
 
     return (
         <PageBase>
