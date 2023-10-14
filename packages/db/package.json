@@ -22,7 +22,7 @@
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "18.18.5",
         "dotenv-cli": "7.3.0",
-        "drizzle-kit": "0.18.1",
+        "drizzle-kit": "0.19.13",
         "eslint": "8.51.0",
         "eslint-define-config": "1.24.1",
         "tsconfig-paths": "4.2.0",
@@ -30,7 +30,7 @@
     },
     "dependencies": {
         "@synopsis/env": "0.0.1",
-        "drizzle-orm": "0.26.5",
+        "drizzle-orm": "0.28.6",
         "postgres": "3.4.0"
     }
 }
