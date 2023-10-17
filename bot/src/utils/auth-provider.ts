@@ -39,8 +39,9 @@ export class BotAuthProvider extends RefreshingAuthProvider {
         super({
             clientId: options.clientId,
             clientSecret: options.clientSecret,
-            onRefresh,
         });
+
+        this.onRefresh(onRefresh);
 
         this.addUser(
             options.twitchId,
