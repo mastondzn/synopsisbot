@@ -42,7 +42,6 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/eslint-config": "0.0.1",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "8.51.0",
         "eslint-define-config": "1.24.1",
