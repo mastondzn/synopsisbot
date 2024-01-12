@@ -1,7 +1,6 @@
-import chalk from 'chalk';
-
 import { createDatabase } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
+import chalk from 'chalk';
 
 import { Bot } from './bot';
 import { getCommands } from './commands';

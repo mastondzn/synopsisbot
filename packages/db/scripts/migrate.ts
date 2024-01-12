@@ -1,6 +1,5 @@
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-
 import { env } from '@synopsis/env/node';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
 import { createDatabase } from '~/index';
 

@@ -4,9 +4,9 @@ import postgres, { type Sql } from 'postgres';
 import { EditHelpers } from './helpers/edit';
 import { FindHelpers } from './helpers/find';
 import { schema } from './schema';
-import { type Database, type DatabaseOptions } from './types';
+import type { Database, DatabaseOptions } from './types';
 
-export const createDatabase = (options: DatabaseOptions): { db: Database; sql: Sql } => {
+export function createDatabase(options: DatabaseOptions): { db: Database, sql: Sql } {
     const sql = postgres(options);
     const db = drizzle(sql, { ...options, schema });
 
@@ -14,7 +14,7 @@ export const createDatabase = (options: DatabaseOptions): { db: Database; sql: S
     const edit = new EditHelpers(db);
 
     return { db: Object.assign(db, { find, edit }), sql };
-};
+}
 
 export * from './types';
 export * from './schema';

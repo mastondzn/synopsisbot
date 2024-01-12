@@ -1,12 +1,11 @@
 import type { Collection } from '@discordjs/collection';
 import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
+import type { Database } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
-
-import type { Database } from '@synopsis/db';
-import { env } from '@synopsis/env/node';
 
 import type {
     BotCommand,

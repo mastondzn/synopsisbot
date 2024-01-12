@@ -1,7 +1,6 @@
+import type { Database } from '@synopsis/db';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 import { EventEmitter } from 'eventemitter3';
-
-import type { Database } from '@synopsis/db';
 
 export interface BotAuthProviderOptions {
     db: Database

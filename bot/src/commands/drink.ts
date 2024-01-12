@@ -1,6 +1,5 @@
-import ms from 'pretty-ms';
-
 import { type CommandUser, commandUsers, eq } from '@synopsis/db';
+import ms from 'pretty-ms';
 
 import { rollBeverageWithModifier } from '~/data/beverages';
 import type { BotCommand } from '~/types/client';

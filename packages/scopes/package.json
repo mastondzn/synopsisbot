@@ -9,7 +9,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "^0.6.2",
+        "@mastondzn/eslint": "^0.6.5",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0"

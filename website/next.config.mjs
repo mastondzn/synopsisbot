@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 
 // set process.env.SKIP_ENV_VALIDATION to something to skip validation
 import '@synopsis/env/next';

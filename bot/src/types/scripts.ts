@@ -1,8 +1,7 @@
 import type { ChatClient } from '@kararty/dank-twitch-irc';
+import type { Database } from '@synopsis/db';
 import type { ApiClient } from '@twurple/api';
 import type { Redis } from 'ioredis';
-
-import type { Database } from '@synopsis/db';
 
 import type { Bot } from '~/bot';
 

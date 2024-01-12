@@ -8,13 +8,14 @@ export const jwtShape = z.object({
     twitchLogin: z.string(),
 });
 
-export const decodeToken = (jwt: string): JwtShape | null => {
+export function decodeToken(jwt: string): JwtShape | null {
     try {
         const decoded = jwtShape.parse(decodeJwt(jwt));
         return decoded;
-    } catch {
+    }
+    catch {
         return null;
     }
-};
+}
 
 export type JwtShape = z.infer<typeof jwtShape>;

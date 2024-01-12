@@ -48,7 +48,7 @@
         "@commitlint/config-conventional": "17.6.3",
         "@commitlint/types": "17.4.4",
         "@manypkg/cli": "0.20.0",
-        "@mastondzn/eslint": "^0.6.2",
+        "@mastondzn/eslint": "^0.6.5",
         "@types/node": "20.8.6",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",

@@ -6,7 +6,7 @@ import { getUrl } from '~/utils/url';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = async () => {
+export async function GET() {
     const url = new URL('https://id.twitch.tv/oauth2/authorize');
 
     const state = await createState();
@@ -18,4 +18,4 @@ export const GET = async () => {
     url.searchParams.set('state', state);
 
     return redirect(url);
-};
+}

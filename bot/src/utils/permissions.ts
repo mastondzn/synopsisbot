@@ -1,6 +1,4 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
-import type { Redis } from 'ioredis';
-import { z } from 'zod';
 import {
     type Database,
     type NewGlobalPermission,
@@ -10,6 +8,8 @@ import {
     globalPermissions as globalPermissionsTable,
     localPermissions as localPermissionsTable,
 } from '@synopsis/db';
+import type { Redis } from 'ioredis';
+import { z } from 'zod';
 
 export const localLevels = [
     'broadcaster',

@@ -1,5 +1,7 @@
 import '~/globals.css';
 
+import React from 'react';
+
 import { Providers } from './providers';
 import { fontSans } from '~/utils/fonts';
 import { tw } from '~/utils/tw';
@@ -25,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body
                 className={tw(
                     'min-h-screen bg-background font-sans antialiased',
-                    fontSans.variable
+                    fontSans.variable,
                 )}
             >
                 <div className="relative flex min-h-screen flex-col">

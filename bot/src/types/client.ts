@@ -5,11 +5,10 @@ import type {
     SpecificClientEvents,
     TwitchMessageEvents,
 } from '@kararty/dank-twitch-irc';
+import type { Database } from '@synopsis/db';
 import type { ApiClient } from '@twurple/api';
 import type { EventSubWsListener } from '@twurple/eventsub-ws';
 import type { Redis } from 'ioredis';
-
-import type { Database } from '@synopsis/db';
 
 import type { KnownKeys, Prettify } from './general';
 import type { parseCommandParams } from '~/helpers/command';

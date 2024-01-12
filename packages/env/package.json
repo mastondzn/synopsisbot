@@ -2,56 +2,23 @@
     "name": "@synopsis/env",
     "version": "0.0.1",
     "private": true,
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "default": "./dist/index.js"
-        },
-        "./next": {
-            "types": "./dist/next.d.ts",
-            "import": "./dist/next.mjs",
-            "require": "./dist/next.js",
-            "default": "./dist/next.js"
-        },
-        "./node": {
-            "types": "./dist/node.d.ts",
-            "import": "./dist/node.mjs",
-            "require": "./dist/node.js",
-            "default": "./dist/node.js"
-        }
-    },
-    "main": "dist/index.js",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
-    "typesVersions": {
-        "*": {
-            "next": [
-                "dist/next.d.ts"
-            ],
-            "node": [
-                "dist/node.d.ts"
-            ]
-        }
-    },
+    "main": "src/index.ts",
     "scripts": {
-        "build": "tsup src/index.ts src/node.ts src/next.ts --format cjs,esm --sourcemap && tsc --emitDeclarationOnly --declaration --declarationMap --outdir dist",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"
     },
-    "dependencies": {
-        "@t3-oss/env-core": "0.3.1",
-        "@t3-oss/env-nextjs": "0.3.1",
-        "is-docker": "2.2.1",
+    "peerDependencies": {
         "zod": "3.22.4"
     },
+    "dependencies": {
+        "is-docker": "2.2.1"
+    },
     "devDependencies": {
-        "@mastondzn/eslint": "^0.6.2",
+        "@mastondzn/eslint": "^0.6.5",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
-        "tsup": "6.7.0"
+        "zod": "3.22.4"
     }
 }

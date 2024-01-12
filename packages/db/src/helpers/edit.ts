@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 
-import { authedUsers, type UpdateAuthedUser } from '../schema';
-import { type DatabaseWithoutHelpers } from '../types';
+import { type UpdateAuthedUser, authedUsers } from '../schema';
+import type { DatabaseWithoutHelpers } from '../types';
 
 export class EditHelpers {
     private db: DatabaseWithoutHelpers;
@@ -21,7 +21,7 @@ export class EditHelpers {
 
     async authedUserByIdThrows(id: string, fields: UpdateAuthedUser) {
         const updatedUser = await this.authedUserById(id, fields);
-        if (!updatedUser) throw new Error(`User with ID ${id} not found in database`);
+        if (!updatedUser) { throw new Error(`User with ID ${id} not found in database`); }
         return updatedUser;
     }
 
@@ -36,7 +36,7 @@ export class EditHelpers {
 
     async authedUserByLoginThrows(login: string, fields: UpdateAuthedUser) {
         const updatedUser = await this.authedUserByLogin(login, fields);
-        if (!updatedUser) throw new Error(`User with login ${login} not found in database`);
+        if (!updatedUser) { throw new Error(`User with login ${login} not found in database`); }
         return updatedUser;
     }
 }

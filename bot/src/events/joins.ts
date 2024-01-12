@@ -1,6 +1,5 @@
-import chalk from 'chalk';
-
 import { env } from '@synopsis/env/node';
+import chalk from 'chalk';
 
 import type { BotEventHandler } from '~/types/client';
 

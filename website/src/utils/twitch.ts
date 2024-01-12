@@ -1,7 +1,6 @@
+import { env } from '@synopsis/env/next';
 import { ApiClient } from '@twurple/api';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
-
-import { env } from '@synopsis/env/next';
 
 import { db } from './db';
 

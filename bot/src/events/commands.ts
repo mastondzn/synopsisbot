@@ -1,7 +1,6 @@
+import { env } from '@synopsis/env/node';
 import chalk from 'chalk';
 import type { Redis } from 'ioredis';
-
-import { env } from '@synopsis/env/node';
 
 import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
 import type {

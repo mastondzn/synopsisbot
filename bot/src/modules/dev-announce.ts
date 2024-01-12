@@ -1,7 +1,6 @@
 // eslint-disable-next-line unicorn/prevent-abbreviations
-import chalk from 'chalk';
-
 import { env } from '@synopsis/env/node';
+import chalk from 'chalk';
 
 import type { BotModule } from '~/types/client';
 

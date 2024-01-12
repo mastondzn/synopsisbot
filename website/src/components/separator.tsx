@@ -9,15 +9,15 @@ const Separator = React.forwardRef<
     React.ElementRef<typeof SeparatorPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
     // eslint-disable-next-line react/prop-types
->(({ className, orientation = 'horizontal', decorative = true, ...props }, ref) => (
+>(({ className, orientation = 'horizontal', decorative = true, ...props }, reference) => (
     <SeparatorPrimitive.Root
-        ref={ref}
+        ref={reference}
         decorative={decorative}
         orientation={orientation}
         className={tw(
             'shrink-0 bg-border',
             orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]',
-            className
+            className,
         )}
         {...props}
     />

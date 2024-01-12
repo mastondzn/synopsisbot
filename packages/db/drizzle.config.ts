@@ -1,6 +1,5 @@
-import type { Config } from 'drizzle-kit';
-
 import { env } from '@synopsis/env/node';
+import type { Config } from 'drizzle-kit';
 
 export default {
     schema: './src/schema/index.ts',

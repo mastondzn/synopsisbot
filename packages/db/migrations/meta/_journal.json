@@ -1,13 +1,13 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1697253772625,
-      "tag": "0000_white_luckman",
-      "breakpoints": true
-    }
-  ]
+    "version": "5",
+    "dialect": "pg",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "5",
+            "when": 1697253772625,
+            "tag": "0000_white_luckman",
+            "breakpoints": true
+        }
+    ]
 }

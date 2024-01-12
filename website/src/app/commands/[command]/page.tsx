@@ -39,16 +39,18 @@ export default async function Page({ params }: { params: { command: string } }) 
                 </div>
                 <Separator className="my-4" />
                 <h4 className="text-lg font-medium">Usage</h4>
-                {usage.map(({ line, isExample }, i) => {
-                    return isExample ? (
-                        <p key={i} className={tw('pt-2 font-semibold text-primary')}>
-                            {line}
-                        </p>
-                    ) : (
-                        <p key={i} className={i === 0 ? 'pt-2' : ''}>
-                            {line}
-                        </p>
-                    );
+                {usage.map(({ line, isExample }, index) => {
+                    return isExample
+                        ? (
+                            <p key={index} className={tw('pt-2 font-semibold text-primary')}>
+                                {line}
+                            </p>
+                            )
+                        : (
+                            <p key={index} className={index === 0 ? 'pt-2' : ''}>
+                                {line}
+                            </p>
+                            );
                 })}
                 <Separator className="my-4" />
                 <h4 className="mb-2 text-lg font-medium">Aliases</h4>
@@ -62,9 +64,9 @@ export default async function Page({ params }: { params: { command: string } }) 
                 <p>
                     {command.permissionMode === 'custom'
                         ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
-                        : command.permissionMode === 'all'
-                        ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
-                        : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
+                        : (command.permissionMode === 'all'
+                                ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
+                                : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`)}
                 </p>
                 <Separator className="my-4" />
                 <h4 className="mb-2 text-lg font-medium">Cooldown</h4>
