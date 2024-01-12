@@ -9,10 +9,9 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@synopsis/tsconfig": "0.0.1",
         "@mastondzn/eslint": "^0.6.2",
+        "@synopsis/tsconfig": "0.0.1",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
-        "eslint-ts-patch": "8.56.0-0",
-    },
-    "dependencies": {}
+        "eslint-ts-patch": "8.56.0-0"
+    }
 }
