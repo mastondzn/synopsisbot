@@ -1,5 +1,5 @@
 import { subcommands } from './subcommands';
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 
 export const command: BotCommand = {
     name: 'owner',
@@ -28,5 +28,5 @@ export const command: BotCommand = {
 
     subcommands,
 
-    run: () => ({ reply: "Please specify a subcommand such as 'sb owner join ...'" }),
+    run: () => ({ reply: 'Please specify a subcommand such as \'sb owner join ...\'' }),
 };

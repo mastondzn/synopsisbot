@@ -1,20 +1,20 @@
-import { applyReplacements, type ChatClient, type ClientMixin } from '@kararty/dank-twitch-irc';
+import { type ChatClient, type ClientMixin, applyReplacements } from '@kararty/dank-twitch-irc';
 
 import { retry } from '~/helpers/retry';
 
-const replacement = async <A extends unknown[]>(
-    oldFn: (...args: A) => Promise<void>,
-    ...args: A
-): Promise<void> => {
-    return await retry(() => oldFn(...args), {
+async function replacement<A extends unknown[]>(
+    oldFunction: (...arguments_: A) => Promise<void>,
+    ...arguments_: A
+): Promise<void> {
+    return await retry(() => oldFunction(...arguments_), {
         retries: 3,
         delay: 350,
-        onRetry: (err: Error, attempt: number) => {
+        onRetry: (error: Error, attempt: number) => {
             console.error(`[retry] say attempt ${attempt}`);
-            console.error(err);
+            console.error(error);
         },
     });
-};
+}
 
 export class RetryMixin implements ClientMixin {
     applyToClient(client: ChatClient): void {

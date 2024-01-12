@@ -1,6 +1,6 @@
 import { env } from '@synopsis/env/node';
 
-import { type BotModule } from '~/types/client';
+import type { BotModule } from '~/types/client';
 
 export const module: BotModule = {
     name: 'owner',

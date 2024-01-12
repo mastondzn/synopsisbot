@@ -16,7 +16,7 @@ void (async () => {
     const modules = await getModules();
     console.log(
         logPrefix,
-        `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`
+        `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`,
     );
 
     const { db } = createDatabase({
@@ -35,7 +35,9 @@ void (async () => {
     });
 
     const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
-    if (!botToken) throw new Error('could not obtain token from auth provider');
+    if (!botToken) {
+        throw new Error('could not obtain token from auth provider');
+    }
     console.log(logPrefix, 'bot token loaded');
 
     new Bot({

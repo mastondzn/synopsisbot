@@ -1,6 +1,6 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
-import { collectDefaultMetrics, Registry } from 'prom-client';
+import { Registry, collectDefaultMetrics } from 'prom-client';
 
 export class PrometheusExposer {
     registry = new Registry();

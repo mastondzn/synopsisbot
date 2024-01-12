@@ -1,6 +1,6 @@
-export type SomeFunction = (...args: never[]) => unknown;
+export type SomeFunction = (...arguments_: never[]) => unknown;
 
-export type SomeAsyncFunction = (...args: never[]) => Promise<unknown>;
+export type SomeAsyncFunction = (...arguments_: never[]) => Promise<unknown>;
 
 export type Resolvable<T> = T | (() => T) | Promise<T> | (() => Promise<T>);
 

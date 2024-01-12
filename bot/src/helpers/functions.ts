@@ -1,15 +1,16 @@
-export const pickOne = <T>(arr: T[]): T => {
-    if (arr.length === 0) throw new Error('Cannot pick from an empty array.');
-    return arr[Math.floor(Math.random() * arr.length)]!;
-};
+export function pickOne<T>(array: T[]): T {
+    if (array.length === 0) { throw new Error('Cannot pick from an empty array.'); }
+    return array[Math.floor(Math.random() * array.length)]!;
+}
 
-export const wait = (ms: number): Promise<void> =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+export function wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-export const shuffle = <T>(arr: T[]): T[] => {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j]!, arr[i]!];
+export function shuffle<T>(array: T[]): T[] {
+    for (let index = array.length - 1; index > 0; index--) {
+        const index_ = Math.floor(Math.random() * (index + 1));
+        [array[index], array[index_]] = [array[index_]!, array[index]!];
     }
-    return arr;
-};
+    return array;
+}

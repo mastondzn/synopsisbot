@@ -1,18 +1,18 @@
-import { type Collection } from '@discordjs/collection';
+import type { Collection } from '@discordjs/collection';
 import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import chalk from 'chalk';
 import { Redis } from 'ioredis';
 
-import { type Database } from '@synopsis/db';
+import type { Database } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
-import {
-    type BotCommand,
-    type BotEventHandler,
-    type BotModule,
-    type BotUtils,
+import type {
+    BotCommand,
+    BotEventHandler,
+    BotModule,
+    BotUtils,
 } from './types/client';
 import {
     type BotAuthProvider,
@@ -27,12 +27,12 @@ import {
 const logPrefix = chalk.bgCyanBright('[bot]');
 
 export interface BotOptions {
-    events: Collection<string, BotEventHandler>;
-    commands: Collection<string, BotCommand>;
-    modules: Collection<string, BotModule>;
-    authProvider: BotAuthProvider;
-    botToken: string;
-    db: Database;
+    events: Collection<string, BotEventHandler>
+    commands: Collection<string, BotCommand>
+    modules: Collection<string, BotModule>
+    authProvider: BotAuthProvider
+    botToken: string
+    db: Database
 }
 
 export class Bot {
@@ -100,18 +100,18 @@ export class Bot {
 
     private registerEvents(): void {
         for (const [, { event, handler }] of this.events) {
-            this.chat.on(event, (...params) => {
-                void handler({ ...this, params: params as never } as never);
+            this.chat.on(event, (...parameters) => {
+                void handler({ ...this, params: parameters as never } as never);
             });
         }
     }
 
     private async registerModules(): Promise<void> {
         const orderedModules = [...this.modules.values()].sort((a, b) => {
-            if (!('priority' in a) && !('priority' in b)) return 0;
-            if (!('priority' in a)) return 1;
-            if (!('priority' in b)) return -1;
-            if (a.priority === b.priority) return 0;
+            if (!('priority' in a) && !('priority' in b)) { return 0; }
+            if (!('priority' in a)) { return 1; }
+            if (!('priority' in b)) { return -1; }
+            if (a.priority === b.priority) { return 0; }
             return a.priority < b.priority ? 1 : -1;
         });
 

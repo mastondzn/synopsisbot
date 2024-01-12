@@ -1,23 +1,26 @@
-import { type Redis } from 'ioredis';
+import type { Redis } from 'ioredis';
 
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 
 export interface CommandCooldownManagerCheckOptions {
-    command: BotCommand;
-    channel: string;
-    userName: string;
+    command: BotCommand
+    channel: string
+    userName: string
 }
 
 const defaultUserCooldown = 10;
 const defaultGlobalCooldown = 3;
 
-const makeUserCooldownKey = ({ userName, channel, command }: CommandCooldownManagerCheckOptions) =>
-    `ucd:${channel}:${command.name}:${userName}`;
+function makeUserCooldownKey({ userName, channel, command }: CommandCooldownManagerCheckOptions) {
+    return `ucd:${channel}:${command.name}:${userName}`;
+}
 
-const makeGlobalCooldownKey = ({
+function makeGlobalCooldownKey({
     channel,
     command,
-}: Omit<CommandCooldownManagerCheckOptions, 'userName'>) => `gcd:${channel}:${command.name}`;
+}: Omit<CommandCooldownManagerCheckOptions, 'userName'>) {
+    return `gcd:${channel}:${command.name}`;
+}
 
 export class CommandCooldownManager {
     cache: Redis;
@@ -44,7 +47,9 @@ export class CommandCooldownManager {
             this.cache.exists(globalCooldownKey),
         ]);
 
-        if (existingUserEntry || existingGlobalEntry) return true;
+        if (existingUserEntry || existingGlobalEntry) {
+            return true;
+        }
 
         await Promise.all([
             this.cache.set(userCooldownKey, '1', 'EX', userCooldown),

@@ -1,22 +1,22 @@
-import { type ChatClient } from '@kararty/dank-twitch-irc';
-import { type ApiClient } from '@twurple/api';
-import { type Redis } from 'ioredis';
+import type { ChatClient } from '@kararty/dank-twitch-irc';
+import type { ApiClient } from '@twurple/api';
+import type { Redis } from 'ioredis';
 
-import { type Database } from '@synopsis/db';
+import type { Database } from '@synopsis/db';
 
-import { type Bot } from '~/bot';
+import type { Bot } from '~/bot';
 
 interface Base {
-    description?: string;
+    description?: string
 }
 
 type ScriptFunction<K extends string, V> = V extends object
-    ? (arg: Record<K, V>) => Promise<void> | void
+    ? (argument: Record<K, V>) => Promise<void> | void
     : () => Promise<void> | void;
 
 type ScriptTypeBuilder<K extends string, V> = Base & {
-    type: K;
-    run: ScriptFunction<K, V>;
+    type: K
+    run: ScriptFunction<K, V>
 };
 
 export type BotScript = ScriptTypeBuilder<'bot', Bot>;

@@ -3,14 +3,14 @@ import ms from 'pretty-ms';
 import { type CommandUser, commandUsers, eq } from '@synopsis/db';
 
 import { rollBeverageWithModifier } from '~/data/beverages';
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
 
-const hydratedRecently = (commandUser: CommandUser): boolean => {
-    if (!commandUser.hydratedAt) return false;
+function hydratedRecently(commandUser: CommandUser): boolean {
+    if (!commandUser.hydratedAt) { return false; }
     return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
-};
+}
 
 export const command: BotCommand = {
     name: 'drink',
@@ -58,7 +58,7 @@ export const command: BotCommand = {
                 })
                 .returning();
         }
-        if (!user) throw new Error('Failed to create command user');
+        if (!user) { throw new Error('Failed to create command user'); }
 
         if (hydratedRecently(user)) {
             const timeLeft = ms(
@@ -66,7 +66,7 @@ export const command: BotCommand = {
                 {
                     unitCount: 2,
                     secondsDecimalDigits: 0,
-                }
+                },
             );
             return { reply: `You are already hydrated! Try again in ${timeLeft}.` };
         }
@@ -84,14 +84,14 @@ export const command: BotCommand = {
             .where(eq(commandUsers.twitchId, msg.senderUserID));
 
         const lines = [`${beverage.message} ${beverage.emoji}`];
-        if (modifier) lines.push(modifier.message);
+        if (modifier) { lines.push(modifier.message); }
         lines.push(
             points > 0 //
                 ? `You gained ${points} points!`
                 : `You lost ${Math.abs(points)} points.`,
 
             `You have ${pointsNow} ✨ hydration points now!`,
-            '(3h cooldown...)'
+            '(3h cooldown...)',
         );
 
         return { reply: lines.join(' ') };

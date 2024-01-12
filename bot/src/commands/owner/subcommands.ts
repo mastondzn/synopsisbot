@@ -1,26 +1,26 @@
 import { channels, eq } from '@synopsis/db';
 
 import { parseUserParameter } from '~/helpers/command';
-import { type BotSubcommand } from '~/types/client';
+import type { BotSubcommand } from '~/types/client';
 
 export const subcommands: BotSubcommand[] = [
     {
         path: ['join'],
-        run: async (ctx) => {
-            const { params, db, chat } = ctx;
+        run: async (context) => {
+            const { params, db, chat } = context;
 
-            const channel = await parseUserParameter(ctx, 1, true);
-            if (!channel.ok) return { reply: channel.reason };
+            const channel = await parseUserParameter(context, 1, true);
+            if (!channel.ok) { return { reply: channel.reason }; }
 
             const desiredMode = params.list.at(2)?.toLowerCase();
-            const mode =
-                desiredMode === 'offlineonly'
+            const mode
+                = desiredMode === 'offlineonly'
                     ? 'offlineonly'
                     : desiredMode === 'readonly'
-                    ? 'readonly'
-                    : desiredMode === 'all'
-                    ? 'all'
-                    : 'offlineonly';
+                        ? 'readonly'
+                        : desiredMode === 'all'
+                            ? 'all'
+                            : 'offlineonly';
 
             if (desiredMode && mode !== desiredMode) {
                 return {
@@ -28,26 +28,26 @@ export const subcommands: BotSubcommand[] = [
                 };
             }
 
-            const channelFromDb = await db.query.channels.findFirst({
+            const channelFromDatabase = await db.query.channels.findFirst({
                 where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
             });
 
-            if (channelFromDb && channelFromDb.mode === mode) {
+            if (channelFromDatabase && channelFromDatabase.mode === mode) {
                 await chat.join(channel.login);
                 return {
                     reply: `Channel ${channel.login} is already present in the database with same mode. Attempted to join again.`,
                 };
             }
 
-            if (channelFromDb && channelFromDb.mode !== mode) {
+            if (channelFromDatabase && channelFromDatabase.mode !== mode) {
                 await db.update(channels).set({ mode }).where(eq(channels.twitchId, channel.id));
                 await chat.join(channel.login);
                 return {
-                    reply: `Channel ${channel.login} is already present in the database. Updated mode from ${channelFromDb.mode} to ${mode} and attempted to join again.`,
+                    reply: `Channel ${channel.login} is already present in the database. Updated mode from ${channelFromDatabase.mode} to ${mode} and attempted to join again.`,
                 };
             }
 
-            if (!channelFromDb) {
+            if (!channelFromDatabase) {
                 await db.insert(channels).values({
                     twitchId: channel.id,
                     twitchLogin: channel.login,
@@ -56,22 +56,21 @@ export const subcommands: BotSubcommand[] = [
                 await chat.join(channel.login);
                 return { reply: `Joined channel ${channel.login} in ${mode} mode.` };
             }
-            return;
         },
     },
     {
         path: ['part'],
-        run: async (ctx) => {
-            const { chat, db } = ctx;
+        run: async (context) => {
+            const { chat, db } = context;
 
-            const channel = await parseUserParameter(ctx, 1, true);
-            if (!channel.ok) return { reply: channel.reason };
+            const channel = await parseUserParameter(context, 1, true);
+            if (!channel.ok) { return { reply: channel.reason }; }
 
-            const channelFromDb = await db.query.channels.findFirst({
+            const channelFromDatabase = await db.query.channels.findFirst({
                 where: (channels, { eq }) => eq(channels.twitchLogin, channel.login),
             });
 
-            if (!channelFromDb) {
+            if (!channelFromDatabase) {
                 await chat.part(channel.login);
                 return {
                     reply: `Channel ${channel.login} is not present in the database. Attempted to leave from chat anyway.`,
@@ -85,13 +84,13 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['global', 'ban'],
-        run: async (ctx) => {
+        run: async (context) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context;
 
-            const user = await parseUserParameter(ctx, 2, true);
-            if (!user.ok) return { reply: user.reason };
+            const user = await parseUserParameter(context, 2, true);
+            if (!user.ok) { return { reply: user.reason }; }
 
             const currentPermission = await permissions.getGlobalPermission(user.id);
             if (currentPermission === 'banned') {
@@ -104,13 +103,13 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['global', 'unban'],
-        run: async (ctx) => {
+        run: async (context) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context;
 
-            const user = await parseUserParameter(ctx, 2, true);
-            if (!user.ok) return { reply: user.reason };
+            const user = await parseUserParameter(context, 2, true);
+            if (!user.ok) { return { reply: user.reason }; }
 
             const currentPermission = await permissions.getGlobalPermission(user.id);
             if (currentPermission === 'normal') {
@@ -123,14 +122,14 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['local', 'ban'],
-        run: async (ctx) => {
+        run: async (context_) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context_;
 
             const [channel, user] = await Promise.all([
-                parseUserParameter(ctx, 2, true),
-                parseUserParameter(ctx, 3, true),
+                parseUserParameter(context_, 2, true),
+                parseUserParameter(context_, 3, true),
             ]);
 
             if (!channel.ok) {
@@ -142,8 +141,8 @@ export const subcommands: BotSubcommand[] = [
 
             const context = { channel, user };
 
-            const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+            const currentPermission
+                = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
             if (currentPermission === 'banned') {
                 return {
@@ -158,14 +157,14 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['local', 'unban'],
-        run: async (ctx) => {
+        run: async (context) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context;
 
             const [channel, user] = await Promise.all([
-                parseUserParameter(ctx, 2, true),
-                parseUserParameter(ctx, 3, true),
+                parseUserParameter(context, 2, true),
+                parseUserParameter(context, 3, true),
             ]);
 
             if (!channel.ok) {
@@ -175,8 +174,8 @@ export const subcommands: BotSubcommand[] = [
                 return { reply: user.reason };
             }
 
-            const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+            const currentPermission
+                = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
             if (currentPermission === 'normal') {
                 return {
@@ -191,14 +190,14 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['local', 'ambassador'],
-        run: async (ctx) => {
+        run: async (context) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context;
 
             const [channel, user] = await Promise.all([
-                parseUserParameter(ctx, 2, true),
-                parseUserParameter(ctx, 3, true),
+                parseUserParameter(context, 2, true),
+                parseUserParameter(context, 3, true),
             ]);
 
             if (!channel.ok) {
@@ -208,8 +207,8 @@ export const subcommands: BotSubcommand[] = [
                 return { reply: user.reason };
             }
 
-            const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+            const currentPermission
+                = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
             if (currentPermission === 'ambassador') {
                 return {
@@ -222,14 +221,14 @@ export const subcommands: BotSubcommand[] = [
     },
     {
         path: ['local', 'unambassador'],
-        run: async (ctx) => {
+        run: async (context_) => {
             const {
                 utils: { permissions },
-            } = ctx;
+            } = context_;
 
             const [channel, user] = await Promise.all([
-                parseUserParameter(ctx, 2, true),
-                parseUserParameter(ctx, 3, true),
+                parseUserParameter(context_, 2, true),
+                parseUserParameter(context_, 3, true),
             ]);
 
             if (!channel.ok) {
@@ -241,8 +240,8 @@ export const subcommands: BotSubcommand[] = [
 
             const context = { channel, user };
 
-            const currentPermission =
-                (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+            const currentPermission
+                = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
             if (currentPermission === 'normal') {
                 return {

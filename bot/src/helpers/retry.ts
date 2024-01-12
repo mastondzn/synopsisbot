@@ -1,26 +1,32 @@
 import { wait } from './functions';
 
 export interface RetryOptions {
-    retries: number;
-    delay?: number;
-    onRetry?: (error: Error, attempt: number) => void;
+    retries: number
+    delay?: number
+    onRetry?: (error: Error, attempt: number) => void
 }
 
 export async function retry<T>(
-    fn: () => PromiseLike<T> | T,
-    { retries, delay, onRetry }: RetryOptions
+    function_: () => PromiseLike<T> | T,
+    { retries, delay, onRetry }: RetryOptions,
 ): Promise<Awaited<T>> {
     let lastError: Error | undefined;
-    for (let i = 0; i < retries; i++) {
+    for (let index = 0; index < retries; index++) {
         try {
-            return await fn();
-        } catch (error) {
+            return await function_();
+        }
+        catch (error) {
             lastError = error instanceof Error ? error : new Error('Unknown error');
 
-            if (onRetry) onRetry(lastError, i);
-            if (delay) await wait(delay);
+            if (onRetry) {
+                onRetry(lastError, index);
+            }
+            if (delay) {
+                await wait(delay);
+            }
         }
     }
 
+    // eslint-disable-next-line no-throw-literal
     throw lastError!;
 }

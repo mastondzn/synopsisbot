@@ -1,18 +1,15 @@
 import { Collection, type ReadonlyCollection } from '@discordjs/collection';
 
 import { beveragesArray } from './list';
-import { type Beverage, type Modifier } from './types';
+import type { Beverage, Modifier } from './types';
 import { pickOne } from '~/helpers/functions';
 
 export const beverages: ReadonlyCollection<string, Beverage> = new Collection(
-    beveragesArray.map((beverage) => [beverage.identifier, beverage])
+    beveragesArray.map(beverage => [beverage.identifier, beverage]),
 );
 
-export const weighedRoll = <T extends { weight: number }>(
-    collection: ReadonlyCollection<string, T>,
-    totalWeight?: number
-) => {
-    totalWeight = totalWeight ?? collection.reduce((acc, item) => acc + item.weight, 0);
+export function weighedRoll<T extends { weight: number }>(collection: ReadonlyCollection<string, T>, totalWeight?: number) {
+    totalWeight = totalWeight ?? collection.reduce((accumulator, item) => accumulator + item.weight, 0);
     const roll = Math.random() * totalWeight;
 
     let weight = 0;
@@ -24,24 +21,24 @@ export const weighedRoll = <T extends { weight: number }>(
     }
 
     throw new Error('Unable to roll an item.');
-};
+}
 
-export const rollModifier = (item: Beverage): Modifier | null => {
-    if (item.modifiers === undefined || item.modifiers.length === 0) return null;
+export function rollModifier(item: Beverage): Modifier | null {
+    if (item.modifiers === undefined || item.modifiers.length === 0) { return null; }
 
     const rolledModifiers = [];
     for (const modifier of item.modifiers) {
         const roll = Math.random();
-        if (roll < modifier.chance) rolledModifiers.push(modifier);
+        if (roll < modifier.chance) { rolledModifiers.push(modifier); }
     }
 
-    if (rolledModifiers.length > 0) return pickOne(rolledModifiers);
+    if (rolledModifiers.length > 0) { return pickOne(rolledModifiers); }
     return null;
-};
+}
 
 export const rollBeverage = () => weighedRoll(beverages, beveragesTotalWeight);
 
-export const rollBeverageWithModifier = () => {
+export function rollBeverageWithModifier() {
     const beverage = rollBeverage();
     const modifier = rollModifier(beverage);
 
@@ -50,12 +47,12 @@ export const rollBeverageWithModifier = () => {
         modifier,
         points: Math.round(beverage.points * (modifier?.multiplier ?? 1)),
     };
-};
+}
 
-const beveragesTotalWeight = beverages.reduce((acc, beverage) => acc + beverage.weight, 0);
+const beveragesTotalWeight = beverages.reduce((accumulator, beverage) => accumulator + beverage.weight, 0);
 
 export const beverageChances = beverages
-    .map((beverage) => ({
+    .map(beverage => ({
         identifier: beverage.identifier,
         chance: beverage.weight / beveragesTotalWeight,
     }))

@@ -1,18 +1,18 @@
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 import { EventEmitter } from 'eventemitter3';
 
-import { type Database } from '@synopsis/db';
+import type { Database } from '@synopsis/db';
 
 export interface BotAuthProviderOptions {
-    db: Database;
-    clientId: string;
-    clientSecret: string;
-    twitchId: string;
-    accessToken: string;
-    refreshToken: string;
-    scopes: string[];
-    expiresAt: Date;
-    obtainedAt: Date;
+    db: Database
+    clientId: string
+    clientSecret: string
+    twitchId: string
+    accessToken: string
+    refreshToken: string
+    scopes: string[]
+    expiresAt: Date
+    obtainedAt: Date
 }
 
 export class BotAuthProvider extends RefreshingAuthProvider {
@@ -51,7 +51,7 @@ export class BotAuthProvider extends RefreshingAuthProvider {
                 accessToken: options.accessToken,
                 refreshToken: options.refreshToken,
             },
-            ['chat']
+            ['chat'],
         );
 
         setTimeout(() => {

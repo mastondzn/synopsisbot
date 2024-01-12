@@ -1,14 +1,14 @@
-import { type BotCommand } from '~/types/client';
-import { type GlobalLevel, type LocalLevel } from '~/utils/permissions';
+import type { BotCommand } from '~/types/client';
+import type { GlobalLevel, LocalLevel } from '~/utils/permissions';
 
 export function getCommandPermissions(command: BotCommand): {
-    global: GlobalLevel;
-    local: LocalLevel;
-    mode: 'all' | 'custom' | 'any';
+    global: GlobalLevel
+    local: LocalLevel
+    mode: 'all' | 'custom' | 'any'
 } {
     const wantedPermissions: {
-        global: GlobalLevel;
-        local: LocalLevel;
+        global: GlobalLevel
+        local: LocalLevel
     } = {
         global: 'normal',
         local: 'normal',

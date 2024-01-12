@@ -1,5 +1,5 @@
 import { getCommandPermissions } from '~/helpers/command';
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 import { pleasesGlobal, pleasesLocal } from '~/utils/permissions';
 
 export const command: BotCommand = {
@@ -12,20 +12,22 @@ export const command: BotCommand = {
             .filter((command) => {
                 const wantedPermissions = getCommandPermissions(command);
 
-                if (wantedPermissions.mode === 'any')
+                if (wantedPermissions.mode === 'any') {
                     return (
-                        pleasesGlobal(wantedPermissions.global, global) ||
-                        pleasesLocal(wantedPermissions.local, local)
+                        pleasesGlobal(wantedPermissions.global, global)
+                        || pleasesLocal(wantedPermissions.local, local)
                     );
-                if (wantedPermissions.mode === 'all')
+                }
+                if (wantedPermissions.mode === 'all') {
                     return (
-                        pleasesGlobal(wantedPermissions.global, global) &&
-                        pleasesLocal(wantedPermissions.local, local)
+                        pleasesGlobal(wantedPermissions.global, global)
+                        && pleasesLocal(wantedPermissions.local, local)
                     );
+                }
 
                 return true;
             })
-            .map((command) => command.name)
+            .map(command => command.name)
             .join(', ');
 
         return { reply: `Commands currently available to you: ${availableCommands}.` };

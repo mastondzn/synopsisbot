@@ -1,13 +1,13 @@
-import { commands as commandsTable, type NewCommand } from '@synopsis/db';
+import { type NewCommand, commands as commandsTable } from '@synopsis/db';
 
 import { getCommandPermissions } from '~/helpers/command';
-import { type BotModule } from '~/types/client';
+import type { BotModule } from '~/types/client';
 
 export const module: BotModule = {
     name: 'db-commands',
     priority: 0,
     register: async ({ commands, db }) => {
-        const dbCommands = commands.map((command) => {
+        const databaseCommands = commands.map((command) => {
             const permission = getCommandPermissions(command);
 
             return {
@@ -24,7 +24,7 @@ export const module: BotModule = {
             } satisfies NewCommand;
         });
 
-        for (const command of dbCommands) {
+        for (const command of databaseCommands) {
             await db
                 .insert(commandsTable) //
                 .values(command)

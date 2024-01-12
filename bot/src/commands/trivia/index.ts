@@ -1,7 +1,7 @@
-import { getTrivia, type Trivia } from './questions';
+import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/functions';
 import { collectMessages } from '~/helpers/message-collector';
-import { type BotCommand, type CommandFragment } from '~/types/client';
+import type { BotCommand, CommandFragment } from '~/types/client';
 
 const activeChannels = new Set<string>();
 
@@ -19,7 +19,8 @@ export const command: BotCommand = {
         let trivia: Trivia;
         try {
             trivia = await getTrivia();
-        } catch {
+        }
+        catch {
             activeChannels.delete(msg.channelName);
             return yield { reply: 'Failed to fetch a question.. :/' };
         }
@@ -32,7 +33,7 @@ export const command: BotCommand = {
         const correctLetter = alphabet[correctIndex]!.toLowerCase();
 
         const answersAsString = answers
-            .map((answer, i) => `${alphabet[i]!}. ${answer}`)
+            .map((answer, index) => `${alphabet[index]!}. ${answer}`)
             .join(', ')
             .replace(/, ([^,]*)$/, ', or $1');
 
@@ -46,25 +47,26 @@ export const command: BotCommand = {
             chat,
             timeout: 30,
             filter: (m) => {
-                if (m.channelName !== msg.channelName) return false;
+                if (m.channelName !== msg.channelName) { return false; }
 
                 const incoming = m.messageText.toLowerCase().trim();
 
                 const isValidAnswer = answers
-                    .map((answer) => answer.toLowerCase())
+                    .map(answer => answer.toLowerCase())
                     .includes(incoming);
                 const isValidLetter = alphabet
-                    .map((letter) => letter.toLowerCase())
+                    .map(letter => letter.toLowerCase())
                     .includes(incoming);
 
                 if (isValidAnswer) {
                     const letterIndex = answers
-                        .map((answer) => answer.toLowerCase())
+                        .map(answer => answer.toLowerCase())
                         .indexOf(incoming);
 
                     const letter = alphabet[letterIndex]!;
                     exhaustedAnswers.add(letter);
-                } else if (isValidLetter) {
+                }
+                else if (isValidLetter) {
                     exhaustedAnswers.add(incoming);
                 }
 

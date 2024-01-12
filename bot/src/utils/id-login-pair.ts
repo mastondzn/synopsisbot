@@ -1,5 +1,5 @@
-import { type ApiClient } from '@twurple/api/lib';
-import { type Redis } from 'ioredis';
+import type { ApiClient } from '@twurple/api/lib';
+import type { Redis } from 'ioredis';
 
 export class IdLoginPairProvider {
     redis: Redis;
@@ -36,7 +36,9 @@ export class IdLoginPairProvider {
 
     async getId(login: string): Promise<string | null> {
         const cached = await this.getIdCache(login);
-        if (cached) return cached;
+        if (cached) {
+            return cached;
+        }
 
         const user = await this.api.users.getUserByName(login);
         if (user) {
@@ -50,7 +52,9 @@ export class IdLoginPairProvider {
 
     async getLogin(id: string): Promise<string | null> {
         const cached = await this.getLoginCache(id);
-        if (cached) return cached;
+        if (cached) {
+            return cached;
+        }
 
         const user = await this.api.users.getUserById(id);
         if (user) {

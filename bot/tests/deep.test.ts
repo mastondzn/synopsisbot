@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-useless-undefined */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { getPaths } from '~/helpers/command';
 
 describe('getPaths', () => {

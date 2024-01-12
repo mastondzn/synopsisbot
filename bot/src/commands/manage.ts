@@ -1,5 +1,5 @@
 import { parseUserParameter } from '~/helpers/command';
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 
 export const command: BotCommand = {
     name: 'manage',
@@ -20,33 +20,33 @@ export const command: BotCommand = {
     subcommands: [
         {
             path: ['ban'],
-            run: async (ctx) => {
+            run: async (context) => {
                 const {
                     msg,
                     utils: { permissions },
-                } = ctx;
+                } = context;
 
-                const user = await parseUserParameter(ctx, 1, true);
+                const user = await parseUserParameter(context, 1, true);
                 if (!user.ok) {
                     return { reply: user.reason };
                 }
 
                 const isBroadcaster = msg.channelName === user.login;
                 const isSelf = msg.senderUsername === user.login;
-                if (isBroadcaster) return { reply: "You can't ban the broadcaster." };
-                if (isSelf) return { reply: "You can't ban yourself." };
+                if (isBroadcaster) { return { reply: 'You can\'t ban the broadcaster.' }; }
+                if (isSelf) { return { reply: 'You can\'t ban yourself.' }; }
 
                 const channel = { login: msg.channelName, id: msg.channelID };
 
-                const isAmbassador =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
-                if (isAmbassador) return { reply: `You can't ban ${user.login}.` };
+                const isAmbassador
+                    = (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
+                if (isAmbassador) { return { reply: `You can't ban ${user.login}.` }; }
 
                 const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
-                if (isOwner) return { reply: `You can't ban ${user.login}.` };
+                if (isOwner) { return { reply: `You can't ban ${user.login}.` }; }
 
-                const currentPermission =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                const currentPermission
+                    = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
                 if (currentPermission === 'banned') {
                     return {
@@ -61,33 +61,33 @@ export const command: BotCommand = {
         },
         {
             path: ['unban'],
-            run: async (ctx) => {
+            run: async (context) => {
                 const {
                     msg,
                     utils: { permissions },
-                } = ctx;
+                } = context;
 
-                const user = await parseUserParameter(ctx, 1, true);
+                const user = await parseUserParameter(context, 1, true);
                 if (!user.ok) {
                     return { reply: user.reason };
                 }
 
                 const isBroadcaster = msg.channelName === user.login;
                 const isSelf = msg.senderUsername === user.login;
-                if (isBroadcaster) return { reply: "You can't ban the broadcaster." };
-                if (isSelf) return { reply: "You can't ban yourself." };
+                if (isBroadcaster) { return { reply: 'You can\'t ban the broadcaster.' }; }
+                if (isSelf) { return { reply: 'You can\'t ban yourself.' }; }
 
                 const channel = { login: msg.channelName, id: msg.channelID };
 
-                const isAmbassador =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
-                if (isAmbassador) return { reply: `You can't ban ${user.login}.` };
+                const isAmbassador
+                    = (await permissions.getDbLocalPermission(channel.id, user.id)) === 'ambassador';
+                if (isAmbassador) { return { reply: `You can't ban ${user.login}.` }; }
 
                 const isOwner = (await permissions.getGlobalPermission(user.id)) === 'owner';
-                if (isOwner) return { reply: `You can't ban ${user.login}.` };
+                if (isOwner) { return { reply: `You can't ban ${user.login}.` }; }
 
-                const currentPermission =
-                    (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
+                const currentPermission
+                    = (await permissions.getDbLocalPermission(channel.id, user.id)) ?? 'normal';
 
                 if (currentPermission === 'normal') {
                     return {
@@ -104,7 +104,7 @@ export const command: BotCommand = {
 
     run: () => {
         return {
-            reply: "Please specify a subcommand such as 'sb manage ban <user>' or 'sb manage unban <user>'.",
+            reply: 'Please specify a subcommand such as \'sb manage ban <user>\' or \'sb manage unban <user>\'.',
         };
     },
 };

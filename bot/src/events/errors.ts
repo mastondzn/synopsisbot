@@ -1,4 +1,4 @@
-import { type BotEventHandler } from '~/types/client';
+import type { BotEventHandler } from '~/types/client';
 
 export const event: BotEventHandler = {
     event: 'error',

@@ -1,15 +1,15 @@
-import { type ChatClient } from '@kararty/dank-twitch-irc';
+import type { ChatClient } from '@kararty/dank-twitch-irc';
 import ms from 'pretty-ms';
 
-import { type BotCommand } from '~/types/client';
+import type { BotCommand } from '~/types/client';
 
 const startedAt = new Date();
 
-const getLatency = async (chat: ChatClient) => {
+async function getLatency(chat: ChatClient) {
     const now = Date.now();
     await chat.ping();
     return Date.now() - now;
-};
+}
 
 export const command: BotCommand = {
     name: 'ping',
@@ -18,8 +18,8 @@ export const command: BotCommand = {
     run: async ({ params, chat }) => {
         const lines = [];
 
-        if (params.command === 'pong') lines.push('MrDestructoid Ping!');
-        else lines.push('MrDestructoid Pong!');
+        if (params.command === 'pong') { lines.push('MrDestructoid Ping!'); }
+        else { lines.push('MrDestructoid Pong!'); }
 
         const latency = await getLatency(chat);
 
@@ -28,7 +28,7 @@ export const command: BotCommand = {
             `Uptime is ${ms(Date.now() - startedAt.getTime(), {
                 unitCount: 2,
                 secondsDecimalDigits: 0,
-            })}.`
+            })}.`,
         );
 
         return { reply: lines.join(' ') };

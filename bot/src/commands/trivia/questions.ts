@@ -16,14 +16,14 @@ import { z } from 'zod';
 // https://opentdb.com/api.php?amount=1&type=multiple
 
 const questionSchema = z.object({
-    category: z.string().transform((str) => decodeURIComponent(str)),
+    category: z.string().transform(string_ => decodeURIComponent(string_)),
     type: z.literal('multiple'),
     difficulty: z.enum(['easy', 'medium', 'hard']),
-    question: z.string().transform((str) => decodeURIComponent(str)),
-    correct_answer: z.string().transform((str) => decodeURIComponent(str)),
+    question: z.string().transform(string_ => decodeURIComponent(string_)),
+    correct_answer: z.string().transform(string_ => decodeURIComponent(string_)),
     incorrect_answers: z
         .array(z.string())
-        .transform((arr) => arr.map((str) => decodeURIComponent(str))),
+        .transform(array => array.map(string_ => decodeURIComponent(string_))),
 });
 
 const responseSchema = z.object({
@@ -35,7 +35,7 @@ export type Trivia = z.infer<typeof questionSchema>;
 
 export async function getTrivia(): Promise<Trivia> {
     const response = await fetch(
-        'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986'
+        'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
     );
     const result = responseSchema.parse(await response.json());
     return result.results[0];

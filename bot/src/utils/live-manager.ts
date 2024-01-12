@@ -1,5 +1,5 @@
-import { type ApiClient } from '@twurple/api';
-import { type Redis } from 'ioredis';
+import type { ApiClient } from '@twurple/api';
+import type { Redis } from 'ioredis';
 
 export class LiveStatusManager {
     private api: ApiClient;
@@ -13,7 +13,9 @@ export class LiveStatusManager {
 
     public async isLive(channel: string): Promise<boolean> {
         const cached = await this.getCache(channel);
-        if (cached !== null) return cached;
+        if (cached !== null) {
+            return cached;
+        }
 
         const stream = await this.api.streams.getStreamByUserName(channel);
         if (!stream) {
@@ -27,8 +29,12 @@ export class LiveStatusManager {
 
     private async getCache(channel: string) {
         const cached = await this.cache.get(this.key(channel));
-        if (cached === 'true') return true;
-        if (cached === 'false') return false;
+        if (cached === 'true') {
+            return true;
+        }
+        if (cached === 'false') {
+            return false;
+        }
         return null;
     }
 

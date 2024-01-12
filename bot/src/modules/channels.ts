@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { type BotModule } from '~/types/client';
+import type { BotModule } from '~/types/client';
 
 const logPrefix = chalk.bgBlue('[modules:channels]');
 
@@ -16,12 +16,12 @@ export const module: BotModule = {
 
         const channels = await api.users
             .getUsersByIds(channelIds)
-            .then((res) => res.map(({ name }) => name));
+            .then(response => response.map(({ name }) => name));
 
         if (channels.length !== channelIds.length) {
             console.warn(
                 logPrefix,
-                `missing ${channelIds.length - channels.length} channels after api call`
+                `missing ${channelIds.length - channels.length} channels after api call`,
             );
         }
 
