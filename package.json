@@ -16,7 +16,6 @@
     "license": "GPL-3.0-or-later",
     "workspaces": [
         "bot",
-        "db",
         "website",
         "packages/*"
     ],
