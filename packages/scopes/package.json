@@ -10,8 +10,9 @@
     },
     "devDependencies": {
         "@synopsis/tsconfig": "0.0.1",
-        "eslint": "8.51.0",
-        "eslint-define-config": "1.24.1"
+        "@mastondzn/eslint": "^0.6.2",
+        "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-ts-patch": "8.56.0-0",
     },
     "dependencies": {}
 }
