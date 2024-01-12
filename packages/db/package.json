@@ -22,8 +22,11 @@
         "@types/node": "20.8.6",
         "dotenv-cli": "7.3.0",
         "drizzle-kit": "0.19.13",
-        "eslint": "8.51.0",
-        "eslint-define-config": "1.24.1",
+        "@mastondzn/eslint": "^0.6.2",
+        "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-ts-patch": "8.56.0-0",
+
+
         "tsconfig-paths": "4.2.0",
         "tsx": "3.12.7"
     },
