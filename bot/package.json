@@ -8,7 +8,6 @@
         "dev": "pnpm with-env tsx watch src/index.ts",
         "start": "pnpm with-env tsx src/index.ts",
         "test": "vitest",
-        "build": "node -e \"console.log('just start')\"",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit",

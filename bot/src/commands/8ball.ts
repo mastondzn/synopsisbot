@@ -7,7 +7,9 @@ export const command: BotCommand = {
     aliases: ['8b'],
     run: ({ params }) => {
         if (!params.text) {
-            return { reply: 'You must ask a question! The magic 8ball cannot read your mind. 🎱' };
+            return {
+                reply: 'You must ask a question! The magic 8ball cannot read your mind. 🎱',
+            };
         }
 
         const responses = [

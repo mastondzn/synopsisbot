@@ -3,6 +3,11 @@
     "type": "module",
     "version": "0.0.1",
     "private": true,
+    "exports": {
+        ".": "./src/index.ts",
+        "./node": "./src/node.ts",
+        "./next": "./src/next.ts"
+    },
     "main": "src/index.ts",
     "scripts": {
         "lint": "eslint .",
@@ -18,8 +23,10 @@
     "devDependencies": {
         "@mastondzn/eslint": "^0.6.5",
         "@synopsis/tsconfig": "0.0.1",
+        "@t3-oss/env-nextjs": "^0.7.3",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
+        "znv": "^0.4.0",
         "zod": "3.22.4"
     }
 }

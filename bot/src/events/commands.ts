@@ -22,17 +22,20 @@ async function hasDevelopmentProcess(redis: Redis): Promise<boolean> {
 export const event: BotEventHandler = {
     event: 'PRIVMSG',
     handler: async (context) => {
-        const { chat, commands, utils, db, cache } = context;
+        const { chat, commands, utils, db, cache, params: [message] } = context;
         const { cooldownManager, statusManager, permissions } = utils;
-        const message = context.params[0];
 
         const text = message.messageText;
         const channel = message.channelName;
 
-        if (!message.messageText.startsWith(botPrefix)) { return; }
+        if (!message.messageText.startsWith(botPrefix)) {
+            return;
+        }
 
         const commandIdentifier = text.replaceAll(/ +/g, ' ').split(' ')[1]?.toLowerCase();
-        if (!commandIdentifier) { return; }
+        if (!commandIdentifier) {
+            return;
+        }
 
         const inDefaultChannel //
             = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
@@ -42,7 +45,9 @@ export const event: BotEventHandler = {
         );
 
         // if we're in development don't reply to commands in non-default channels
-        if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) { return; }
+        if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) {
+            return;
+        }
 
         const wantedPermissions = getCommandPermissions(command);
 
@@ -84,7 +89,9 @@ export const event: BotEventHandler = {
         const cancel = () =>
             cooldownManager.clearCooldown({ command, channel, userName: message.senderUsername });
 
-        if (!mode) { console.warn(logPrefix, `mode for channel ${channel} not found in database`); }
+        if (!mode) {
+            console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+        }
         if (dontExecute) {
             await cancel();
             return;

@@ -4,6 +4,8 @@ import { Collection } from '@discordjs/collection';
 
 import type { BotModule } from '~/types/client';
 
+export const modules = await getModules();
+
 export async function getModules(): Promise<Collection<string, BotModule>> {
     const allFiles = await readdir('./src/modules');
     const files = allFiles
@@ -14,8 +16,9 @@ export async function getModules(): Promise<Collection<string, BotModule>> {
         files.map(async (file) => {
             const moduleObject = (await import(`./${file}`)) as { module: BotModule };
 
+            // eslint-disable-next-line ts/no-unnecessary-condition
             if (!moduleObject?.module?.register && typeof moduleObject?.module?.register !== 'function') {
-                throw new TypeError(`Invalid event ${file}`);
+                throw new TypeError(`Invalid module ${file}`);
             }
 
             return { module: moduleObject.module, fileName: file };

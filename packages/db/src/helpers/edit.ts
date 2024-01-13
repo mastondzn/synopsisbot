@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 
 import { type UpdateAuthedUser, authedUsers } from '../schema';
-import type { DatabaseWithoutHelpers } from '../types';
+import type { DrizzleDatabase } from '../types';
 
 export class EditHelpers {
-    private db: DatabaseWithoutHelpers;
+    private db: DrizzleDatabase;
 
-    constructor(db: DatabaseWithoutHelpers) {
+    constructor(db: DrizzleDatabase) {
         this.db = db;
     }
 

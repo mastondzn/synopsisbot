@@ -1,9 +1,12 @@
-import type { Database } from '@synopsis/db';
+import { env } from '@synopsis/env/node';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
 import { EventEmitter } from 'eventemitter3';
 
+import { db } from './database';
+
+// TODO: push own auth service
+
 export interface BotAuthProviderOptions {
-    db: Database
     clientId: string
     clientSecret: string
     twitchId: string
@@ -20,7 +23,7 @@ export class BotAuthProvider extends RefreshingAuthProvider {
 
     constructor(options: BotAuthProviderOptions) {
         const onRefresh = async (userId: string, token: AccessToken) => {
-            await options.db.edit.authedUserById(userId, {
+            await db.edit.authedUserById(userId, {
                 accessToken: token.accessToken,
                 scopes: token.scope,
                 ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
@@ -31,7 +34,7 @@ export class BotAuthProvider extends RefreshingAuthProvider {
 
             this.events.emit('refresh', { ...token, userId });
             token.expiresIn
-                ? setTimeout(() => this.refreshAccessTokenForIntent('chat'), token.expiresIn * 1000)
+                ? setTimeout(() => void this.refreshAccessTokenForIntent('chat'), token.expiresIn * 1000)
                 : console.error('[utils:auth] no expiresIn');
         };
 
@@ -59,3 +62,11 @@ export class BotAuthProvider extends RefreshingAuthProvider {
         }, options.expiresAt.getTime() - Date.now());
     }
 }
+
+const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
+
+export const authProvider = new BotAuthProvider({
+    clientId: env.TWITCH_CLIENT_ID,
+    clientSecret: env.TWITCH_CLIENT_SECRET,
+    ...botUser,
+});

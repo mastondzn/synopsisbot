@@ -1,9 +1,9 @@
-import type { DatabaseWithoutHelpers } from '../types';
+import type { DrizzleDatabase } from '../types';
 
 export class FindHelpers {
-    private db: DatabaseWithoutHelpers;
+    private db: DrizzleDatabase;
 
-    constructor(db: DatabaseWithoutHelpers) {
+    constructor(db: DrizzleDatabase) {
         this.db = db;
     }
 

@@ -4,7 +4,9 @@ import { Collection } from '@discordjs/collection';
 
 import type { BotEventHandler } from '~/types/client';
 
-export async function getEventHandlers(): Promise<Collection<string, BotEventHandler>> {
+export const events = await getEventHandlers();
+
+async function getEventHandlers(): Promise<Collection<string, BotEventHandler>> {
     const allFiles = await readdir('./src/events');
     const files = allFiles
         .filter(file => file !== 'index.ts')
@@ -14,7 +16,7 @@ export async function getEventHandlers(): Promise<Collection<string, BotEventHan
         files.map(async (file) => {
             const eventObject = (await import(`./${file}`)) as { event: BotEventHandler };
 
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            // eslint-disable-next-line ts/no-unnecessary-condition
             if (!eventObject?.event?.event && typeof eventObject?.event?.handler !== 'function') {
                 throw new TypeError(`Invalid event ${file}`);
             }

@@ -4,7 +4,9 @@ import { Collection } from '@discordjs/collection';
 
 import type { BotCommand } from '~/types/client';
 
-export async function getCommands(): Promise<Collection<string, BotCommand>> {
+export const commands = await getCommands();
+
+async function getCommands(): Promise<Collection<string, BotCommand>> {
     const allFiles = await readdir('./src/commands');
     const files = allFiles
         .filter(file => file !== 'index.ts')
@@ -15,7 +17,7 @@ export async function getCommands(): Promise<Collection<string, BotCommand>> {
             const commandObject = (await import(`./${file}`)) as { command: BotCommand };
 
             // necessary to check dangerous assertion :(
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            // eslint-disable-next-line ts/no-unnecessary-condition
             if (!commandObject?.command?.run && typeof commandObject?.command?.run !== 'function') {
                 throw new TypeError(`Invalid command ${file}`);
             }

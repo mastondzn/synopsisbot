@@ -6,7 +6,7 @@ import type { EditHelpers } from './helpers/edit';
 import type { FindHelpers } from './helpers/find';
 import type { DatabaseSchema } from './schema';
 
-export type DatabaseWithoutHelpers = PostgresJsDatabase<DatabaseSchema>;
-export type Database = DatabaseWithoutHelpers & { find: FindHelpers, edit: EditHelpers };
+export type DrizzleDatabase = PostgresJsDatabase<DatabaseSchema>;
+export type Database = DrizzleDatabase & { find: FindHelpers, edit: EditHelpers };
 export type DatabaseOptions = Omit<DrizzleConfig, 'schema'> & Options<NonNullable<unknown>>;
 export type DatabaseClient = Sql;
