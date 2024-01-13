@@ -3,7 +3,7 @@
     "display": "base",
     "compilerOptions": {
         "target": "ES2021",
-        "lib": ["ES2021"],
+        "lib": ["ES2023"],
         "module": "ESNext",
         "moduleResolution": "bundler",
 

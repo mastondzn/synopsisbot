@@ -1,23 +1,14 @@
 {
-    "extends": "@synopsis/tsconfig/tsconfig.node.json",
+    "extends": "@synopsis/tsconfig/tsconfig.base.json",
     "compilerOptions": {
         "incremental": true,
         "target": "es2017",
         "jsx": "preserve",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": ["dom", "dom.iterable", "es2023"],
         "baseUrl": ".",
-        "module": "esnext",
-        "moduleResolution": "node",
         "paths": { "~/*": ["./src/*"] },
         "resolveJsonModule": true,
-        "strict": true,
-        "noPropertyAccessFromIndexSignature": false,
-        "noUncheckedIndexedAccess": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "skipLibCheck": true,
         "plugins": [{ "name": "next" }]
     },
     "include": [

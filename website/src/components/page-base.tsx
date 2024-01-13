@@ -6,7 +6,7 @@ import type { PropsWithChildren } from 'react';
 import { Button } from './button';
 import { ThemeSwitch } from './theme-switch';
 import synopsisBlack from '../../public/synopsisblack.png';
-import { tw } from '~/utils/tw';
+import { cn } from '~/utils/tw';
 
 export function Header() {
     return (
@@ -43,7 +43,7 @@ export function Footer() {
 export function PageBase({ children, className }: PropsWithChildren<{ className?: string }>) {
     return (
         <div
-            className={tw(
+            className={cn(
                 'container mx-auto flex min-h-screen flex-col items-center justify-center gap-8',
                 className,
             )}

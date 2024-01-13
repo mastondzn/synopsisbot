@@ -1,5 +1,6 @@
 {
     "name": "@synopsis/website",
+    "type": "module",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -42,7 +43,7 @@
         "@mastondzn/eslint": "^0.6.5",
         "@mastondzn/eslint-plugin-tailwindcss": "^3.14.1",
         "@synopsis/tsconfig": "0.0.1",
-        "@types/node": "20.8.6",
+        "@types/node": "20.11.0",
         "@types/react": "18.2.28",
         "@types/react-dom": "18.2.13",
         "autoprefixer": "10.4.16",
@@ -52,6 +53,6 @@
         "eslint-ts-patch": "8.56.0-0",
         "postcss": "8.4.31",
         "tailwindcss": "3.3.3",
-        "typescript": "5.2.2"
+        "typescript": "5.3.3"
     }
 }

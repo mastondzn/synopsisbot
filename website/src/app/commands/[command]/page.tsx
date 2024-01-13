@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
 import { db } from '~/utils/db';
-import { tw } from '~/utils/tw';
+import { cn } from '~/utils/tw';
 
 export const revalidate = 3600;
 
@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: { command: string } }) 
                 {usage.map(({ line, isExample }, index) => {
                     return isExample
                         ? (
-                            <p key={index} className={tw('pt-2 font-semibold text-primary')}>
+                            <p key={index} className={cn('pt-2 font-semibold text-primary')}>
                                 {line}
                             </p>
                             )
