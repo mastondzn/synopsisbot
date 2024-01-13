@@ -1,5 +1,5 @@
 {
-    "extends": "@synopsis/tsconfig/node.json",
+    "extends": "@synopsis/tsconfig/tsconfig.node.json",
     "include": ["src/**/*", "scripts/**/*"],
     "exclude": ["node_modules", "dist", "coverage"]
 }

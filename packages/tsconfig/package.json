@@ -3,8 +3,14 @@
     "version": "0.0.1",
     "private": true,
     "files": [
-        "base.json",
-        "esm.json",
-        "nextjs.json"
-    ]
+        "tsconfig.base.json",
+        "tsconfig.esm.json",
+        "tsconfig.nextjs.json",
+        "tsconfig.node.json"
+    ],
+    "devDependencies": {
+        "@mastondzn/eslint": "^0.6.5",
+        "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-ts-patch": "8.56.0-0"
+    }
 }

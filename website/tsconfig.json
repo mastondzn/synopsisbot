@@ -1,5 +1,5 @@
 {
-    "extends": "@synopsis/tsconfig/node.json",
+    "extends": "@synopsis/tsconfig/tsconfig.node.json",
     "compilerOptions": {
         "incremental": true,
         "target": "es2017",
@@ -10,8 +10,6 @@
         "moduleResolution": "node",
         "paths": { "~/*": ["./src/*"] },
         "resolveJsonModule": true,
-        "allowJs": true,
-        "checkJs": true,
         "strict": true,
         "noPropertyAccessFromIndexSignature": false,
         "noUncheckedIndexedAccess": true,

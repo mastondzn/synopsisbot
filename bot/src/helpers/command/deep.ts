@@ -51,8 +51,12 @@ export function runDeepCommand({
         }
     }
 
-    if (!command || command === commands) { command = onNotFound; }
-    if (typeof command !== 'function') { throw new TypeError('Command not found'); }
+    if (!command || command === commands) {
+        command = onNotFound;
+    }
+    if (typeof command !== 'function') {
+        throw new TypeError('Command not found');
+    }
 
     return command(ctx);
 }
