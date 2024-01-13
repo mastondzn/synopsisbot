@@ -1,7 +1,11 @@
-import { env } from '@synopsis/env/node';
+import { environmentSchema } from '@synopsis/env';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { parseEnv } from 'znv';
 
 import { createDatabase } from '~/index';
+
+// eslint-disable-next-line unicorn/prevent-abbreviations
+const env = parseEnv(process.env, environmentSchema.shape);
 
 async function main() {
     const { db } = createDatabase({

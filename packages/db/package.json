@@ -1,12 +1,13 @@
 {
     "name": "@synopsis/db",
+    "type": "module",
     "version": "0.0.1",
     "private": true,
     "main": "src/index.ts",
     "scripts": {
         "generate": "pnpm with-env drizzle-kit generate:pg --config=drizzle.config.ts",
         "check": "pnpm with-env drizzle-kit check:pg --config=drizzle.config.ts",
-        "migrate": "pnpm with-env tsx -r tsconfig-paths/register scripts/migrate.ts",
+        "migrate": "pnpm with-env tsx scripts/migrate.ts",
         "drop": "pnpm with-env drizzle-kit drop --config=drizzle.config.ts",
         "db:generate": "pnpm generate",
         "db:check": "pnpm check",
@@ -30,7 +31,7 @@
         "drizzle-kit": "0.19.13",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
-        "tsconfig-paths": "4.2.0",
-        "tsx": "3.12.7"
+        "tsx": "4.7.0",
+        "znv": "^0.4.0"
     }
 }

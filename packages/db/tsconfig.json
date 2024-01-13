@@ -1,5 +1,5 @@
 {
-    "extends": "@synopsis/tsconfig/tsconfig.node.json",
+    "extends": "@synopsis/tsconfig/tsconfig.base.json",
     "compilerOptions": {
         "baseUrl": "src",
         "paths": {

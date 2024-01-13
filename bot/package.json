@@ -4,8 +4,8 @@
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "dev": "pnpm with-env tsx watch -r tsconfig-paths/register src/index.ts",
-        "start": "pnpm with-env tsx -r tsconfig-paths/register src/index.ts",
+        "dev": "pnpm with-env tsx watch src/index.ts",
+        "start": "pnpm with-env tsx src/index.ts",
         "test": "jest",
         "build": "node -e \"console.log('just start')\"",
         "lint": "eslint .",
@@ -43,8 +43,7 @@
         "eslint-ts-patch": "8.56.0-0",
         "jest": "29.5.0",
         "ts-jest": "29.1.1",
-        "tsconfig-paths": "4.2.0",
-        "tsx": "3.12.7",
+        "tsx": "4.7.0",
         "typed-emitter": "2.1.0",
         "typescript": "5.2.2"
     }

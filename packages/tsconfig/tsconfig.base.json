@@ -4,7 +4,9 @@
     "compilerOptions": {
         "target": "ES2021",
         "lib": ["ES2021"],
-        "moduleResolution": "node",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+
         "allowJs": true,
         "checkJs": true,
         "strict": true,
@@ -17,6 +19,7 @@
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
+        "noEmit": true,
         "esModuleInterop": true,
         "skipLibCheck": true
     }

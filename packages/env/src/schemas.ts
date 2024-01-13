@@ -39,9 +39,8 @@ export const publicEnvironmentSchema = z.object({
     NEXT_PUBLIC_DOMAIN_NAME: z.string(),
 });
 
-// eslint-disable-next-line unicorn/prevent-abbreviations
-export const env = z.object({ ...serverEnvironmentSchema.shape, ...publicEnvironmentSchema.shape });
+export const environmentSchema = z.object({ ...serverEnvironmentSchema.shape, ...publicEnvironmentSchema.shape });
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;
 export type PublicEnvironment = z.infer<typeof publicEnvironmentSchema>;
-export type Environment = z.infer<typeof env>;
+export type Environment = z.infer<typeof environmentSchema>;
