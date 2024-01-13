@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { parseCommandParams } from '~/helpers/command';
 
 describe('parseCommandParams', () => {

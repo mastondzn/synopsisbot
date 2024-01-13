@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import {
     determineHighestGlobalLevel,
     determineHighestLocalLevel,
@@ -8,9 +10,6 @@ import {
 describe('permissions', () => {
     it('should return the highest local level', () => {
         expect(determineHighestLocalLevel('normal', 'moderator')).toBe('moderator');
-    });
-
-    it('should return the highest local level', () => {
         expect(determineHighestGlobalLevel('normal', 'owner')).toBe('owner');
     });
 
