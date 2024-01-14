@@ -1,51 +1,29 @@
-import { createDatabase } from '@synopsis/db';
+import * as Sentry from '@sentry/node';
+import { ProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '@synopsis/env/node';
-import chalk from 'chalk';
 
-import { Bot } from './bot';
-import { getCommands } from './commands';
-import { getEventHandlers } from './events';
-import { getModules } from './modules';
-import { BotAuthProvider } from './utils/auth-provider';
+import { events } from './events';
+import { modules } from './modules';
+import { authProvider } from './services/auth';
+import { chat } from './services/chat';
+import { db } from './services/database';
 
-const logPrefix = chalk.bgYellow('[init]');
-void (async () => {
-    const commands = await getCommands();
-    const events = await getEventHandlers();
-    const modules = await getModules();
-    console.log(
-        logPrefix,
-        `${commands.size} commands, ${commands.size} events, and ${commands.size} modules loaded`,
-    );
+Sentry.init({
+    dsn: 'https://87270fc0d3264875c1071ecfec1840ce@o4506493464805376.ingest.sentry.io/4506564237983744',
+    integrations: [new ProfilingIntegration()],
+    environment: env.NODE_ENV,
+    tracesSampleRate: 1,
+    profilesSampleRate: 1,
+});
 
-    const { db } = createDatabase({
-        host: env.DB_HOST,
-        user: env.DB_USERNAME,
-        password: env.DB_PASSWORD,
-        database: env.DB_NAME,
-    });
-    const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
+const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
+const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
 
-    const authProvider = new BotAuthProvider({
-        clientId: env.TWITCH_CLIENT_ID,
-        clientSecret: env.TWITCH_CLIENT_SECRET,
-        db,
-        ...botUser,
-    });
+if (!botToken) throw new Error('Bot token not found');
 
-    const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
-    if (!botToken) {
-        throw new Error('could not obtain token from auth provider');
-    }
-    console.log(logPrefix, 'bot token loaded');
-
-    new Bot({
-        commands,
-        events,
-        modules,
-        db,
-        authProvider,
-        botToken: botToken.accessToken,
-    });
-    console.log(logPrefix, 'bot initialized');
-})();
+await chat.login({
+    username: env.TWITCH_BOT_USERNAME,
+    password: botToken.accessToken,
+});
+chat.registerEvents(events);
+await chat.registerModules(modules);

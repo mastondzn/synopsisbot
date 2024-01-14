@@ -1,19 +1,14 @@
-import { env } from '@synopsis/env/node';
+import { defineModule } from '~/helpers/module';
 
-import type { BotModule } from '~/types/client';
-
-export const module: BotModule = {
+export default defineModule({
     name: 'refresh',
     description: 'ensures the bot\'s oauth token is always up to date',
-    register: ({ authProvider, chat }) => {
-        authProvider.events.on('refresh', (token) => {
-            if (token.userId !== env.TWITCH_BOT_ID) {
-                return;
-            }
-
-            chat.configuration.password = `oauth:${token.accessToken}`;
-
-            console.log('[modules:refresh] refreshed bot\'s oauth token');
-        });
+    register: () => {
+        // authProvider.onRefreshFailure((userId, error) => {});
+        //
+        // authProvider.onRefresh((userId, token) => {
+        //     if (userId !== env.TWITCH_BOT_ID) return;
+        //     console.log('refreshed bot token');
+        // });
     },
-};
+});

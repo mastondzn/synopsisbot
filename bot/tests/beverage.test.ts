@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { beverages, safeMultipliers, safePoints } from '~/data/beverages';
+import { beverages, safeMultipliers, safePoints } from '~/commands/drink/data';
 
 describe('beverages', () => {
     it('should always result in integers when multiplying safePoints with safeMultipliers', () => {

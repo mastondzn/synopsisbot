@@ -1,9 +1,9 @@
-import { wait } from './functions';
+import { wait } from './wait';
 
 export interface RetryOptions {
-    retries: number
-    delay?: number
-    onRetry?: (error: Error, attempt: number) => void
+    retries: number;
+    delay?: number;
+    onRetry?: (error: Error, attempt: number) => void;
 }
 
 export async function retry<T>(
@@ -14,19 +14,14 @@ export async function retry<T>(
     for (let index = 0; index < retries; index++) {
         try {
             return await function_();
-        }
-        catch (error) {
+        } catch (error) {
             lastError = error instanceof Error ? error : new Error('Unknown error');
 
-            if (onRetry) {
-                onRetry(lastError, index);
-            }
-            if (delay) {
-                await wait(delay);
-            }
+            if (onRetry) onRetry(lastError, index);
+            if (delay) await wait(delay);
         }
     }
 
-    // eslint-disable-next-line no-throw-literal
+    // eslint-disable-next-line ts/no-non-null-assertion
     throw lastError!;
 }

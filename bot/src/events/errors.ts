@@ -1,6 +1,6 @@
-import type { BotEventHandler } from '~/types/client';
+import { defineEventHandler } from '~/helpers/event';
 
-export const event: BotEventHandler = {
+export default defineEventHandler({
     event: 'error',
-    handler: ({ params: [error] }) => console.error(error),
-};
+    handler: error => console.error(error),
+});

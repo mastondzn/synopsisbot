@@ -40,7 +40,7 @@
         "zod": "3.22.4"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "^0.6.5",
+        "@mastondzn/eslint": "^0.6.9",
         "@mastondzn/eslint-plugin-tailwindcss": "^3.14.1",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.0",

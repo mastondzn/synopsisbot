@@ -1,27 +1,26 @@
-import type { BotCommand } from '~/types/client';
-import type { GlobalLevel, LocalLevel } from '~/utils/permissions';
+import type { BasicCommand } from '.';
+import type { GlobalLevel, LocalLevel } from '~/services/permissions';
 
-export function getCommandPermissions(command: BotCommand): {
-    global: GlobalLevel
-    local: LocalLevel
-    mode: 'all' | 'custom' | 'any'
+export function getCommandPermissions(command: BasicCommand): {
+    global: GlobalLevel;
+    local: LocalLevel;
+    mode: 'all' | 'custom' | 'any';
 } {
-    const wantedPermissions: {
-        global: GlobalLevel
-        local: LocalLevel
-    } = {
-        global: 'normal',
-        local: 'normal',
+    const {
+        permissions: {
+            local = 'normal',
+            global = 'normal',
+            mode = 'all',
+        } = {
+            local: 'normal',
+            global: 'normal',
+            mode: 'all',
+        },
+    } = command;
+
+    return {
+        global,
+        local,
+        mode,
     };
-
-    if (command.permission && command.permission.mode !== 'custom' && command.permission.local) {
-        wantedPermissions.local = command.permission.local;
-    }
-    if (command.permission && command.permission.mode !== 'custom' && command.permission.global) {
-        wantedPermissions.global = command.permission.global;
-    }
-
-    const permissionMode = command.permission?.mode ?? 'all';
-
-    return { ...wantedPermissions, mode: permissionMode };
 }

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { zfetch } from '~/helpers/fetch';
+
 // const result = {
 //     response_code: 0,
 //     results: [
@@ -34,9 +36,10 @@ const responseSchema = z.object({
 export type Trivia = z.infer<typeof questionSchema>;
 
 export async function getTrivia(): Promise<Trivia> {
-    const response = await fetch(
-        'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
-    );
-    const result = responseSchema.parse(await response.json());
-    return result.results[0];
+    const { body } = await zfetch({
+        url: 'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
+        schema: responseSchema,
+    });
+
+    return body.results[0];
 }

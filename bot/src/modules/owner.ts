@@ -1,12 +1,13 @@
 import { env } from '@synopsis/env/node';
 
-import type { BotModule } from '~/types/client';
+import { defineModule } from '~/helpers/module';
+import { permissions } from '~/services/permissions';
 
-export const module: BotModule = {
+export default defineModule({
     name: 'owner',
     description: 'sets the owner as a owner in the permissions provider',
     priority: 35,
-    register: async ({ utils: { permissions } }) => {
+    register: async () => {
         await permissions.setGlobalPermission('owner', {
             user: {
                 id: env.TWITCH_BOT_OWNER_ID,
@@ -14,4 +15,4 @@ export const module: BotModule = {
             },
         });
     },
-};
+});

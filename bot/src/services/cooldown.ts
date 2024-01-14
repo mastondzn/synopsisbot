@@ -1,15 +1,14 @@
-import type { Redis } from 'ioredis';
-
-import type { BotCommand } from '~/types/client';
+import { cache } from './redis';
+import type { Command } from '~/helpers/command';
 
 export interface CommandCooldownManagerCheckOptions {
-    command: BotCommand
-    channel: string
-    userName: string
+    command: Command;
+    channel: string;
+    userName: string;
 }
 
-const defaultUserCooldown = 10;
-const defaultGlobalCooldown = 3;
+const defaultUserCooldown = 5;
+const defaultGlobalCooldown = 0;
 
 function makeUserCooldownKey({ userName, channel, command }: CommandCooldownManagerCheckOptions) {
     return `ucd:${channel}:${command.name}:${userName}`;
@@ -22,13 +21,7 @@ function makeGlobalCooldownKey({
     return `gcd:${channel}:${command.name}`;
 }
 
-export class CommandCooldownManager {
-    cache: Redis;
-
-    constructor(cache: Redis) {
-        this.cache = cache;
-    }
-
+class CommandCooldownManager {
     // returns true if user is on cooldown
     // returns false if user is ok
     async isOnCooldown({
@@ -43,8 +36,8 @@ export class CommandCooldownManager {
         const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
 
         const [existingUserEntry, existingGlobalEntry] = await Promise.all([
-            this.cache.exists(userCooldownKey),
-            this.cache.exists(globalCooldownKey),
+            cache.exists(userCooldownKey),
+            globalCooldown > 0 ? cache.exists(globalCooldownKey) : Promise.resolve(0),
         ]);
 
         if (existingUserEntry || existingGlobalEntry) {
@@ -52,14 +45,16 @@ export class CommandCooldownManager {
         }
 
         await Promise.all([
-            this.cache.set(userCooldownKey, '1', 'EX', userCooldown),
-            this.cache.set(globalCooldownKey, '1', 'EX', globalCooldown),
+            cache.set(userCooldownKey, '1', 'EX', userCooldown),
+            globalCooldown > 0
+                ? cache.set(globalCooldownKey, '1', 'EX', globalCooldown)
+                : Promise.resolve(),
         ]);
 
-        return false;
+        return true;
     }
 
-    async clearCooldown({
+    async clear({
         command,
         channel,
         userName,
@@ -67,6 +62,8 @@ export class CommandCooldownManager {
         const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
         const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
 
-        await Promise.all([this.cache.del(userCooldownKey), this.cache.del(globalCooldownKey)]);
+        await Promise.all([cache.del(userCooldownKey), cache.del(globalCooldownKey)]);
     }
 }
+
+export const cooldowns = new CommandCooldownManager();

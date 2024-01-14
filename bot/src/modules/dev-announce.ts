@@ -2,17 +2,17 @@
 import { env } from '@synopsis/env/node';
 import chalk from 'chalk';
 
-import type { BotModule } from '~/types/client';
+import { setImmediateInterval } from '~/helpers/immediate';
+import { defineModule } from '~/helpers/module';
 
 const logPrefix = chalk.bgGreenBright('[module:dev-announce]');
 
-export const module: BotModule = {
+export default defineModule({
     name: 'dev-announce',
     description: 'Announces the process is running in dev mode locally, to the remote server.',
     register: () => {
-        if (env.NODE_ENV !== 'development') {
-            return;
-        }
+        if (env.NODE_ENV !== 'development') return;
+
         const interval = 2 * 60 * 1000;
 
         const announce = async () => {
@@ -41,7 +41,6 @@ export const module: BotModule = {
             console.log(logPrefix, 'Announced dev mode to remote server');
         };
 
-        void announce();
-        setInterval(announce, interval);
+        setImmediateInterval(() => void announce(), interval);
     },
-};
+});

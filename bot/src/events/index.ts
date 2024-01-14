@@ -2,30 +2,28 @@ import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
 
-import type { BotEventHandler } from '~/types/client';
+import type { BotEventHandler } from '~/helpers/event';
 
-export const events = await getEventHandlers();
+export const events = new Collection<string, BotEventHandler>();
 
-async function getEventHandlers(): Promise<Collection<string, BotEventHandler>> {
+await importEventHandlers();
+async function importEventHandlers() {
     const allFiles = await readdir('./src/events');
     const files = allFiles
         .filter(file => file !== 'index.ts')
         .map(file => file.replace('.ts', ''));
 
-    const events = await Promise.all(
+    await Promise.all(
         files.map(async (file) => {
-            const eventObject = (await import(`./${file}`)) as { event: BotEventHandler };
+            const imported = (await import(`./${file}`)) as { default?: BotEventHandler; };
 
+            // necessary to check dangerous assertion :(
             // eslint-disable-next-line ts/no-unnecessary-condition
-            if (!eventObject?.event?.event && typeof eventObject?.event?.handler !== 'function') {
+            if (!imported?.default?.event && typeof imported?.default?.handler !== 'function') {
                 throw new TypeError(`Invalid event ${file}`);
             }
 
-            return { event: eventObject.event, fileName: file };
+            events.set(file, imported.default);
         }),
-    );
-
-    return new Collection<string, BotEventHandler>(
-        events.map(({ event, fileName }) => [fileName, event]),
     );
 }

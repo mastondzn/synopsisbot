@@ -6,13 +6,9 @@ async function replacement<A extends unknown[]>(
     oldFunction: (...arguments_: A) => Promise<void>,
     ...arguments_: A
 ): Promise<void> {
-    return await retry(() => oldFunction(...arguments_), {
+    await retry(() => oldFunction(...arguments_), {
         retries: 3,
-        delay: 350,
-        onRetry: (error: Error, attempt: number) => {
-            console.error(`[retry] say attempt ${attempt}`);
-            console.error(error);
-        },
+        delay: 150,
     });
 }
 

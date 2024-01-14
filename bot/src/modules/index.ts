@@ -2,30 +2,28 @@ import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
 
-import type { BotModule } from '~/types/client';
+import type { BotModule } from '~/helpers/module';
 
-export const modules = await getModules();
+export const modules = new Collection<string, BotModule>();
 
-export async function getModules(): Promise<Collection<string, BotModule>> {
+await importModules();
+async function importModules() {
     const allFiles = await readdir('./src/modules');
     const files = allFiles
         .filter(file => file !== 'index.ts')
         .map(file => file.replace('.ts', ''));
 
-    const events = await Promise.all(
+    await Promise.all(
         files.map(async (file) => {
-            const moduleObject = (await import(`./${file}`)) as { module: BotModule };
+            const imported = (await import(`./${file}`)) as { default?: BotModule; };
 
-            // eslint-disable-next-line ts/no-unnecessary-condition
-            if (!moduleObject?.module?.register && typeof moduleObject?.module?.register !== 'function') {
+            // necessary to check dangerous assertion :(
+
+            if (typeof imported.default?.register !== 'function') {
                 throw new TypeError(`Invalid module ${file}`);
             }
 
-            return { module: moduleObject.module, fileName: file };
+            modules.set(file, imported.default);
         }),
-    );
-
-    return new Collection<string, BotModule>(
-        events.map(({ module, fileName }) => [fileName, module]),
     );
 }

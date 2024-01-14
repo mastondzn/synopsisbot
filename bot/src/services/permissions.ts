@@ -1,6 +1,5 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import {
-    type Database,
     type NewGlobalPermission,
     type NewLocalPermission,
     and,
@@ -8,8 +7,9 @@ import {
     globalPermissions as globalPermissionsTable,
     localPermissions as localPermissionsTable,
 } from '@synopsis/db';
-import type { Redis } from 'ioredis';
 import { z } from 'zod';
+
+import { db } from './database';
 
 export const localLevels = [
     'broadcaster',
@@ -98,56 +98,26 @@ export function pleasesGlobal(wantedLevel: GlobalLevel, actualLevel: GlobalLevel
 }
 
 interface User {
-    id: string
-    login: string
+    id: string;
+    login: string;
 }
 
 interface Channel {
-    id: string
-    login: string
+    id: string;
+    login: string;
 }
 
 export interface PermissionContext {
-    user: User
-    channel: Channel
+    user: User;
+    channel: Channel;
 }
 
-export class PermissionProvider {
-    private redis: Redis;
-    private db: Database;
-
-    constructor(redis: Redis, database: Database) {
-        this.redis = redis;
-        this.db = database;
-    }
-
-    private localKey(channelId: string, userId: string): string {
-        return `perm:local:${channelId}:${userId}`;
-    }
-
-    private globalKey(userId: string): string {
-        return `perm:global:${userId}`;
-    }
-
-    private async getCacheGlobal(userId: string) {
-        const cacheResult = await this.redis.get(this.globalKey(userId));
-        const validated = globalLevelSchema.safeParse(cacheResult);
-
-        if (!validated.success) {
-            return null;
-        }
-        return validated.data;
-    }
-
-    private async setCacheGlobal(userId: string, level: GlobalLevel) {
-        await this.redis.set(this.globalKey(userId), level, 'EX', 10 * 60);
-    }
-
+class PermissionsService {
     async getDbLocalPermission(
         channelId: string,
         userId: string,
     ): Promise<LocalLevelFromDatabase | null> {
-        const [result] = await this.db
+        const [result] = await db
             .select({
                 permission: localPermissionsTable.permission,
             })
@@ -164,7 +134,7 @@ export class PermissionProvider {
     }
 
     private async getDbGlobalPermission(userId: string): Promise<GlobalLevelFromDatabase | null> {
-        const [result] = await this.db
+        const [result] = await db
             .select({
                 permission: globalPermissionsTable.permission,
             })
@@ -175,16 +145,8 @@ export class PermissionProvider {
         return result?.permission ?? null;
     }
 
-    async getGlobalPermission(userId: string, skipCache?: boolean): Promise<GlobalLevel> {
-        if (!skipCache) {
-            const cached = await this.getCacheGlobal(userId);
-            if (cached) {
-                return cached;
-            }
-        }
-
+    async getGlobalPermission(userId: string): Promise<GlobalLevel> {
         const permission = (await this.getDbGlobalPermission(userId)) ?? 'normal';
-        void this.setCacheGlobal(userId, permission);
         return permission;
     }
 
@@ -220,8 +182,8 @@ export class PermissionProvider {
     }
 
     async getPermission(message: PrivmsgMessage): Promise<{
-        local: LocalLevel
-        global: GlobalLevel
+        local: LocalLevel;
+        global: GlobalLevel;
     }> {
         const [local, global] = await Promise.all([
             this.getLocalPermission(message),
@@ -244,17 +206,15 @@ export class PermissionProvider {
             if (!existingDatabasePermission) {
                 return;
             }
-            await Promise.all([
-                this.db
-                    .delete(localPermissionsTable)
-                    .where(
-                        and(
-                            eq(localPermissionsTable.channelId, channel.id),
-                            eq(localPermissionsTable.userId, user.id),
-                        ),
+            await db
+                .delete(localPermissionsTable)
+                .where(
+                    and(
+                        eq(localPermissionsTable.channelId, channel.id),
+                        eq(localPermissionsTable.userId, user.id),
                     ),
-                this.redis.del(this.localKey(channel.id, user.id)),
-            ]);
+                );
+
             return;
         }
 
@@ -267,36 +227,32 @@ export class PermissionProvider {
         };
 
         if (!existingDatabasePermission) {
-            await Promise.all([this.db.insert(localPermissionsTable).values(databasePermission)]);
+            await db.insert(localPermissionsTable).values(databasePermission);
             return;
         }
 
-        await Promise.all([
-            this.db
-                .update(localPermissionsTable)
-                .set(databasePermission)
-                .where(
-                    and(
-                        eq(localPermissionsTable.channelId, channel.id),
-                        eq(localPermissionsTable.userId, user.id),
-                    ),
+        await
+        db
+            .update(localPermissionsTable)
+            .set(databasePermission)
+            .where(
+                and(
+                    eq(localPermissionsTable.channelId, channel.id),
+                    eq(localPermissionsTable.userId, user.id),
                 ),
-        ]);
+            );
     }
 
-    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User }) {
+    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User; }) {
         const existingDatabasePermission = await this.getDbGlobalPermission(user.id);
 
         if (permission === 'normal') {
             if (!existingDatabasePermission) {
                 return;
             }
-            await Promise.all([
-                this.db
-                    .delete(globalPermissionsTable)
-                    .where(eq(globalPermissionsTable.userId, user.id)),
-                this.setCacheGlobal(user.id, permission),
-            ]);
+            await db
+                .delete(globalPermissionsTable)
+                .where(eq(globalPermissionsTable.userId, user.id));
             return;
         }
 
@@ -307,21 +263,14 @@ export class PermissionProvider {
         };
 
         if (!existingDatabasePermission) {
-            await Promise.all([
-                this.db.insert(globalPermissionsTable).values(databasePermission),
-                this.setCacheGlobal(user.id, permission),
-            ]);
-
+            await db.insert(globalPermissionsTable).values(databasePermission);
             return;
         }
 
-        await Promise.all([
-            this.db
-                .update(globalPermissionsTable)
-                .set(databasePermission)
-                .where(eq(globalPermissionsTable.userId, user.id)),
-            this.setCacheGlobal(user.id, permission),
-        ]);
+        await db
+            .update(globalPermissionsTable)
+            .set(databasePermission)
+            .where(eq(globalPermissionsTable.userId, user.id));
     }
 
     async pleasesLocal(wantedPermission: LocalLevel, message: PrivmsgMessage): Promise<boolean> {
@@ -367,3 +316,5 @@ export class PermissionProvider {
         );
     }
 }
+
+export const permissions = new PermissionsService();

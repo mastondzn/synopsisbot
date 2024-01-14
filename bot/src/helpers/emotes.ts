@@ -1,7 +1,7 @@
 export interface EmotePosition {
-    name: string
-    position: number
-    length: number
+    name: string;
+    position: number;
+    length: number;
 }
 
 export function findEmotePositions(message: string, emotes: string[]): EmotePosition[] {
@@ -10,6 +10,8 @@ export function findEmotePositions(message: string, emotes: string[]): EmotePosi
     const regex = /(?<=^|\s)((?:[a-z]+)+)(?=\s|$)/gi;
 
     let match: RegExpExecArray | null = null;
+
+    // eslint-disable-next-line no-cond-assign
     while ((match = regex.exec(message))) {
         const emote = match[1];
         if (!emote) {

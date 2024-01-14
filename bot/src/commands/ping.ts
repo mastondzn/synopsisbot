@@ -1,7 +1,8 @@
 import type { ChatClient } from '@kararty/dank-twitch-irc';
 import ms from 'pretty-ms';
 
-import type { BotCommand } from '~/types/client';
+import { defineCommand } from '~/helpers/command';
+import { chat } from '~/services/chat';
 
 const startedAt = new Date();
 
@@ -11,15 +12,18 @@ async function getLatency(chat: ChatClient) {
     return Date.now() - now;
 }
 
-export const command: BotCommand = {
+export default defineCommand({
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
     aliases: ['pong'],
-    run: async ({ params, chat }) => {
+    run: async ({ parameters }) => {
         const lines = [];
 
-        if (params.command === 'pong') { lines.push('MrDestructoid Ping!'); }
-        else { lines.push('MrDestructoid Pong!'); }
+        if (parameters.command === 'pong') {
+            lines.push('MrDestructoid Ping!');
+        } else {
+            lines.push('MrDestructoid Pong!');
+        }
 
         const latency = await getLatency(chat);
 
@@ -33,4 +37,4 @@ export const command: BotCommand = {
 
         return { reply: lines.join(' ') };
     },
-};
+});

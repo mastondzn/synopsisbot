@@ -1,67 +1,59 @@
 import { env } from '@synopsis/env/node';
 import chalk from 'chalk';
-import type { Redis } from 'ioredis';
 
-import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
-import type {
-    BotCommandContext,
-    BotEventHandler,
-    BotSubcommand,
-    CommandFragment,
-} from '~/types/client';
-
-const botPrefix = 'sb ';
+import { commands } from '~/commands';
+import type { CommandContext, CommandFragment } from '~/helpers/command';
+import { getCommandPermissions, parseParameters } from '~/helpers/command';
+import { parseOptions } from '~/helpers/command/options';
+import { prefix } from '~/helpers/command/prefix';
+import { simplifyCommand } from '~/helpers/command/simplify';
+import { defineEventHandler } from '~/helpers/event';
+import { chat } from '~/services/chat';
+import { cooldowns } from '~/services/cooldown';
+import { db } from '~/services/database';
+import { permissions } from '~/services/permissions';
+import { cache } from '~/services/redis';
 
 const logPrefix = chalk.bgBlue('[events:commands]');
 
-async function hasDevelopmentProcess(redis: Redis): Promise<boolean> {
-    const developmentProcess = await redis.get('dev-announce');
+async function hasDevelopmentProcess(): Promise<boolean> {
+    const developmentProcess = await cache.get('dev-announce');
     return developmentProcess === 'true';
 }
 
-export const event: BotEventHandler = {
+export default defineEventHandler({
     event: 'PRIVMSG',
-    handler: async (context) => {
-        const { chat, commands, utils, db, cache, params: [message] } = context;
-        const { cooldownManager, statusManager, permissions } = utils;
-
+    handler: async (message) => {
         const text = message.messageText;
         const channel = message.channelName;
 
-        if (!message.messageText.startsWith(botPrefix)) {
-            return;
-        }
-
-        const commandIdentifier = text.replaceAll(/ +/g, ' ').split(' ')[1]?.toLowerCase();
-        if (!commandIdentifier) {
-            return;
-        }
-
         const inDefaultChannel //
-            = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
+        = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
-        const command = commands.find(
-            c => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier),
-        );
+        if (!message.messageText.startsWith(prefix)
+            || (env.NODE_ENV === 'development' && !inDefaultChannel)) return;
 
-        // if we're in development don't reply to commands in non-default channels
-        if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) {
-            return;
-        }
+        const parameters = parseParameters(message);
+        if (!parameters.command) return;
+
+        const foundCommand = commands.find(
+            c => c.name === parameters.command || c.aliases?.includes(parameters.command!),
+        ) ?? null;
+        if (!foundCommand) return;
+
+        const command = simplifyCommand(foundCommand, parameters);
+        if (!command) return;
 
         const wantedPermissions = getCommandPermissions(command);
 
-        const [mode, isLive, isOnCooldown, developmentProcessCheck, isPermitted] = await Promise.all([
+        const [mode, isOnCooldown, developmentProcessCheck, isPermitted] = await Promise.all([
             db.find.channelModeByLogin(channel),
-            statusManager.isLive(channel),
-            cooldownManager.isOnCooldown({ command, channel, userName: message.senderUsername }),
-
             // if we're in production and theres a dev process running don't reply to commands in default channels
-            hasDevelopmentProcess(cache).then(
+            cooldowns.isOnCooldown({ command, channel, userName: message.senderUsername }),
+            hasDevelopmentProcess().then(
                 hasDevelopmentProcess_ =>
                     env.NODE_ENV === 'production' && hasDevelopmentProcess_ && inDefaultChannel,
             ),
-
             // scuffed
             wantedPermissions.mode === 'custom'
                 ? Promise.resolve(true)
@@ -81,17 +73,13 @@ export const event: BotEventHandler = {
         const dontExecute: boolean
             = developmentProcessCheck
             || isOnCooldown
-            || !isPermitted
-            || !mode
-            || mode === 'readonly'
-            || (mode === 'offlineonly' && isLive);
+            || !isPermitted;
 
         const cancel = () =>
-            cooldownManager.clearCooldown({ command, channel, userName: message.senderUsername });
+            cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
 
-        if (!mode) {
-            console.warn(logPrefix, `mode for channel ${channel} not found in database`);
-        }
+        if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+
         if (dontExecute) {
             await cancel();
             return;
@@ -99,71 +87,55 @@ export const event: BotEventHandler = {
 
         console.log(
             logPrefix,
-            `executing command ${command.name} from ${message.senderUsername} in ${channel}`,
+            `executing command ${foundCommand.name} from ${message.senderUsername} in ${channel}`,
         );
         console.log(logPrefix, `${message.senderUsername}: "${text}"`);
 
-        const reply = (text: string) => chat.reply(channel, message.messageID, text);
-        const me = (text: string) => chat.me(channel, text);
-        const say = (text: string) => chat.say(channel, text);
-        const parameters = parseCommandParams(text);
-
-        const commandContext: BotCommandContext = {
-            ...context,
-            msg: message,
+        const context: CommandContext = {
+            options: parseOptions(message, command.options),
+            message,
             cancel,
-            params: parameters,
+            parameters,
         };
 
-        const consumeFragment = async ({ fragment }: { fragment: CommandFragment }) => {
+        const consumeFragment = async ({ fragment }: { fragment: CommandFragment; }) => {
             if ('reply' in fragment) {
-                return reply(fragment.reply);
-            }
-            else if ('action' in fragment) {
-                return me(fragment.action);
-            }
-            else if ('say' in fragment) {
-                return say(fragment.say);
+                return chat.reply(fragment.channel ?? channel, message.messageID, text);
+            } else if ('action' in fragment) {
+                return chat.me(fragment.channel ?? channel, text);
+            } else if ('say' in fragment) {
+                return chat.say(fragment.channel ?? channel, text);
             }
         };
 
         try {
-            const subcommand: BotSubcommand | undefined = command.subcommands?.find(
-                ({ path }) => path.join(' ') === parameters.list.slice(0, path.length).join(' '),
-            );
-
-            const commandResult = subcommand
-                ? await subcommand.run(commandContext)
-                : await command.run(commandContext);
+            const commandResult = await command.run(context);
 
             if (!commandResult) {
                 //
-            }
-            else if (
+            } else if (
                 'reply' in commandResult
                 || 'action' in commandResult
                 || 'say' in commandResult
             ) {
                 await consumeFragment({ fragment: commandResult });
-            }
-            else {
+            } else {
                 for await (const fragment of commandResult) {
                     await consumeFragment({ fragment });
                 }
             }
 
-            console.log(logPrefix, `command ${command.name} executed successfully`);
-        }
-        catch (error) {
+            console.log(logPrefix, `command ${foundCommand.name} executed successfully`);
+        } catch (error) {
             const when = Date.now();
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 logPrefix,
-                `error executing command ${command.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
+                `error executing command ${foundCommand.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
             );
             console.error(error);
 
-            await reply(`Something went wrong :/ (${when})`);
+            await chat.reply(channel, message.messageID, `Something went wrong :/ (${when})`);
         }
     },
-};
+});

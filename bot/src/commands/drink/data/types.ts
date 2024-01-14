@@ -1,17 +1,17 @@
 export interface Modifier {
-    name: string
-    message: string
-    chance: number
-    multiplier: SafeMultiplier
+    name: string;
+    message: string;
+    chance: number;
+    multiplier: SafeMultiplier;
 }
 
 export interface Beverage {
-    identifier: string
-    emoji: string
-    message: string
-    weight: number
-    points: SafePoint
-    modifiers?: Modifier[]
+    identifier: string;
+    emoji: string;
+    message: string;
+    weight: number;
+    points: SafePoint;
+    modifiers?: Modifier[];
 }
 
 export const safeMultipliers = [
