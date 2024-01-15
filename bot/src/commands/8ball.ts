@@ -1,13 +1,15 @@
-import { pickOne } from '~/helpers/functions';
-import { type BotCommand } from '~/types/client';
+import { pickOne } from '~/helpers/array';
+import { defineCommand } from '~/helpers/command';
 
-export const command: BotCommand = {
+export default defineCommand({
     name: '8ball',
     description: 'Ask the magic 8ball a question!',
     aliases: ['8b'],
-    run: ({ params }) => {
-        if (!params.text) {
-            return { reply: 'You must ask a question! The magic 8ball cannot read your mind. 🎱' };
+    run: ({ parameters }) => {
+        if (!parameters.text) {
+            return {
+                reply: 'You must ask a question! The magic 8ball cannot read your mind. 🎱',
+            };
         }
 
         const responses = [
@@ -26,7 +28,7 @@ export const command: BotCommand = {
             'Better not tell you now.',
             'Cannot predict now.',
             'Concentrate and ask again.',
-            "Don't count on it.",
+            'Don\'t count on it.',
             'My reply is no.',
             'My sources say no.',
             'Outlook not so good.',
@@ -35,4 +37,4 @@ export const command: BotCommand = {
 
         return { reply: `${pickOne(responses)} 🎱` };
     },
-};
+});

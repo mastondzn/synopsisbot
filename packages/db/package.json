@@ -1,12 +1,13 @@
 {
     "name": "@synopsis/db",
+    "type": "module",
     "version": "0.0.1",
     "private": true,
     "main": "src/index.ts",
     "scripts": {
         "generate": "pnpm with-env drizzle-kit generate:pg --config=drizzle.config.ts",
         "check": "pnpm with-env drizzle-kit check:pg --config=drizzle.config.ts",
-        "migrate": "pnpm with-env tsx -r tsconfig-paths/register scripts/migrate.ts",
+        "migrate": "pnpm with-env tsx scripts/migrate.ts",
         "drop": "pnpm with-env drizzle-kit drop --config=drizzle.config.ts",
         "db:generate": "pnpm generate",
         "db:check": "pnpm check",
@@ -17,20 +18,22 @@
         "typecheck": "tsc --noEmit",
         "with-env": "dotenv -e ../../.env --"
     },
-    "devDependencies": {
-        "@synopsis/eslint-config": "0.0.1",
-        "@synopsis/tsconfig": "0.0.1",
-        "@types/node": "20.8.6",
-        "dotenv-cli": "7.3.0",
-        "drizzle-kit": "0.19.13",
-        "eslint": "8.51.0",
-        "eslint-define-config": "1.24.1",
-        "tsconfig-paths": "4.2.0",
-        "tsx": "3.12.7"
-    },
     "dependencies": {
         "@synopsis/env": "0.0.1",
         "drizzle-orm": "0.28.6",
+        "kysely": "0.27.2",
+        "kysely-postgres-js": "2.0.0",
         "postgres": "3.4.0"
+    },
+    "devDependencies": {
+        "@mastondzn/eslint": "0.6.9",
+        "@synopsis/tsconfig": "0.0.1",
+        "@types/node": "20.11.2",
+        "dotenv-cli": "7.3.0",
+        "drizzle-kit": "0.19.13",
+        "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-ts-patch": "8.56.0-0",
+        "tsx": "4.7.0",
+        "znv": "0.4.0"
     }
 }

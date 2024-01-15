@@ -1,3 +1,5 @@
+import { join } from 'node:path';
+
 // @ts-check
 const fs = require('node:fs/promises');
 
@@ -6,7 +8,7 @@ const config = {
     extends: ['@commitlint/config-conventional'],
     rules: {
         'scope-enum': async () => {
-            const packages = await fs.readdir(`${__dirname}/packages`);
+            const packages = await fs.readdir(join(__dirname, '/packages'));
             const scopes = [
                 ...packages,
                 'bot/commands',

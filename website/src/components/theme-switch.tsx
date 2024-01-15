@@ -4,10 +4,11 @@ import { IconMoon, IconSun } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-import { Button, type ButtonProps } from './button';
+import type { ButtonProperties } from './button';
+import { Button } from './button';
 import { Skeleton } from './skeleton';
 
-export function ThemeSwitch({ ...props }: Omit<ButtonProps, 'children'>) {
+export function ThemeSwitch({ ...props }: Omit<ButtonProperties, 'children'>) {
     const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
 
@@ -34,11 +35,11 @@ export function ThemeSwitch({ ...props }: Omit<ButtonProps, 'children'>) {
                 }
             }}
         >
-            {theme === 'dark' ? ( //
-                <IconMoon className="h-6 w-6" />
-            ) : theme === 'light' ? (
-                <IconSun className="h-6 w-6" />
-            ) : null}
+            {theme === 'dark'
+                ? <IconMoon className="h-6 w-6" />
+                : (theme === 'light'
+                        ? <IconSun className="h-6 w-6" />
+                        : null)}
         </Button>
     );
 }

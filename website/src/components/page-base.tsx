@@ -1,12 +1,12 @@
 import { IconBrandGithub, IconBrandTwitch, IconMail } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
-import synopsisBlack from '../../public/synopsisblack.png';
 import { Button } from './button';
 import { ThemeSwitch } from './theme-switch';
-import { tw } from '~/utils/tw';
+import synopsisBlack from '../../public/synopsisblack.png';
+import { cn } from '~/utils/tw';
 
 export function Header() {
     return (
@@ -28,8 +28,8 @@ export function Footer() {
                 { link: 'https://twitch.tv/synopsisbot', Icon: IconBrandTwitch },
                 { link: 'https://github.com/synopsisgg/bot', Icon: IconBrandGithub },
                 { link: 'mailto:contact@synopsis.gg', Icon: IconMail },
-            ].map(({ link, Icon }, i) => (
-                <Link href={link} target="_blank" rel="noreferrer" key={i}>
+            ].map(({ link, Icon }, index) => (
+                <Link href={link} target="_blank" rel="noreferrer" key={index}>
                     <Button variant="ghost" size="lg" className="h-fit w-fit rounded-full p-3">
                         <Icon className="h-6 w-6" />
                     </Button>
@@ -40,12 +40,12 @@ export function Footer() {
     );
 }
 
-export function PageBase({ children, className }: PropsWithChildren<{ className?: string }>) {
+export function PageBase({ children, className }: PropsWithChildren<{ className?: string; }>) {
     return (
         <div
-            className={tw(
+            className={cn(
                 'container mx-auto flex min-h-screen flex-col items-center justify-center gap-8',
-                className
+                className,
             )}
         >
             <Header />

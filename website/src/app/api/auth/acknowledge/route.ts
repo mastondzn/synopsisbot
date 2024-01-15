@@ -1,9 +1,8 @@
-import { getTokenInfo } from '@twurple/auth';
-import { type NextRequest } from 'next/server';
-import { z } from 'zod';
-
-import { authedUsers, type NewAuthedUser } from '@synopsis/db';
+import { type NewAuthedUser, authedUsers } from '@synopsis/db';
 import { env } from '@synopsis/env/next';
+import { getTokenInfo } from '@twurple/auth';
+import type { NextRequest } from 'next/server';
+import { z } from 'zod';
 
 import { consumeState } from '~/utils/auth';
 import { db } from '~/utils/db';
@@ -13,8 +12,8 @@ import { getUrl } from '~/utils/url';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = async (req: NextRequest) => {
-    const url = new URL(req.url);
+export async function GET(request: NextRequest) {
+    const url = new URL(request.url);
 
     const code = url.searchParams.get('code');
     const scopesFromRedirect = url.searchParams.get('scope')?.split('+');
@@ -79,7 +78,7 @@ export const GET = async (req: NextRequest) => {
     if (!responseParseResult.success) {
         return json(
             { error: 'Internal Server Error, could not parse response from Twitch' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 
@@ -89,21 +88,21 @@ export const GET = async (req: NextRequest) => {
         scope: scopesFromTwitch,
     } = responseParseResult.data;
 
-    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch((error) =>
-        error instanceof Error ? { error: error.message } : { error: 'Unknown Error' }
+    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch(error =>
+        error instanceof Error ? { error: error.message } : { error: 'Unknown Error' },
     );
 
     if ('error' in tokenInfo) {
         return json(
             { error: `Internal Server Error, could not get token info (${tokenInfo.error})` },
-            { status: 500 }
+            { status: 500 },
         );
     }
 
     if (!tokenInfo.userId || !tokenInfo.userName || !tokenInfo.expiryDate) {
         return json(
             { error: 'Internal Server Error, no user id, username, or expiryDate from token info' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 
@@ -127,6 +126,6 @@ export const GET = async (req: NextRequest) => {
         {
             twitchId: tokenInfo.userId,
             twitchLogin: tokenInfo.userName,
-        }
+        },
     );
-};
+}

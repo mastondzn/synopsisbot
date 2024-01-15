@@ -1,57 +1,32 @@
 {
     "name": "@synopsis/env",
+    "type": "module",
     "version": "0.0.1",
     "private": true,
-    "main": "dist/index.js",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
-    "typesVersions": {
-        "*": {
-            "next": [
-                "dist/next.d.ts"
-            ],
-            "node": [
-                "dist/node.d.ts"
-            ]
-        }
-    },
     "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.mjs",
-            "require": "./dist/index.js",
-            "default": "./dist/index.js"
-        },
-        "./next": {
-            "types": "./dist/next.d.ts",
-            "import": "./dist/next.mjs",
-            "require": "./dist/next.js",
-            "default": "./dist/next.js"
-        },
-        "./node": {
-            "types": "./dist/node.d.ts",
-            "import": "./dist/node.mjs",
-            "require": "./dist/node.js",
-            "default": "./dist/node.js"
-        }
+        ".": "./src/index.ts",
+        "./node": "./src/node.ts",
+        "./next": "./src/next.ts"
     },
+    "main": "src/index.ts",
     "scripts": {
-        "build": "tsup src/index.ts src/node.ts src/next.ts --format cjs,esm --sourcemap && tsc --emitDeclarationOnly --declaration --declarationMap --outdir dist",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "typecheck": "tsc --noEmit"
     },
-    "devDependencies": {
-        "@synopsis/eslint-config": "0.0.1",
-        "@synopsis/tsconfig": "0.0.1",
-        "eslint": "8.51.0",
-        "eslint-define-config": "1.24.1",
-        "tsup": "6.7.0"
+    "peerDependencies": {
+        "zod": "3.22.4"
     },
     "dependencies": {
-        "@t3-oss/env-core": "0.3.1",
-        "@t3-oss/env-nextjs": "0.3.1",
-        "is-docker": "2.2.1",
+        "@t3-oss/env-core": "0.7.3",
+        "is-docker": "3.0.0"
+    },
+    "devDependencies": {
+        "@mastondzn/eslint": "0.6.9",
+        "@synopsis/tsconfig": "0.0.1",
+        "@t3-oss/env-nextjs": "0.7.3",
+        "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-ts-patch": "8.56.0-0",
         "zod": "3.22.4"
     }
 }

@@ -1,8 +1,6 @@
-import { type BotEventHandler } from '~/types/client';
+import { defineEventHandler } from '~/helpers/event';
 
-export const event: BotEventHandler = {
+export default defineEventHandler({
     event: 'connect',
-    handler: () => {
-        console.log('[events:tests] connected to chat');
-    },
-};
+    handler: () => console.log('[events:tests] connected to chat'),
+});

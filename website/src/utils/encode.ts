@@ -1,13 +1,12 @@
-import { SignJWT } from 'jose';
-import { type NextResponse } from 'next/server';
-
 import { env } from '@synopsis/env/next';
+import { SignJWT } from 'jose';
+import type { NextResponse } from 'next/server';
 
 import { JWT_COOKIE_KEY, type JwtShape } from './decode';
 
 export const getEncodedAppSecret = () => new TextEncoder().encode(env.APP_SECRET);
 
-const createJWT = async (shape: JwtShape) => {
+async function createJWT(shape: JwtShape) {
     const secret = getEncodedAppSecret();
     const jwt = await new SignJWT(shape)
         .setProtectedHeader({ alg: 'HS256' })
@@ -15,14 +14,11 @@ const createJWT = async (shape: JwtShape) => {
         .sign(secret);
 
     return jwt;
-};
+}
 
-export const setJWTCookie = async (
-    res: NextResponse, //
-    shape: JwtShape
-): Promise<NextResponse> => {
+export async function setJWTCookie(response: NextResponse, shape: JwtShape): Promise<NextResponse> {
     const jwt = await createJWT(shape);
 
-    res.cookies.set(JWT_COOKIE_KEY, jwt);
-    return res;
-};
+    response.cookies.set(JWT_COOKIE_KEY, jwt);
+    return response;
+}

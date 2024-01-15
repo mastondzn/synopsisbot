@@ -1,91 +1,86 @@
-import chalk from 'chalk';
-import { type Redis } from 'ioredis';
-
 import { env } from '@synopsis/env/node';
+import chalk from 'chalk';
 
-import { getCommandPermissions, parseCommandParams } from '~/helpers/command';
-import {
-    type BotCommandContext,
-    type BotEventHandler,
-    type BotSubcommand,
-    type CommandFragment,
-} from '~/types/client';
-
-const botPrefix = 'sb ';
+import { commands } from '~/commands';
+import type { CommandContext, CommandFragment } from '~/helpers/command';
+import { getCommandName, getCommandPermissions } from '~/helpers/command';
+import { parseOptions } from '~/helpers/command/options';
+import { prefix } from '~/helpers/command/prefix';
+import { parseCommand } from '~/helpers/command/simplify';
+import { defineEventHandler } from '~/helpers/event';
+import { chat } from '~/services/chat';
+import { cooldowns } from '~/services/cooldown';
+import { db } from '~/services/database';
+import { permissions } from '~/services/permissions';
+import { cache } from '~/services/redis';
 
 const logPrefix = chalk.bgBlue('[events:commands]');
 
-const hasDevProcess = async (redis: Redis): Promise<boolean> => {
-    const devProcess = await redis.get('dev-announce');
-    return devProcess === 'true';
-};
+async function hasDevelopmentProcess(): Promise<boolean> {
+    const developmentProcess = await cache.get('dev-announce');
+    return developmentProcess === 'true';
+}
 
-export const event: BotEventHandler = {
+export default defineEventHandler({
     event: 'PRIVMSG',
-    handler: async (ctx) => {
-        const { chat, commands, utils, db, cache } = ctx;
-        const { cooldownManager, statusManager, permissions } = utils;
-        const msg = ctx.params[0];
+    handler: async (message) => {
+        const text = message.messageText;
+        const channel = message.channelName;
 
-        const text = msg.messageText;
-        const channel = msg.channelName;
+        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
-        if (!msg.messageText.startsWith(botPrefix)) return;
+        if (!message.messageText.startsWith(prefix)
+            || (env.NODE_ENV === 'development' && !inDefaultChannel)) return;
 
-        const commandIdentifier = text.replaceAll(/ +/g, ' ').split(' ')[1]?.toLowerCase();
-        if (!commandIdentifier) return;
+        const wantedCommand = getCommandName(message);
+        if (!wantedCommand) return;
 
-        const inDefaultChannel = //
-            [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
+        await commands.verify();
+        const foundCommand = commands.find(
+            c => c.name === wantedCommand || c.aliases?.includes(wantedCommand),
+        ) ?? null;
+        if (!foundCommand) return;
 
-        const command = commands.find(
-            (c) => c.name === commandIdentifier || c.aliases?.includes(commandIdentifier)
-        );
-
-        // if we're in development don't reply to commands in non-default channels
-        if ((env.NODE_ENV === 'development' && !inDefaultChannel) || !command) return;
+        const parsed = parseCommand(foundCommand, message);
+        if (!parsed) return;
+        const { parameters, command } = parsed;
 
         const wantedPermissions = getCommandPermissions(command);
 
-        const [mode, isLive, isOnCooldown, devProcessCheck, isPermitted] = await Promise.all([
+        const [mode, isOnCooldown, developmentProcessCheck, isPermitted] = await Promise.all([
             db.find.channelModeByLogin(channel),
-            statusManager.isLive(channel),
-            cooldownManager.isOnCooldown({ command, channel, userName: msg.senderUsername }),
-
             // if we're in production and theres a dev process running don't reply to commands in default channels
-            hasDevProcess(cache).then(
-                (hasDevProcess) =>
-                    env.NODE_ENV === 'production' && hasDevProcess && inDefaultChannel
+            cooldowns.isOnCooldown({ command, channel, userName: message.senderUsername }),
+            hasDevelopmentProcess().then(
+                hasDevelopmentProcess_ =>
+                    env.NODE_ENV === 'production' && hasDevelopmentProcess_ && inDefaultChannel,
             ),
-
             // scuffed
             wantedPermissions.mode === 'custom'
                 ? Promise.resolve(true)
-                : wantedPermissions.mode === 'all'
-                ? permissions.pleasesGlobalAndLocal(
-                      wantedPermissions.global,
-                      wantedPermissions.local,
-                      msg
-                  )
-                : permissions.pleasesGlobalOrLocal(
-                      wantedPermissions.global,
-                      wantedPermissions.local,
-                      msg
-                  ),
+                : (wantedPermissions.mode === 'all'
+                        ? permissions.pleasesGlobalAndLocal(
+                            wantedPermissions.global,
+                            wantedPermissions.local,
+                            message,
+                        )
+                        : permissions.pleasesGlobalOrLocal(
+                            wantedPermissions.global,
+                            wantedPermissions.local,
+                            message,
+                        )),
         ]);
 
-        const dontExecute: boolean =
-            devProcessCheck ||
-            isOnCooldown ||
-            !isPermitted ||
-            !mode ||
-            mode === 'readonly' ||
-            (mode === 'offlineonly' && isLive);
+        const dontExecute: boolean
+            = developmentProcessCheck
+            || isOnCooldown
+            || !isPermitted;
 
         const cancel = () =>
-            cooldownManager.clearCooldown({ command, channel, userName: msg.senderUsername });
+            cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
 
         if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+
         if (dontExecute) {
             await cancel();
             return;
@@ -93,47 +88,40 @@ export const event: BotEventHandler = {
 
         console.log(
             logPrefix,
-            `executing command ${command.name} from ${msg.senderUsername} in ${channel}`
+            `executing command ${foundCommand.name} from ${message.senderUsername} in ${channel}`,
         );
-        console.log(logPrefix, `${msg.senderUsername}: "${text}"`);
+        console.log(logPrefix, `${message.senderUsername}: "${text}"`);
 
-        const reply = (text: string) => chat.reply(channel, msg.messageID, text);
-        const me = (text: string) => chat.me(channel, text);
-        const say = (text: string) => chat.say(channel, text);
-        const params = parseCommandParams(text);
-
-        const commandContext: BotCommandContext = {
-            ...ctx,
-            msg,
+        const context: CommandContext = {
+            options: parseOptions(message, command.options),
+            message,
             cancel,
-            params,
+            parameters,
         };
 
-        const consumeFragment = async ({ fragment }: { fragment: CommandFragment }) => {
+        const consumeFragment = async ({ fragment }: { fragment: CommandFragment; }) => {
             if ('reply' in fragment) {
-                return reply(fragment.reply);
+                return chat.reply(
+                    fragment.channel ?? channel,
+                    fragment.to?.messageID ?? message.messageID,
+                    fragment.reply,
+                );
             } else if ('action' in fragment) {
-                return me(fragment.action);
+                return chat.me(fragment.channel ?? channel, fragment.action);
             } else if ('say' in fragment) {
-                return say(fragment.say);
+                return chat.say(fragment.channel ?? channel, fragment.say);
             }
         };
 
         try {
-            const subcommand: BotSubcommand | undefined = command.subcommands?.find(
-                ({ path }) => path.join(' ') === params.list.slice(0, path.length).join(' ')
-            );
-
-            const commandResult = subcommand
-                ? await subcommand.run(commandContext)
-                : await command.run(commandContext);
+            const commandResult = await command.run(context);
 
             if (!commandResult) {
                 //
             } else if (
-                'reply' in commandResult ||
-                'action' in commandResult ||
-                'say' in commandResult
+                'reply' in commandResult
+                || 'action' in commandResult
+                || 'say' in commandResult
             ) {
                 await consumeFragment({ fragment: commandResult });
             } else {
@@ -142,17 +130,17 @@ export const event: BotEventHandler = {
                 }
             }
 
-            console.log(logPrefix, `command ${command.name} executed successfully`);
+            console.log(logPrefix, `command ${foundCommand.name} executed successfully`);
         } catch (error) {
             const when = Date.now();
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 logPrefix,
-                `error executing command ${command.name} from ${msg.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`
+                `error executing command ${foundCommand.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
             );
             console.error(error);
 
-            await reply(`Something went wrong :/ (${when})`);
+            await chat.reply(channel, message.messageID, `Something went wrong :/ (${when})`);
         }
     },
-};
+});

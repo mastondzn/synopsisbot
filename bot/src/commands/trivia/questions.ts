@@ -1,29 +1,16 @@
 import { z } from 'zod';
 
-// const result = {
-//     response_code: 0,
-//     results: [
-//         {
-//             category: 'Entertainment: Video Games',
-//             type: 'boolean',
-//             difficulty: 'easy',
-//             question: 'Doki Doki Literature Club was developed in Japan.',
-//             correct_answer: 'False',
-//             incorrect_answers: ['True'],
-//         },
-//     ],
-// };
-// https://opentdb.com/api.php?amount=1&type=multiple
+import { zfetch } from '~/helpers/fetch';
 
 const questionSchema = z.object({
-    category: z.string().transform((str) => decodeURIComponent(str)),
+    category: z.string().transform(string => decodeURIComponent(string)),
     type: z.literal('multiple'),
     difficulty: z.enum(['easy', 'medium', 'hard']),
-    question: z.string().transform((str) => decodeURIComponent(str)),
-    correct_answer: z.string().transform((str) => decodeURIComponent(str)),
+    question: z.string().transform(string => decodeURIComponent(string)),
+    correct_answer: z.string().transform(string => decodeURIComponent(string)),
     incorrect_answers: z
         .array(z.string())
-        .transform((arr) => arr.map((str) => decodeURIComponent(str))),
+        .transform(array => array.map(string => decodeURIComponent(string))),
 });
 
 const responseSchema = z.object({
@@ -34,9 +21,10 @@ const responseSchema = z.object({
 export type Trivia = z.infer<typeof questionSchema>;
 
 export async function getTrivia(): Promise<Trivia> {
-    const response = await fetch(
-        'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986'
-    );
-    const result = responseSchema.parse(await response.json());
-    return result.results[0];
+    const { body } = await zfetch({
+        url: 'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
+        schema: responseSchema,
+    });
+
+    return body.results[0];
 }

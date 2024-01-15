@@ -1,10 +1,9 @@
-import { Redis } from 'ioredis';
-
 import { env } from '@synopsis/env/next';
+import { Redis } from 'ioredis';
 
 let cachedRedis: Redis | undefined;
 
-export const getRedis = (): Redis => {
+export function getRedis(): Redis {
     if (!cachedRedis) {
         cachedRedis = new Redis({
             host: env.REDIS_HOST,
@@ -12,4 +11,4 @@ export const getRedis = (): Redis => {
         });
     }
     return cachedRedis;
-};
+}

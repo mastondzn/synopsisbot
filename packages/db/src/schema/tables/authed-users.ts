@@ -1,4 +1,4 @@
-import { type InferModel } from 'drizzle-orm';
+import type { InferModel } from 'drizzle-orm';
 import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const authedUsers = pgTable('authed_users', {

@@ -1,4 +1,4 @@
-import { type InferModel } from 'drizzle-orm';
+import type { InferModel } from 'drizzle-orm';
 import { pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const localPermissions = pgTable(
@@ -18,7 +18,7 @@ export const localPermissions = pgTable(
 
         createdAt: timestamp('created_at').notNull().defaultNow(),
     },
-    (table) => ({ cpk: primaryKey(table.channelId, table.userId) })
+    table => ({ cpk: primaryKey(table.channelId, table.userId) }),
 );
 export type LocalPermission = InferModel<typeof localPermissions>;
 export type NewLocalPermission = InferModel<typeof localPermissions, 'insert'>;

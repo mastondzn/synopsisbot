@@ -1,11 +1,10 @@
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-
 import { env } from '@synopsis/env/node';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
 import { createDatabase } from '~/index';
 
 async function main() {
-    const { db } = createDatabase({
+    const db = createDatabase({
         host: env.DB_HOST,
         user: env.DB_USERNAME,
         password: env.DB_PASSWORD,

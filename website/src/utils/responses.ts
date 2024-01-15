@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { NextResponse } from 'next/server';
 
-export const json = NextResponse.json;
-export const redirect = NextResponse.redirect;
+export const json = NextResponse.json.bind(NextResponse);
+export const redirect = NextResponse.redirect.bind(NextResponse);

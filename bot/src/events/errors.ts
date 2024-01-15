@@ -1,6 +1,11 @@
-import { type BotEventHandler } from '~/types/client';
+import { captureException } from '@sentry/node';
 
-export const event: BotEventHandler = {
+import { defineEventHandler } from '~/helpers/event';
+
+export default defineEventHandler({
     event: 'error',
-    handler: ({ params: [error] }) => console.error(error),
-};
+    handler: (error) => {
+        console.error(error);
+        captureException(error);
+    },
+});

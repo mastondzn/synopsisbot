@@ -1,17 +1,18 @@
+import { env } from '@synopsis/env/node';
 import chalk from 'chalk';
 
-import { env } from '@synopsis/env/node';
+import { defineEventHandler } from '~/helpers/event';
 
-import { type BotEventHandler } from '~/types/client';
-
-export const event: BotEventHandler = {
+export default defineEventHandler({
     event: 'PART',
-    handler: ({ params: [msg] }) => {
-        if (msg.partedUsername !== env.TWITCH_BOT_USERNAME) return;
+    handler: (message) => {
+        if (message.partedUsername !== env.TWITCH_BOT_USERNAME) {
+            return;
+        }
 
         console.log(
             chalk.bgBlueBright('[events:parts]'),
-            `${msg.partedUsername} parted ${msg.channelName}`
+            `${message.partedUsername} parted ${message.channelName}`,
         );
     },
-};
+});

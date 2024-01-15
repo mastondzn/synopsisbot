@@ -1,8 +1,10 @@
 import '~/globals.css';
 
+import React from 'react';
+
 import { Providers } from './providers';
 import { fontSans } from '~/utils/fonts';
-import { tw } from '~/utils/tw';
+import { cn } from '~/utils/tw';
 
 export const metadata = {
     title: 'Synopsis Bot',
@@ -18,14 +20,14 @@ export const metadata = {
     ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode; }) {
     return (
         <html lang="en" suppressHydrationWarning>
             <head />
             <body
-                className={tw(
+                className={cn(
                     'min-h-screen bg-background font-sans antialiased',
-                    fontSans.variable
+                    fontSans.variable,
                 )}
             >
                 <div className="relative flex min-h-screen flex-col">

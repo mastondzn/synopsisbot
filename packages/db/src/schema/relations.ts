@@ -12,7 +12,7 @@ export const channelsRelations = relations(
     channels, //
     ({ many }) => ({
         localPermissions: many(localPermissions),
-    })
+    }),
 );
 
 export const localPermissionsRelations = relations(
@@ -22,5 +22,5 @@ export const localPermissionsRelations = relations(
             references: [channels.twitchId],
             fields: [localPermissions.channelId],
         }),
-    })
+    }),
 );

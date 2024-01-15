@@ -1,5 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import { type NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 

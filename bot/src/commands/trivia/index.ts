@@ -1,26 +1,28 @@
-import { getTrivia, type Trivia } from './questions';
-import { shuffle } from '~/helpers/functions';
-import { collectMessages } from '~/helpers/message-collector';
-import { type BotCommand, type CommandFragment } from '~/types/client';
+import { type Trivia, getTrivia } from './questions';
+import { shuffle } from '~/helpers/array';
+import type { CommandFragment } from '~/helpers/command';
+import { defineCommand } from '~/helpers/command';
+import { chat } from '~/services/chat';
 
 const activeChannels = new Set<string>();
 
-export const command: BotCommand = {
+export default defineCommand({
     name: 'trivia',
     description: 'Starts a multiple choice trivia session in chat.',
 
-    async *run({ msg, chat }): AsyncGenerator<CommandFragment> {
-        if (activeChannels.has(msg.channelName)) {
+    async *run({ message }): AsyncGenerator<CommandFragment> {
+        if (activeChannels.has(message.channelName)) {
             return yield { reply: 'There is already a trivia session active in this channel.' };
         }
-        activeChannels.add(msg.channelName);
-        setTimeout(() => activeChannels.delete(msg.channelName), 1000 * 32);
+        activeChannels.add(message.channelName);
+        setTimeout(() => activeChannels.delete(message.channelName), 1000 * 32);
 
         let trivia: Trivia;
         try {
             trivia = await getTrivia();
-        } catch {
-            activeChannels.delete(msg.channelName);
+        } catch (error) {
+            console.error(error);
+            activeChannels.delete(message.channelName);
             return yield { reply: 'Failed to fetch a question.. :/' };
         }
 
@@ -32,48 +34,46 @@ export const command: BotCommand = {
         const correctLetter = alphabet[correctIndex]!.toLowerCase();
 
         const answersAsString = answers
-            .map((answer, i) => `${alphabet[i]!}. ${answer}`)
+            .map((answer, index) => `${alphabet[index]!}. ${answer}`)
             .join(', ')
             .replace(/, ([^,]*)$/, ', or $1');
 
         yield {
-            say: `New Trivia! [${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
+            reply: `New Trivia! [${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
         };
 
         const exhaustedAnswers = new Set<string>();
 
-        const messages = await collectMessages({
-            chat,
+        const messages = await chat.collectMessages({
             timeout: 30,
-            filter: (m) => {
-                if (m.channelName !== msg.channelName) return false;
+            filter: (incoming) => {
+                if (incoming.channelName !== message.channelName) return false;
 
-                const incoming = m.messageText.toLowerCase().trim();
+                const incomingContent = incoming.messageText.toLowerCase().trim();
 
                 const isValidAnswer = answers
-                    .map((answer) => answer.toLowerCase())
-                    .includes(incoming);
+                    .map(answer => answer.toLowerCase())
+                    .includes(incomingContent);
                 const isValidLetter = alphabet
-                    .map((letter) => letter.toLowerCase())
-                    .includes(incoming);
+                    .map(letter => letter.toLowerCase())
+                    .includes(incomingContent);
 
                 if (isValidAnswer) {
                     const letterIndex = answers
-                        .map((answer) => answer.toLowerCase())
-                        .indexOf(incoming);
-
+                        .map(answer => answer.toLowerCase())
+                        .indexOf(incomingContent);
                     const letter = alphabet[letterIndex]!;
                     exhaustedAnswers.add(letter);
                 } else if (isValidLetter) {
-                    exhaustedAnswers.add(incoming);
+                    exhaustedAnswers.add(incomingContent);
                 }
 
                 return isValidAnswer || isValidLetter;
             },
-            exitOn: (m) => {
-                const incoming = m.messageText.toLowerCase().trim();
-                const isCorrectLetter = incoming === correctLetter;
-                const isCorrectAnswer = incoming === correctAnswer.toLowerCase();
+            exitOn: (incoming) => {
+                const incomingContent = incoming.messageText.toLowerCase().trim();
+                const isCorrectLetter = incomingContent === correctLetter;
+                const isCorrectAnswer = incomingContent === correctAnswer.toLowerCase();
                 const areAnswersExhausted = exhaustedAnswers.size === 3;
                 return isCorrectLetter || isCorrectAnswer || areAnswersExhausted;
             },
@@ -86,16 +86,20 @@ export const command: BotCommand = {
             return isCorrectLetter || isCorrectAnswer;
         });
 
+        activeChannels.delete(message.channelName);
+
         if (!winner) {
-            activeChannels.delete(msg.channelName);
             return yield {
                 say: `Nobody got the answer right! PoroSad The answer was ${correctAnswer}.`,
             };
         }
 
-        activeChannels.delete(msg.channelName);
         return yield {
-            say: `Congratulations ${winner.displayName}! You got it right! The answer was ${correctAnswer}.`,
+            reply: [
+                `Congratulations ${winner.displayName}!`,
+                `You got it right! The answer was ${correctLetter.toUpperCase()}. ${correctAnswer}.`,
+            ].join(' '),
+            to: winner,
         };
     },
-};
+});

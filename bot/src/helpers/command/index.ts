@@ -1,3 +1,4 @@
-export * from './deep';
-export * from './parser';
+export * from './parameters';
 export * from './permission';
+export * from './define';
+export * from './types';

@@ -1,7 +1,6 @@
+import { env } from '@synopsis/env/next';
 import { ApiClient } from '@twurple/api';
 import { type AccessToken, RefreshingAuthProvider } from '@twurple/auth';
-
-import { env } from '@synopsis/env/next';
 
 import { db } from './db';
 
@@ -10,8 +9,8 @@ export const authProvider = new RefreshingAuthProvider({
     clientSecret: env.TWITCH_CLIENT_SECRET,
 });
 
-authProvider.onRefresh(async (userId: string, token: AccessToken) => {
-    await db.edit.authedUserById(userId, {
+authProvider.onRefresh((userId: string, token: AccessToken) => {
+    void db.edit.authedUserById(userId, {
         accessToken: token.accessToken,
         scopes: token.scope,
         ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),

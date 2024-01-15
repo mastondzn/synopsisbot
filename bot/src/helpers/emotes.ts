@@ -4,15 +4,19 @@ export interface EmotePosition {
     length: number;
 }
 
-export const findEmotePositions = (message: string, emotes: string[]): EmotePosition[] => {
+export function findEmotePositions(message: string, emotes: string[]): EmotePosition[] {
     const result: EmotePosition[] = [];
 
     const regex = /(?<=^|\s)((?:[a-z]+)+)(?=\s|$)/gi;
 
     let match: RegExpExecArray | null = null;
+
+    // eslint-disable-next-line no-cond-assign
     while ((match = regex.exec(message))) {
         const emote = match[1];
-        if (!emote) throw new Error('No name found');
+        if (!emote) {
+            throw new Error('No name found');
+        }
         if (emotes.includes(emote)) {
             result.push({
                 name: emote,
@@ -23,4 +27,4 @@ export const findEmotePositions = (message: string, emotes: string[]): EmotePosi
     }
 
     return result;
-};
+}
