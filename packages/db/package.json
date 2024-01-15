@@ -21,19 +21,19 @@
     "dependencies": {
         "@synopsis/env": "0.0.1",
         "drizzle-orm": "0.28.6",
-        "kysely": "^0.27.2",
-        "kysely-postgres-js": "^2.0.0",
+        "kysely": "0.27.2",
+        "kysely-postgres-js": "2.0.0",
         "postgres": "3.4.0"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "^0.6.9",
+        "@mastondzn/eslint": "0.6.9",
         "@synopsis/tsconfig": "0.0.1",
-        "@types/node": "20.11.0",
+        "@types/node": "20.11.2",
         "dotenv-cli": "7.3.0",
         "drizzle-kit": "0.19.13",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
         "tsx": "4.7.0",
-        "znv": "^0.4.0"
+        "znv": "0.4.0"
     }
 }
