@@ -189,13 +189,13 @@ services:
             - cache
         restart: unless-stopped
         ports:
-            - 3001:3000
+            - 3001:3001
         labels:
             - traefik.enable=true
             - traefik.http.routers.website.rule=Host(`bot.${DOMAIN_NAME?err}`)
             - traefik.http.routers.website.entrypoints=websecure
             - traefik.http.routers.website.tls.certResolver=myresolver
-            - traefik.http.services.website.loadbalancer.server.port=3000
+            - traefik.http.services.website.loadbalancer.server.port=3001
 
     bot:
         <<: *logging
@@ -211,8 +211,3 @@ services:
         restart: unless-stopped
         labels:
             - traefik.enable=false
-
-networks:
-    default:
-        name: synopsis
-        external: false

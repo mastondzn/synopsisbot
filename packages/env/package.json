@@ -18,8 +18,7 @@
         "zod": "3.22.4"
     },
     "dependencies": {
-        "@t3-oss/env-core": "0.7.3",
-        "is-docker": "3.0.0"
+        "@t3-oss/env-core": "0.7.3"
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.6.9",

@@ -1,27 +1,55 @@
-FROM node:18-alpine AS pruner
+FROM node:20-alpine AS base
+
+FROM base AS builder
 RUN apk add --no-cache libc6-compat
 RUN apk update
-
+# Set working directory
 WORKDIR /app
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune --scope=@synopsis/website
-COPY ./.env /app/out/.env
+RUN turbo prune @synopsis/website --docker
 
-FROM node:18-alpine AS runner
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
 RUN apk add --no-cache libc6-compat
 RUN apk update
-
-ARG TURBO_TEAM
-ENV TURBO_TEAM=$TURBO_TEAM
-ARG TURBO_TOKEN
-ENV TURBO_TOKEN=$TURBO_TOKEN
-
 WORKDIR /app
-COPY --from=pruner /app/out .
-WORKDIR /app/website
-RUN yarn global add pnpm
-RUN pnpm install --frozen-lockfile
 
-RUN pnpm build:production
-CMD pnpm start
+# First install the dependencies (as they change less often)
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN npm install pnpm -g
+RUN pnpm install
+
+# Build the project
+COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
+
+# Uncomment and use build args to enable remote caching
+# ARG TURBO_TEAM
+# ENV TURBO_TEAM=$TURBO_TEAM
+
+# ARG TURBO_TOKEN
+# ENV TURBO_TOKEN=$TURBO_TOKEN
+
+RUN yarn turbo build --filter=@synopsis/website...
+
+FROM base AS runner
+WORKDIR /app
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+COPY --from=installer /app/website/next.config.mjs .
+COPY --from=installer /app/website/package.json .
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=installer --chown=nextjs:nodejs /app/website/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/website/.next/static ./website/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/website/public ./website/public
+
+CMD PORT=3001 node website/server.js

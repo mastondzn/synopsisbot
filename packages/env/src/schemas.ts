@@ -1,4 +1,3 @@
-import isDocker from 'is-docker';
 import { z } from 'zod';
 
 export const serverEnvironmentSchema = z.object({
@@ -12,19 +11,11 @@ export const serverEnvironmentSchema = z.object({
     TWITCH_BOT_OWNER_USERNAME: z.string(),
     TWITCH_BOT_OWNER_ID: z.string(),
 
-    DB_HOST: z
-        .string()
-        .default('localhost')
-        .transform(host => (host === 'localhost' ? (isDocker() ? 'db' : host) : host)),
     DB_USERNAME: z.string(),
     DB_PASSWORD: z.string(),
     // the name of the database, not the username
     DB_NAME: z.string(),
 
-    REDIS_HOST: z
-        .string()
-        .default('localhost')
-        .transform(host => (host === 'localhost' ? (isDocker() ? 'cache' : host) : host)),
     REDIS_PASSWORD: z.string(),
 
     // our own secret, also used for JWT signing

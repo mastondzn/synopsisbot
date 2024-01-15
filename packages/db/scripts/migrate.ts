@@ -5,7 +5,7 @@ import { createDatabase } from '~/index';
 
 async function main() {
     const db = createDatabase({
-        host: env.DB_HOST,
+        host: 'localhost',
         user: env.DB_USERNAME,
         password: env.DB_PASSWORD,
         database: env.DB_NAME,
