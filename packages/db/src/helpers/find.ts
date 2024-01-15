@@ -15,7 +15,9 @@ export class FindHelpers {
 
     async authedUserByIdThrows(id: string) {
         const user = await this.authedUserById(id);
-        if (!user) { throw new Error(`User with ID ${id} not found in database`); }
+        if (!user) {
+            throw new Error(`User with ID ${id} not found in database`);
+        }
         return user;
     }
 
@@ -27,7 +29,9 @@ export class FindHelpers {
 
     async authedUserByLoginThrows(login: string) {
         const user = await this.authedUserByLogin(login);
-        if (!user) { throw new Error(`User with login ${login} not found in database`); }
+        if (!user) {
+            throw new Error(`User with login ${login} not found in database`);
+        }
         return user;
     }
 

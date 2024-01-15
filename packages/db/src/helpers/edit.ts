@@ -21,7 +21,9 @@ export class EditHelpers {
 
     async authedUserByIdThrows(id: string, fields: UpdateAuthedUser) {
         const updatedUser = await this.authedUserById(id, fields);
-        if (!updatedUser) { throw new Error(`User with ID ${id} not found in database`); }
+        if (!updatedUser) {
+            throw new Error(`User with ID ${id} not found in database`);
+        }
         return updatedUser;
     }
 
@@ -36,7 +38,9 @@ export class EditHelpers {
 
     async authedUserByLoginThrows(login: string, fields: UpdateAuthedUser) {
         const updatedUser = await this.authedUserByLogin(login, fields);
-        if (!updatedUser) { throw new Error(`User with login ${login} not found in database`); }
+        if (!updatedUser) {
+            throw new Error(`User with login ${login} not found in database`);
+        }
         return updatedUser;
     }
 }

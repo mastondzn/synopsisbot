@@ -11,7 +11,7 @@ export function ThemedImage({
     light,
     dark,
     ...props
-}: Omit<ImageProperties, 'src'> & { light: SourceProperty, dark: SourceProperty }) {
+}: Omit<ImageProperties, 'src'> & { light: SourceProperty; dark: SourceProperty; }) {
     const { theme } = useTheme();
 
     const source
@@ -25,6 +25,5 @@ export function ThemedImage({
         throw new TypeError('Invalid theme from \'useTheme()\'');
     }
 
-    // eslint-disable-next-line jsx-a11y/alt-text
     return <Image {...props} src={source} />;
 }

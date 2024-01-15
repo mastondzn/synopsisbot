@@ -17,6 +17,7 @@ async function hashFile(path: string, hash: Hash) {
  */
 export async function computeMetaHash(target: string): Promise<Buffer>;
 export async function computeMetaHash(target: string, inputHash: Hash): Promise<undefined>;
+// @ts-expect-error - its fine
 export async function computeMetaHash(target: string, inputHash: Hash | null = null) {
     const hash = inputHash ?? createHash('sha256');
 

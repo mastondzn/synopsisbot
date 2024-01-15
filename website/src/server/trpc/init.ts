@@ -4,7 +4,7 @@ import superjson from 'superjson';
 import { ZodError } from 'zod';
 
 export interface Context {
-    req: NextRequest
+    req: NextRequest;
 }
 
 const t = initTRPC.context<Context>().create({

@@ -1,38 +1,38 @@
 {
-  "extends": "@synopsis/tsconfig/tsconfig.base.json",
-  "compilerOptions": {
-    "incremental": true,
-    "target": "es2017",
-    "jsx": "preserve",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2023"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ]
+    "extends": "@synopsis/tsconfig/tsconfig.base.json",
+    "compilerOptions": {
+        "incremental": true,
+        "target": "es2017",
+        "jsx": "preserve",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "es2023"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "./src/*"
+            ]
+        },
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ]
     },
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
+    "include": [
+        "eslint.config.mjs",
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.cjs",
+        "**/*.mjs",
+        ".next/types/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
     ]
-  },
-  "include": [
-    "eslint.config.mjs",
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.cjs",
-    "**/*.mjs",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
 }

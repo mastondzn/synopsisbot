@@ -32,7 +32,7 @@ export const buttonVariants = cva(
 export interface ButtonProperties
     extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-    asChild?: boolean
+    asChild?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(

@@ -14,10 +14,10 @@ export type KyselyDatabase = {
 };
 
 export type Database = DrizzleDatabase & {
-    find: FindHelpers
-    edit: EditHelpers
-    ky: Kysely<KyselyDatabase>
-    raw: Sql
+    find: FindHelpers;
+    edit: EditHelpers;
+    ky: Kysely<KyselyDatabase>;
+    raw: Sql;
 };
 
 export type DatabaseOptions = Omit<DrizzleConfig, 'schema'> & Options<NonNullable<unknown>>;

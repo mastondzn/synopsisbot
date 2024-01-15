@@ -14,7 +14,7 @@ async function getCommand(wanted: string) {
     return command ?? null;
 }
 
-export default async function Page({ params }: { params: { command: string } }) {
+export default async function Page({ params }: { params: { command: string; }; }) {
     const command = await getCommand(params.command);
 
     if (!command) {

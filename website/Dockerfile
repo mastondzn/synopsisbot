@@ -23,5 +23,5 @@ WORKDIR /app/website
 RUN yarn global add pnpm
 RUN pnpm install --frozen-lockfile
 
-RUN pnpm build
+RUN pnpm build:production
 CMD pnpm start

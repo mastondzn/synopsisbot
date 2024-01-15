@@ -10,7 +10,7 @@ export async function createState() {
     return state;
 }
 
-export async function consumeState(state: string): Promise<{ ok: boolean }> {
+export async function consumeState(state: string): Promise<{ ok: boolean; }> {
     const result = await db.delete(states).where(eq(states.state, state)).returning();
     if (result.length === 0) {
         return { ok: false };

@@ -4,7 +4,8 @@ import { IconMoon, IconSun } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-import { Button, type ButtonProps as ButtonProperties } from './button';
+import type { ButtonProperties } from './button';
+import { Button } from './button';
 import { Skeleton } from './skeleton';
 
 export function ThemeSwitch({ ...props }: Omit<ButtonProperties, 'children'>) {
@@ -29,19 +30,16 @@ export function ThemeSwitch({ ...props }: Omit<ButtonProperties, 'children'>) {
             onClick={() => {
                 if (theme === 'dark') {
                     setTheme('light');
-                }
-                else if (theme === 'light') {
+                } else if (theme === 'light') {
                     setTheme('dark');
                 }
             }}
         >
-            {theme === 'dark' ? ( //
-                <IconMoon className="h-6 w-6" />
-            ) : (theme === 'light'
-                ? (
-                    <IconSun className="h-6 w-6" />
-                    )
-                : null)}
+            {theme === 'dark'
+                ? <IconMoon className="h-6 w-6" />
+                : (theme === 'light'
+                        ? <IconSun className="h-6 w-6" />
+                        : null)}
         </Button>
     );
 }

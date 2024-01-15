@@ -12,8 +12,7 @@ export function decodeToken(jwt: string): JwtShape | null {
     try {
         const decoded = jwtShape.parse(decodeJwt(jwt));
         return decoded;
-    }
-    catch {
+    } catch {
         return null;
     }
 }

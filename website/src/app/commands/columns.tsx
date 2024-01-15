@@ -4,12 +4,12 @@ import type { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 
 export interface Command {
-    name: string
-    description: string
-    aliases: string
+    name: string;
+    description: string;
+    aliases: string;
 }
 
-function Linked({ name, children }: { name: string, children: React.ReactNode }) {
+function Linked({ name, children }: { name: string; children: React.ReactNode; }) {
     return <Link href={`/commands/${name}`}>{children}</Link>;
 }
 

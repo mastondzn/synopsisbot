@@ -6,17 +6,19 @@ import { getEncodedAppSecret } from './encode';
 
 export type VerifyJWTResult =
     | {
-        ok: true
-        jwt: JwtShape
+        ok: true;
+        jwt: JwtShape;
     }
     | {
-        ok: false
-        error: string
+        ok: false;
+        error: string;
     };
 
 export async function verifyJWT(jwt: string | null | undefined): Promise<VerifyJWTResult> {
     try {
-        if (!jwt) { return { ok: false, error: 'No JWT' }; }
+        if (!jwt) {
+            return { ok: false, error: 'No JWT' };
+        }
 
         const secret = getEncodedAppSecret();
         const decoded = await jwtVerify(jwt, secret, { algorithms: ['HS256'] }) //
@@ -24,13 +26,14 @@ export async function verifyJWT(jwt: string | null | undefined): Promise<VerifyJ
                 error: error instanceof Error ? error.message : 'Unknown Error',
             }));
 
-        if ('error' in decoded) { return { ok: false, error: decoded.error }; }
+        if ('error' in decoded) {
+            return { ok: false, error: decoded.error };
+        }
 
         const parsed = jwtShape.parse(decoded.payload);
 
         return { ok: true, jwt: parsed };
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         return { ok: false, error: 'Invalid JWT' };
     }

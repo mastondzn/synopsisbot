@@ -40,7 +40,7 @@ export function Footer() {
     );
 }
 
-export function PageBase({ children, className }: PropsWithChildren<{ className?: string }>) {
+export function PageBase({ children, className }: PropsWithChildren<{ className?: string; }>) {
     return (
         <div
             className={cn(

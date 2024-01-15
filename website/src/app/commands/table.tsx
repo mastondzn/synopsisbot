@@ -5,8 +5,8 @@ import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tan
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/table';
 
 interface DataTableProperties<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
 }
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProperties<TData, TValue>) {

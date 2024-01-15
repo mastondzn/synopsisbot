@@ -28,4 +28,10 @@ export const env = createEnv({
         TWITCH_CLIENT_ID: process.env['TWITCH_CLIENT_ID'],
         TWITCH_CLIENT_SECRET: process.env['TWITCH_CLIENT_SECRET'],
     },
+
+    skipValidation:
+        process.env['NODE_ENV'] === 'test'
+        || (process.env['SKIP_ENV_VALIDATION']?.length
+            ? !['0', 'false'].includes(process.env['SKIP_ENV_VALIDATION'])
+            : true),
 });
