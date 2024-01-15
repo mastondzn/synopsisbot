@@ -1,8 +1,8 @@
 FROM node:20 AS base
 
 FROM base AS builder
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt-get update && \
+    apt-get install -y libc6-dev
 # Set working directory
 WORKDIR /app
 RUN yarn global add turbo
@@ -11,8 +11,8 @@ RUN turbo prune @synopsis/website --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt-get update && \
+    apt-get install -y libc6-dev
 WORKDIR /app
 
 # First install the dependencies (as they change less often)

@@ -1,6 +1,6 @@
 FROM node:20 AS pruner
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt-get update && \
+    apt-get install -y libc6-dev
 
 WORKDIR /app
 RUN yarn global add turbo
@@ -9,8 +9,8 @@ RUN turbo prune --scope=@synopsis/bot
 COPY ./.env /app/out/.env
 
 FROM node:20 AS runner
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apt-get update && \
+    apt-get install -y libc6-dev
 
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM
