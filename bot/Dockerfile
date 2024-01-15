@@ -1,4 +1,4 @@
-FROM node:20-alpine AS pruner
+FROM node:20 AS pruner
 RUN apk add --no-cache libc6-compat
 RUN apk update
 
@@ -8,7 +8,7 @@ COPY . .
 RUN turbo prune --scope=@synopsis/bot
 COPY ./.env /app/out/.env
 
-FROM node:20-alpine AS runner
+FROM node:20 AS runner
 RUN apk add --no-cache libc6-compat
 RUN apk update
 
