@@ -16,6 +16,12 @@ Sentry.init({
     profilesSampleRate: 1,
 });
 
+let line = `MrDestructoid connected and ready.`;
+if (env.NODE_ENV === 'development') line = `${line} (development)`;
+
+const events = await getEventHandlers();
+const modules = await getModules();
+
 const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 authProvider.addUser(botUser.twitchId, {
     accessToken: botUser.accessToken,
@@ -23,24 +29,22 @@ authProvider.addUser(botUser.twitchId, {
     expiresIn: botUser.expiresAt.getTime() - Date.now(),
     obtainmentTimestamp: botUser.obtainedAt.getTime(),
     scope: botUser.scopes,
-});
+}, ['chat']);
 
 const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
-if (!botToken) throw new Error('Bot token not found');
+if (!botToken?.expiresIn) {
+    throw new Error('Bot token not found or no expiration');
+};
+setTimeout(() => {
+    void authProvider.refreshAccessTokenForIntent('chat');
+}, (botToken.expiresIn * 1000) - 1000 * 60 * 60);
 
+chat.registerEvents(events);
 await chat.login({
     username: env.TWITCH_BOT_USERNAME,
     password: botToken.accessToken,
 });
 
-const events = await getEventHandlers();
-const modules = await getModules();
-
 await chat.registerModules(modules);
-chat.registerEvents(events);
-
-let line = `MrDestructoid connected and ready.`;
-if (env.NODE_ENV === 'development') line = `${line} (development)`;
-
 void chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
 void chat.say(env.TWITCH_BOT_USERNAME, line);
