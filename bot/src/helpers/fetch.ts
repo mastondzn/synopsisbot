@@ -6,17 +6,17 @@ type BaseOptions = Omit<RequestInit, 'body'> & {
     throwHttpErrors?: boolean;
 };
 
-export async function jfetch<TJson extends boolean = true>(
+export async function jfetch<TJson extends boolean>(
     {
         url,
-        json,
+        json = true,
         throwHttpErrors,
         body,
         ...rest
-    }: BaseOptions & { json?: TJson; },
+    }: BaseOptions & { json?: TJson | boolean; },
 ): Promise<{
     response: Response;
-    body: TJson extends true ? unknown : string;
+    body: TJson;
 }> {
     const response = await fetch(url, {
         ...rest,
@@ -34,7 +34,7 @@ export async function jfetch<TJson extends boolean = true>(
     };
 }
 
-export async function zfetch<TSchema extends z.AnyZodObject>(
+export async function zfetch<TSchema extends z.ZodType>(
     options: BaseOptions & { schema: TSchema; },
 ): Promise<{
     response: Response;
@@ -44,6 +44,6 @@ export async function zfetch<TSchema extends z.AnyZodObject>(
 
     return {
         response,
-        body: options.schema.parse(body),
+        body: options.schema.parse(body) as z.infer<TSchema>,
     };
 }

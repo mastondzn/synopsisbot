@@ -1,18 +1,26 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
 import type { CommandContext } from '.';
+import { prefix } from './prefix';
 import { api } from '~/services/api';
+
+export function getCommandName(message: string | PrivmsgMessage) {
+    const text = typeof message === 'string' ? message : message.messageText;
+    return text.replace(prefix, '').split(/\s+/)[0];
+};
 
 export function parseParameters(message: string | PrivmsgMessage) {
     const text = typeof message === 'string' ? message : message.messageText;
 
-    const [prefix, command = null, ...rest] = text.split(/\s+/);
-    if (!prefix) {
+    const split = text.split(/\s+/);
+    const [prefix, command = null, ...rest] = split;
+    if (!prefix || !command) {
         throw new Error('Failed to parse command');
     }
 
     return {
         text: rest.join(' ') || null,
+        split,
         command,
         prefix,
         rest,

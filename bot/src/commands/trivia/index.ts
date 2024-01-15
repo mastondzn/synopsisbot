@@ -20,7 +20,8 @@ export default defineCommand({
         let trivia: Trivia;
         try {
             trivia = await getTrivia();
-        } catch {
+        } catch (error) {
+            console.error(error);
             activeChannels.delete(message.channelName);
             return yield { reply: 'Failed to fetch a question.. :/' };
         }
@@ -38,7 +39,7 @@ export default defineCommand({
             .replace(/, ([^,]*)$/, ', or $1');
 
         yield {
-            say: `New Trivia! [${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
+            reply: `New Trivia! [${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
         };
 
         const exhaustedAnswers = new Set<string>();
@@ -46,9 +47,7 @@ export default defineCommand({
         const messages = await chat.collectMessages({
             timeout: 30,
             filter: (incoming) => {
-                if (incoming.channelName !== message.channelName) {
-                    return false;
-                }
+                if (incoming.channelName !== message.channelName) return false;
 
                 const incomingContent = incoming.messageText.toLowerCase().trim();
 
@@ -63,7 +62,6 @@ export default defineCommand({
                     const letterIndex = answers
                         .map(answer => answer.toLowerCase())
                         .indexOf(incomingContent);
-
                     const letter = alphabet[letterIndex]!;
                     exhaustedAnswers.add(letter);
                 } else if (isValidLetter) {
@@ -88,16 +86,20 @@ export default defineCommand({
             return isCorrectLetter || isCorrectAnswer;
         });
 
+        activeChannels.delete(message.channelName);
+
         if (!winner) {
-            activeChannels.delete(message.channelName);
             return yield {
                 say: `Nobody got the answer right! PoroSad The answer was ${correctAnswer}.`,
             };
         }
 
-        activeChannels.delete(message.channelName);
         return yield {
-            say: `Congratulations ${winner.displayName}! You got it right! The answer was ${correctAnswer}.`,
+            reply: [
+                `Congratulations ${winner.displayName}!`,
+                `You got it right! The answer was ${correctLetter.toUpperCase()}. ${correctAnswer}.`,
+            ].join(' '),
+            to: winner,
         };
     },
 });

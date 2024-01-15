@@ -1,7 +1,7 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import type { z } from 'zod';
 
-import type { parseParameters } from '.';
+import type { parseCommand } from './simplify';
 import type { GlobalLevel, LocalLevel } from '~/services/permissions';
 import type { RemoveIndexSignature } from '~/types/general';
 
@@ -9,7 +9,7 @@ export interface CommandContext<
     TOptions extends z.ZodRawShape = z.ZodRawShape,
 > {
     message: PrivmsgMessage;
-    parameters: ReturnType<typeof parseParameters>;
+    parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
     options: RemoveIndexSignature<z.infer<z.ZodObject<TOptions>>>;
     cancel: () => Promise<void>;
 }
@@ -17,7 +17,10 @@ export interface CommandContext<
 export type CommandFragment =
     ({ channel?: string; })
     & ({ say: string; }
-    | { reply: string; }
+    | {
+        reply: string;
+        to?: Pick<PrivmsgMessage, 'messageID'>;
+    }
     | { action: string; });
 
 export type CommandResult =

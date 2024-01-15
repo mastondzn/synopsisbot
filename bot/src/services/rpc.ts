@@ -4,16 +4,17 @@ import { Hono } from 'hono';
 
 import { prometheus } from './prometheus';
 
-export const rpc = new Hono();
+export const rpc = new Hono()
+    .get('/metrics', async ({ text }) => {
+        const metrics = await prometheus.metrics();
 
-export const route = rpc.get('/metrics', async ({ text }) => {
-    const metrics = await prometheus.metrics();
-
-    return text(metrics, {
-        status: 200,
-        headers: { 'content-type': prometheus.contentType },
+        return text(metrics, {
+            status: 200,
+            headers: { 'content-type': prometheus.contentType },
+        });
     });
-});
+
+export type RPC = typeof rpc;
 
 if (env.NODE_ENV !== 'test') {
     serve({

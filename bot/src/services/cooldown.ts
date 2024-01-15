@@ -51,7 +51,7 @@ class CommandCooldownManager {
                 : Promise.resolve(),
         ]);
 
-        return true;
+        return false;
     }
 
     async clear({

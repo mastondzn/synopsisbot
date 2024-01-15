@@ -4,10 +4,13 @@ import { Collection } from '@discordjs/collection';
 
 import type { BotEventHandler } from '~/helpers/event';
 
-export const events = new Collection<string, BotEventHandler>();
+let old: Collection<string, BotEventHandler> | null = null;
 
-await importEventHandlers();
-async function importEventHandlers() {
+export async function getEventHandlers(force = false) {
+    if (!force && old) return old;
+
+    const events = new Collection<string, BotEventHandler>();
+
     const allFiles = await readdir('./src/events');
     const files = allFiles
         .filter(file => file !== 'index.ts')
@@ -26,4 +29,7 @@ async function importEventHandlers() {
             events.set(file, imported.default);
         }),
     );
+
+    old = events;
+    return events;
 }

@@ -8,6 +8,8 @@ export default defineModule({
     name: 'db-commands',
     priority: 0,
     register: async () => {
+        await commands.verify();
+
         const databaseCommands = commands.map((command) => {
             return {
                 name: command.name,

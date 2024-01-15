@@ -1,6 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import { commands } from '~/commands';
+
+beforeAll(async () => {
+    await commands.verify();
+});
 
 // need to fix db call during import
 describe('commands', () => {

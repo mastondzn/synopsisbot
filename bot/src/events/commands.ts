@@ -3,10 +3,10 @@ import chalk from 'chalk';
 
 import { commands } from '~/commands';
 import type { CommandContext, CommandFragment } from '~/helpers/command';
-import { getCommandPermissions, parseParameters } from '~/helpers/command';
+import { getCommandName, getCommandPermissions } from '~/helpers/command';
 import { parseOptions } from '~/helpers/command/options';
 import { prefix } from '~/helpers/command/prefix';
-import { simplifyCommand } from '~/helpers/command/simplify';
+import { parseCommand } from '~/helpers/command/simplify';
 import { defineEventHandler } from '~/helpers/event';
 import { chat } from '~/services/chat';
 import { cooldowns } from '~/services/cooldown';
@@ -27,22 +27,23 @@ export default defineEventHandler({
         const text = message.messageText;
         const channel = message.channelName;
 
-        const inDefaultChannel //
-        = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
+        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
         if (!message.messageText.startsWith(prefix)
             || (env.NODE_ENV === 'development' && !inDefaultChannel)) return;
 
-        const parameters = parseParameters(message);
-        if (!parameters.command) return;
+        const wantedCommand = getCommandName(message);
+        if (!wantedCommand) return;
 
+        await commands.verify();
         const foundCommand = commands.find(
-            c => c.name === parameters.command || c.aliases?.includes(parameters.command!),
+            c => c.name === wantedCommand || c.aliases?.includes(wantedCommand),
         ) ?? null;
         if (!foundCommand) return;
 
-        const command = simplifyCommand(foundCommand, parameters);
-        if (!command) return;
+        const parsed = parseCommand(foundCommand, message);
+        if (!parsed) return;
+        const { parameters, command } = parsed;
 
         const wantedPermissions = getCommandPermissions(command);
 
@@ -100,11 +101,15 @@ export default defineEventHandler({
 
         const consumeFragment = async ({ fragment }: { fragment: CommandFragment; }) => {
             if ('reply' in fragment) {
-                return chat.reply(fragment.channel ?? channel, message.messageID, text);
+                return chat.reply(
+                    fragment.channel ?? channel,
+                    fragment.to?.messageID ?? message.messageID,
+                    fragment.reply,
+                );
             } else if ('action' in fragment) {
-                return chat.me(fragment.channel ?? channel, text);
+                return chat.me(fragment.channel ?? channel, fragment.action);
             } else if ('say' in fragment) {
-                return chat.say(fragment.channel ?? channel, text);
+                return chat.say(fragment.channel ?? channel, fragment.say);
             }
         };
 

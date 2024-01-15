@@ -2,30 +2,15 @@ import { z } from 'zod';
 
 import { zfetch } from '~/helpers/fetch';
 
-// const result = {
-//     response_code: 0,
-//     results: [
-//         {
-//             category: 'Entertainment: Video Games',
-//             type: 'boolean',
-//             difficulty: 'easy',
-//             question: 'Doki Doki Literature Club was developed in Japan.',
-//             correct_answer: 'False',
-//             incorrect_answers: ['True'],
-//         },
-//     ],
-// };
-// https://opentdb.com/api.php?amount=1&type=multiple
-
 const questionSchema = z.object({
-    category: z.string().transform(string_ => decodeURIComponent(string_)),
+    category: z.string().transform(string => decodeURIComponent(string)),
     type: z.literal('multiple'),
     difficulty: z.enum(['easy', 'medium', 'hard']),
-    question: z.string().transform(string_ => decodeURIComponent(string_)),
-    correct_answer: z.string().transform(string_ => decodeURIComponent(string_)),
+    question: z.string().transform(string => decodeURIComponent(string)),
+    correct_answer: z.string().transform(string => decodeURIComponent(string)),
     incorrect_answers: z
         .array(z.string())
-        .transform(array => array.map(string_ => decodeURIComponent(string_))),
+        .transform(array => array.map(string => decodeURIComponent(string))),
 });
 
 const responseSchema = z.object({
