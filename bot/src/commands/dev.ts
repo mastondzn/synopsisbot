@@ -24,11 +24,17 @@ export default defineCommand({
 
             // eslint-disable-next-line no-eval
             const result: unknown = await eval(parameters.text);
-            const inspected = inspect(result, {
-                depth: 3,
-                colors: false,
-                breakLength: Number.POSITIVE_INFINITY,
-            });
+            let inspected = typeof result === 'string'
+                ? result
+                : inspect(result, {
+                    depth: 2,
+                    colors: false,
+                    breakLength: Number.POSITIVE_INFINITY,
+                }).replaceAll('\n', ' ');
+
+            if (inspected.length > 475) {
+                inspected = `${inspected.slice(0, 475)}... (too long)`;
+            }
 
             return { reply: inspected };
         },

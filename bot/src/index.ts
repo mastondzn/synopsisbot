@@ -29,3 +29,9 @@ const modules = await getModules();
 
 await chat.registerModules(modules);
 chat.registerEvents(events);
+
+let line = `MrDestructoid connected and ready.`;
+if (env.NODE_ENV === 'development') line = `${line} (development)`;
+
+void chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
+void chat.say(env.TWITCH_BOT_USERNAME, line);
