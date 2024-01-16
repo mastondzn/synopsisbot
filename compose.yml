@@ -138,7 +138,7 @@ services:
         environment: 
             WATCHTOWER_NOTIFICATION_REPORT: true
             WATCHTOWER_NOTIFICATION_URL: > 
-                discord://${DISCORD_WEBHOOK_TOKEN?err}@${DISCORD_WEBHOOK_CHNANEL?err}
+                discord://${DISCORD_WEBHOOK_TOKEN?err}@${DISCORD_WEBHOOK_CHANNEL?err}
             WATCHTOWER_LABEL_ENABLE: true
         command: --interval 20
 
