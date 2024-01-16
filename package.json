@@ -48,6 +48,7 @@
         "@types/node": "20.11.2",
         "bumpp": "^9.2.1",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-plugin-unicorn": "^50.0.1",
         "eslint-ts-patch": "8.56.0-0",
         "only-allow": "1.1.1",
         "rimraf": "5.0.5",

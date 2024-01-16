@@ -13,6 +13,7 @@
         "@mastondzn/eslint": "0.6.9",
         "@synopsis/tsconfig": "0.0.1",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
+        "eslint-plugin-unicorn": "^50.0.1",
         "eslint-ts-patch": "8.56.0-0"
     }
 }
