@@ -1,4 +1,4 @@
-FROM node:20 AS base
+FROM node:20-alpine AS base
 
 FROM base AS builder
 RUN apt-get update && \
@@ -25,13 +25,6 @@ RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
-
-# Uncomment and use build args to enable remote caching
-# ARG TURBO_TEAM
-# ENV TURBO_TEAM=$TURBO_TEAM
-
-# ARG TURBO_TOKEN
-# ENV TURBO_TOKEN=$TURBO_TOKEN
 
 RUN yarn turbo build --filter=@synopsis/website...
 

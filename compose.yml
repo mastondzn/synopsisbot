@@ -139,7 +139,7 @@ services:
             WATCHTOWER_NOTIFICATION_URL: > 
                 discord://${DISCORD_WEBHOOK_TOKEN?err}@${DISCORD_WEBHOOK_CHANNEL?err}
             WATCHTOWER_LABEL_ENABLE: true
-        command: --interval 20
+            WATCHTOWER_POLL_INTERVAL: 20
 
     db:
         image: postgres:15-alpine
@@ -165,7 +165,7 @@ services:
             - ~/volumes/synopsisbot/redis:/data
 
     website:
-        image: ghcr.io/mastondzn/bot-website:main
+        image: ghcr.io/mastondzn/bot-website:latest
         container_name: website
         env_file:
             - .env
@@ -184,7 +184,7 @@ services:
             - com.centurylinklabs.watchtower.enable=true
 
     bot:
-        image: ghcr.io/mastondzn/bot:main
+        image: ghcr.io/mastondzn/bot:latest
         container_name: bot
         env_file:
             - .env

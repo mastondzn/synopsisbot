@@ -17,7 +17,7 @@ export async function retry<T>(
         } catch (error) {
             lastError = error instanceof Error ? error : new Error('Unknown error');
 
-            if (onRetry) onRetry(lastError, index);
+            onRetry?.(lastError, index);
             if (delay) await wait(delay);
         }
     }

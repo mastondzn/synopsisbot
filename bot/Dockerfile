@@ -1,4 +1,6 @@
-FROM node:20 AS pruner
+FROM node:20-alpine AS base
+
+FROM base AS pruner
 RUN apt-get update && \
     apt-get install -y libc6-dev
 
@@ -7,7 +9,7 @@ RUN yarn global add turbo
 COPY . .
 RUN turbo prune --scope=@synopsis/bot
 
-FROM node:20 AS runner
+FROM base AS runner
 RUN apt-get update && \
     apt-get install -y libc6-dev
 
