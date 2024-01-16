@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@synopsis/env": "0.0.1",
-        "drizzle-orm": "0.28.6",
+        "drizzle-orm": "0.29.3",
         "kysely": "0.27.2",
         "kysely-postgres-js": "2.0.0",
         "postgres": "3.4.0"
@@ -30,7 +30,7 @@
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.2",
         "dotenv-cli": "7.3.0",
-        "drizzle-kit": "0.19.13",
+        "drizzle-kit": "0.20.13",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-plugin-unicorn": "50.0.1",
         "eslint-ts-patch": "8.56.0-0",
