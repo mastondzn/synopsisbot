@@ -97,8 +97,6 @@ services:
             - --path.rootfs=/rootfs
             - --path.sysfs=/host/sys
             - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
-        labels:
-            - traefik.enable=false
 
     loki:
         image: grafana/loki:2.8.2
@@ -110,8 +108,6 @@ services:
         volumes:
             - ./configs/loki.yml:/mnt/config/loki.yml
         command: -config.file=/mnt/config/loki.yml
-        labels:
-            - traefik.enable=false
 
     promtail:
         image: grafana/promtail:2.8.2
@@ -121,8 +117,6 @@ services:
             - ./configs/promtail.yml:/mnt/config/promtail.yml
             - /var/log:/var/log
         command: -config.file=/mnt/config/promtail.yml
-        labels:
-            - traefik.enable=false
 
     whoami:
         image: traefik/whoami
@@ -147,8 +141,6 @@ services:
             - POSTGRES_DB=${DB_NAME?err}
         volumes:
             - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
-        labels:
-            - traefik.enable=false
 
     cache:
         image: redis:7-alpine
@@ -159,8 +151,6 @@ services:
             - 6379:6379
         volumes:
             - ~/volumes/synopsisbot/redis:/data
-        labels:
-            - traefik.enable=false
 
     website:
         container_name: website
@@ -193,5 +183,3 @@ services:
             - db
             - cache
         restart: unless-stopped
-        labels:
-            - traefik.enable=false
