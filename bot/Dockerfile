@@ -1,8 +1,8 @@
 FROM node:20-alpine AS base
 
 FROM base AS pruner
-RUN apt-get update && \
-    apt-get install -y libc6-dev
+RUN apk add --no-cache libc6-compat
+RUN apk update
 
 WORKDIR /app
 RUN yarn global add turbo
@@ -10,8 +10,8 @@ COPY . .
 RUN turbo prune --scope=@synopsis/bot
 
 FROM base AS runner
-RUN apt-get update && \
-    apt-get install -y libc6-dev
+RUN apk add --no-cache libc6-compat
+RUN apk update
 
 ARG TURBO_TEAM
 ENV TURBO_TEAM=$TURBO_TEAM

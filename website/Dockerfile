@@ -1,8 +1,8 @@
 FROM node:20-alpine AS base
 
 FROM base AS builder
-RUN apt-get update && \
-    apt-get install -y libc6-dev
+RUN apk add --no-cache libc6-compat
+RUN apk update
 # Set working directory
 WORKDIR /app
 RUN yarn global add turbo
@@ -11,8 +11,8 @@ RUN turbo prune @synopsis/website --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apt-get update && \
-    apt-get install -y libc6-dev
+RUN apk add --no-cache libc6-compat
+RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
