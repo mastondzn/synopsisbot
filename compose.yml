@@ -134,7 +134,6 @@ services:
         container_name: watchtower
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - /root/.docker/config.json:/config.json
         environment: 
             WATCHTOWER_NOTIFICATION_REPORT: true
             WATCHTOWER_NOTIFICATION_URL: > 
