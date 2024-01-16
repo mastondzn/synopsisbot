@@ -1,0 +1,72 @@
+#
+name: Create and publish a Docker image
+
+on:
+    workflow_dispatch:
+
+env:
+    REGISTRY: ghcr.io
+    BOT_IMAGE_NAME: ${{ github.repository }}
+    WEBSITE_IMAGE_NAME: ${{ github.repository }}-website
+
+jobs:
+    build-and-push-image:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Wait for CI to finish
+              uses: lewagon/wait-on-check-action@v1.3.1
+              if: github.event_name == 'push'
+              with:
+                  ref: ${{ github.ref }}
+                  check-name: "ci"
+                  repo-token: ${{ secrets.GITHUB_TOKEN }}
+                  verbose: true
+                  wait-interval: 8
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Log in to the Container registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: bot-meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.BOT_IMAGE_NAME }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: ./bot/Dockerfile
+                  push: true
+                  tags: ${{ steps.bot-meta.outputs.tags }}
+                  labels: ${{ steps.bot-meta.outputs.labels }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: website-meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.WEBSITE_IMAGE_NAME }}
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: ./website/Dockerfile
+                  push: true
+                  tags: ${{ steps.website-meta.outputs.tags }}
+                  labels: ${{ steps.website-meta.outputs.labels }}

@@ -4,8 +4,7 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "build": "NODE_ENV=production SKIP_ENV_VALIDATION=true pnpm with-env next build",
-        "build:production": "NODE_ENV=production pnpm with-env next build",
+        "build": "NODE_ENV=production pnpm with-env next build",
         "dev": "pnpm with-env next dev",
         "start": "pnpm with-env next start",
         "lint": "eslint .",
