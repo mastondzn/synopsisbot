@@ -5,14 +5,14 @@ import type { PropsWithChildren } from 'react';
 
 import { Button } from './button';
 import { ThemeSwitch } from './theme-switch';
-import synopsisBlack from '../../public/synopsisblack.png';
+import black from '../../public/synopsisblack.png';
 import { cn } from '~/utils/tw';
 
 export function Header() {
     return (
         <Link href="/">
             <Image
-                src={synopsisBlack}
+                src={black}
                 className="w-[350px] pt-8 dark:invert"
                 alt=""
                 priority={true}
