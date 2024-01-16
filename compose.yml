@@ -1,12 +1,5 @@
-x-logging: &logging
-    logging:
-        driver: loki
-        options:
-            loki-url: 'http://localhost:3100/loki/api/v1/push'
-
 services:
     traefik:
-        <<: *logging
         image: traefik:v2.10
         container_name: traefik
         restart: unless-stopped
@@ -53,7 +46,6 @@ services:
             - ~/volumes/synopsisbot/letsencrypt:/letsencrypt
 
     grafana:
-        <<: *logging
         image: grafana/grafana:9.5.2
         container_name: grafana
         restart: unless-stopped
@@ -74,7 +66,6 @@ services:
             - traefik.http.services.grafana.loadbalancer.server.port=3000
 
     prometheus:
-        <<: *logging
         image: prom/prometheus:v2.44.0
         container_name: prometheus
         restart: unless-stopped
@@ -92,7 +83,6 @@ services:
             - traefik.http.routers.prometheus.middlewares=auth
 
     node_exporter:
-        <<: *logging
         image: prom/node-exporter:v1.5.0
         container_name: node_exporter
         restart: unless-stopped
@@ -124,7 +114,6 @@ services:
             - traefik.enable=false
 
     promtail:
-        <<: *logging
         image: grafana/promtail:2.8.2
         container_name: promtail
         restart: unless-stopped
@@ -136,7 +125,6 @@ services:
             - traefik.enable=false
 
     whoami:
-        <<: *logging
         image: traefik/whoami
         container_name: whoami
         restart: unless-stopped
@@ -148,7 +136,6 @@ services:
             - traefik.http.routers.whoami.tls.certResolver=myresolver
 
     db:
-        <<: *logging
         image: postgres:15-alpine
         container_name: db
         restart: unless-stopped
@@ -164,7 +151,6 @@ services:
             - traefik.enable=false
 
     cache:
-        <<: *logging
         image: redis:7-alpine
         container_name: cache
         restart: unless-stopped
@@ -177,7 +163,6 @@ services:
             - traefik.enable=false
 
     website:
-        <<: *logging
         container_name: website
         build:
             context: .
@@ -198,7 +183,6 @@ services:
             - traefik.http.services.website.loadbalancer.server.port=3001
 
     bot:
-        <<: *logging
         container_name: bot
         build:
             context: .
