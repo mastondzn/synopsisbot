@@ -43,6 +43,7 @@
     "devDependencies": {
         "@mastondzn/eslint": "0.6.9",
         "@mastondzn/eslint-plugin-tailwindcss": "3.14.1",
+        "@next/eslint-plugin-next": "^14.0.4",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.2",
         "@types/react": "18.2.48",
@@ -54,7 +55,6 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.5",
         "eslint-ts-patch": "8.56.0-0",
-        "jiti": "1.21.0",
         "postcss": "8.4.33",
         "tailwindcss": "3.4.1",
         "typescript": "5.3.3"
