@@ -1,6 +1,6 @@
 {
     "name": "@synopsis/root",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "private": true,
     "packageManager": "pnpm@8.9.0",
     "author": {
