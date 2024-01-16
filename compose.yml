@@ -129,6 +129,19 @@ services:
             - traefik.http.routers.whoami.entrypoints=websecure
             - traefik.http.routers.whoami.tls.certResolver=myresolver
 
+    watchtower:
+        image: containrrr/watchtower
+        container_name: watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /root/.docker/config.json:/config.json
+        environment: 
+            WATCHTOWER_NOTIFICATION_REPORT: true
+            WATCHTOWER_NOTIFICATION_URL: > 
+                discord://${DISCORD_WEBHOOK_TOKEN?err}@${DISCORD_WEBHOOK_CHNANEL?err}
+            WATCHTOWER_LABEL_ENABLE: true
+        command: --interval 20
+
     db:
         image: postgres:15-alpine
         container_name: db
@@ -153,10 +166,8 @@ services:
             - ~/volumes/synopsisbot/redis:/data
 
     website:
+        image: ghcr.io/mastondzn/bot-website:main
         container_name: website
-        build:
-            context: .
-            dockerfile: ./website/Dockerfile
         env_file:
             - .env
         depends_on:
@@ -171,15 +182,16 @@ services:
             - traefik.http.routers.website.entrypoints=websecure
             - traefik.http.routers.website.tls.certResolver=myresolver
             - traefik.http.services.website.loadbalancer.server.port=3001
+            - com.centurylinklabs.watchtower.enable=true
 
     bot:
+        image: ghcr.io/mastondzn/bot:main
         container_name: bot
-        build:
-            context: .
-            dockerfile: ./bot/Dockerfile
         env_file:
             - .env
         depends_on:
             - db
             - cache
         restart: unless-stopped
+        labels:
+            - com.centurylinklabs.watchtower.enable=true
