@@ -1,11 +1,8 @@
 // eslint-disable-next-line unicorn/prevent-abbreviations
 import { env } from '@synopsis/env/node';
-import chalk from 'chalk';
 
 import { setImmediateInterval } from '~/helpers/immediate';
 import { defineModule } from '~/helpers/module';
-
-const logPrefix = chalk.bgGreenBright('[module:dev-announce]');
 
 export default defineModule({
     name: 'dev-announce',
@@ -28,17 +25,17 @@ export default defineModule({
             }));
 
             if ('error' in response) {
-                console.error(logPrefix, 'Failed to fetch');
-                console.error(logPrefix, response.error);
+                console.error('[module:dev-announce]', 'Failed to fetch');
+                console.error('[module:dev-announce]', response.error);
                 return;
             }
 
             if (!response.ok) {
-                console.error(logPrefix, 'Failed to announce dev mode to remote server');
+                console.error('[module:dev-announce]', 'Failed to announce dev mode to remote server');
                 return;
             }
 
-            console.log(logPrefix, 'Announced dev mode to remote server');
+            console.log('[module:dev-announce]', 'Announced dev mode to remote server');
         };
 
         setImmediateInterval(() => void announce(), interval);

@@ -40,7 +40,6 @@
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.2",
         "@types/ramda": "0.29.9",
-        "chalk": "5.2.0",
         "dotenv-cli": "7.3.0",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-define-config": "1.24.1",

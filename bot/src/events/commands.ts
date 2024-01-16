@@ -1,5 +1,5 @@
+import { captureException } from '@sentry/node';
 import { env } from '@synopsis/env/node';
-import chalk from 'chalk';
 
 import { commands } from '~/commands';
 import type { CommandContext, CommandFragment } from '~/helpers/command';
@@ -13,8 +13,6 @@ import { cooldowns } from '~/services/cooldown';
 import { db } from '~/services/database';
 import { permissions } from '~/services/permissions';
 import { cache } from '~/services/redis';
-
-const logPrefix = chalk.bgBlue('[events:commands]');
 
 async function hasDevelopmentProcess(): Promise<boolean> {
     const developmentProcess = await cache.get('dev-announce');
@@ -79,7 +77,7 @@ export default defineEventHandler({
         const cancel = () =>
             cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
 
-        if (!mode) console.warn(logPrefix, `mode for channel ${channel} not found in database`);
+        if (!mode) console.warn(`[events:commands] mode for channel ${channel} not found in database`);
 
         if (dontExecute) {
             await cancel();
@@ -87,10 +85,10 @@ export default defineEventHandler({
         }
 
         console.log(
-            logPrefix,
+            '[events:commands]',
             `executing command ${foundCommand.name} from ${message.senderUsername} in ${channel}`,
         );
-        console.log(logPrefix, `${message.senderUsername}: "${text}"`);
+        console.log('[events:commands]', `${message.senderUsername}: "${text}"`);
 
         const context: CommandContext = {
             options: parseOptions(message, command.options),
@@ -130,12 +128,14 @@ export default defineEventHandler({
                 }
             }
 
-            console.log(logPrefix, `command ${foundCommand.name} executed successfully`);
+            console.log('[events:commands]', `command ${foundCommand.name} executed successfully`);
         } catch (error) {
+            captureException(error);
+
             const when = Date.now();
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
-                logPrefix,
+                '[events:commands]',
                 `error executing command ${foundCommand.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
             );
             console.error(error);
