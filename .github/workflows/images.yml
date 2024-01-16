@@ -10,7 +10,7 @@ jobs:
     build-and-push-image:
         strategy:
             matrix:
-                image: ["${{ github.repository }}}", "${{ github.repository }}-website"]
+                image: ["${{ github.repository }}", "${{ github.repository }}-website"]
 
         runs-on: ubuntu-latest
 
