@@ -6,7 +6,6 @@ WORKDIR /app
 RUN yarn global add turbo
 COPY . .
 RUN turbo prune --scope=@synopsis/bot
-COPY ./.env /app/out/.env
 
 FROM node:20 AS runner
 RUN apt-get update && \
