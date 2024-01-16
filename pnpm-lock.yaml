@@ -187,6 +187,9 @@ importers:
       eslint-ts-patch:
         specifier: 8.56.0-0
         version: 8.56.0-0
+      is-docker:
+        specifier: 3.0.0
+        version: 3.0.0
       tsx:
         specifier: 4.7.0
         version: 4.7.0
@@ -5824,7 +5827,6 @@ packages:
     resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     hasBin: true
-    dev: false
 
   /is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
