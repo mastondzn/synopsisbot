@@ -24,7 +24,7 @@
             "cache": false
         },
         "lint": {
-            "dependsOn": ["^build"]
+            "dependsOn": ["build", "^build"]
         },
         "lint:fix": {
             "dependsOn": ["^build"]
