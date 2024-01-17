@@ -52,7 +52,7 @@
         "eslint-ts-patch": "8.56.0-0",
         "only-allow": "1.2.1",
         "rimraf": "5.0.5",
-        "turbo": "1.10.15",
+        "turbo": "1.11.3",
         "typescript": "5.3.3"
     }
 }
