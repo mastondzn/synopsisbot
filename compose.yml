@@ -83,7 +83,7 @@ services:
             - traefik.http.routers.prometheus.middlewares=auth
 
     node_exporter:
-        image: prom/node-exporter:v1.5.0
+        image: prom/node-exporter:v1.7.0
         container_name: node_exporter
         restart: unless-stopped
         ports:
