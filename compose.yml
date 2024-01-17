@@ -66,7 +66,7 @@ services:
             - traefik.http.services.grafana.loadbalancer.server.port=3000
 
     prometheus:
-        image: prom/prometheus:v2.44.0
+        image: prom/prometheus:v2.49.1
         container_name: prometheus
         restart: unless-stopped
         ports:
