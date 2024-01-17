@@ -10,10 +10,10 @@
     "license": "GPL-3.0-or-later",
     "repository": {
         "type": "git",
-        "url": "https://github.com/synopsisgg/bot"
+        "url": "https://github.com/mastondzn/bot"
     },
     "bugs": {
-        "url": "https://github.com/synopsisgg/bot/issues"
+        "url": "https://github.com/mastondzn/bot/issues"
     },
     "workspaces": [
         "bot",

@@ -1,6 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:base", "group:definitelyTyped"],
+    "extends": ["config:recommended", "group:definitelyTyped"],
     "packageRules": [
         {
             "matchPackagePatterns": ["@twurple/*"],
