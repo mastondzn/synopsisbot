@@ -164,16 +164,16 @@ importers:
         version: link:../env
       drizzle-orm:
         specifier: 0.29.3
-        version: 0.29.3(kysely@0.27.2)(postgres@3.4.0)
+        version: 0.29.3(kysely@0.27.2)(postgres@3.4.3)
       kysely:
         specifier: 0.27.2
         version: 0.27.2
       kysely-postgres-js:
         specifier: 2.0.0
-        version: 2.0.0(kysely@0.27.2)(postgres@3.4.0)
+        version: 2.0.0(kysely@0.27.2)(postgres@3.4.3)
       postgres:
-        specifier: 3.4.0
-        version: 3.4.0
+        specifier: 3.4.3
+        version: 3.4.3
     devDependencies:
       '@mastondzn/eslint':
         specifier: 0.6.9
@@ -4379,7 +4379,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.29.3(kysely@0.27.2)(postgres@3.4.0):
+  /drizzle-orm@0.29.3(kysely@0.27.2)(postgres@3.4.3):
     resolution: {integrity: sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -4451,7 +4451,7 @@ packages:
         optional: true
     dependencies:
       kysely: 0.27.2
-      postgres: 3.4.0
+      postgres: 3.4.3
     dev: false
 
   /duplexer3@0.1.5:
@@ -6657,14 +6657,14 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
-  /kysely-postgres-js@2.0.0(kysely@0.27.2)(postgres@3.4.0):
+  /kysely-postgres-js@2.0.0(kysely@0.27.2)(postgres@3.4.3):
     resolution: {integrity: sha512-R1tWx6/x3tSatWvsmbHJxpBZYhNNxcnMw52QzZaHKg7ZOWtHib4iZyEaw4gb2hNKVctWQ3jfMxZT/ZaEMK6kBQ==}
     peerDependencies:
       kysely: '>= 0.24.0 < 1'
       postgres: '>= 3.4.0 < 4'
     dependencies:
       kysely: 0.27.2
-      postgres: 3.4.0
+      postgres: 3.4.3
     dev: false
 
   /kysely@0.27.2:
@@ -7530,8 +7530,9 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  /postgres@3.4.0:
-    resolution: {integrity: sha512-d7UtSoCg4hUtzxM9aRi3J8BrM6t0h4bQmgAHG96cDCNpP9CnnWQRdRl7WWNvKs0oOaQU2InGoOi1jETmdZK02g==}
+  /postgres@3.4.3:
+    resolution: {integrity: sha512-iHJn4+M9vbTdHSdDzNkC0crHq+1CUdFhx+YqCE+SqWxPjm+Zu63jq7yZborOBF64c8pc58O5uMudyL1FQcHacA==}
+    engines: {node: '>=12'}
     dev: false
 
   /prelude-ls@1.2.1:
