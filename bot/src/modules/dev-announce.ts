@@ -2,7 +2,7 @@
 import { env } from '@synopsis/env/node';
 
 import { setImmediateInterval } from '~/helpers/immediate';
-import { defineModule } from '~/helpers/module';
+import { defineModule } from '~/helpers/module/define';
 
 export default defineModule({
     name: 'dev-announce',

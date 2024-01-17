@@ -1,7 +1,7 @@
 import { ClientError } from '@kararty/dank-twitch-irc';
 import { env } from '@synopsis/env/node';
 
-import { defineModule } from '~/helpers/module';
+import { defineModule } from '~/helpers/module/define';
 import { authProvider } from '~/services/auth';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';

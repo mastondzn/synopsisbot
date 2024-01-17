@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/node';
 import { ProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '@synopsis/env/node';
 
-import { getEventHandlers } from './events';
-import { getModules } from './modules';
+import { eventHandlers } from './events';
+import { modules } from './modules';
 import { authProvider } from './services/auth';
 import { chat } from './services/chat';
 import { db } from './services/database';
@@ -16,12 +16,6 @@ Sentry.init({
     profilesSampleRate: 1,
 });
 
-let line = `MrDestructoid connected and ready.`;
-if (env.NODE_ENV === 'development') line = `${line} (development)`;
-
-const events = await getEventHandlers();
-const modules = await getModules();
-
 const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 authProvider.addUser(botUser.twitchId, {
     accessToken: botUser.accessToken,
@@ -31,20 +25,19 @@ authProvider.addUser(botUser.twitchId, {
     scope: botUser.scopes,
 }, ['chat']);
 
-const botToken = await authProvider.getAccessTokenForUser(botUser.twitchId);
+const botToken = await authProvider.getAccessTokenForIntent('chat');
 if (!botToken?.expiresIn) {
     throw new Error('Bot token not found or no expiration');
 };
-setTimeout(() => {
-    void authProvider.refreshAccessTokenForIntent('chat');
-}, (botToken.expiresIn * 1000) - 1000 * 60 * 60);
 
-chat.registerEvents(events);
 await chat.login({
     username: env.TWITCH_BOT_USERNAME,
     password: botToken.accessToken,
 });
 
-await chat.registerModules(modules);
+await modules.registerModules();
+await eventHandlers.registerEvents(chat);
+
+const line = `MrDestructoid connected and ready. (${env.NODE_ENV})`;
 void chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
 void chat.say(env.TWITCH_BOT_USERNAME, line);

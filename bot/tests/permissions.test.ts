@@ -5,7 +5,7 @@ import {
     determineHighestLocalLevel,
     pleasesGlobal,
     pleasesLocal,
-} from '~/services/permissions';
+} from '~/providers/permissions';
 
 describe('permissions', () => {
     it('should return the highest local level', () => {

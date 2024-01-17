@@ -4,14 +4,13 @@ import { env } from '@synopsis/env/node';
 import { commands } from '~/commands';
 import type { CommandContext, CommandFragment } from '~/helpers/command';
 import { getCommandName, getCommandPermissions } from '~/helpers/command';
-import { parseOptions } from '~/helpers/command/options';
 import { prefix } from '~/helpers/command/prefix';
 import { parseCommand } from '~/helpers/command/simplify';
 import { defineEventHandler } from '~/helpers/event';
+import { cooldowns } from '~/providers/cooldown';
+import { permissions } from '~/providers/permissions';
 import { chat } from '~/services/chat';
-import { cooldowns } from '~/services/cooldown';
 import { db } from '~/services/database';
-import { permissions } from '~/services/permissions';
 import { cache } from '~/services/redis';
 
 async function hasDevelopmentProcess(): Promise<boolean> {
@@ -33,7 +32,7 @@ export default defineEventHandler({
         const wantedCommand = getCommandName(message);
         if (!wantedCommand) return;
 
-        await commands.verify();
+        await commands.load();
         const foundCommand = commands.find(
             c => c.name === wantedCommand || c.aliases?.includes(wantedCommand),
         ) ?? null;
@@ -91,7 +90,6 @@ export default defineEventHandler({
         console.log('[events:commands]', `${message.senderUsername}: "${text}"`);
 
         const context: CommandContext = {
-            options: parseOptions(message, command.options),
             message,
             cancel,
             parameters,
@@ -105,9 +103,15 @@ export default defineEventHandler({
                     fragment.reply,
                 );
             } else if ('action' in fragment) {
-                return chat.me(fragment.channel ?? channel, fragment.action);
+                return chat.me(
+                    fragment.channel ?? channel,
+                    fragment.action,
+                );
             } else if ('say' in fragment) {
-                return chat.say(fragment.channel ?? channel, fragment.say);
+                return chat.say(
+                    fragment.channel ?? channel,
+                    fragment.say,
+                );
             }
         };
 

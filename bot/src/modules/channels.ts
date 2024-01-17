@@ -1,4 +1,4 @@
-import { defineModule } from '~/helpers/module';
+import { defineModule } from '~/helpers/module/define';
 import { api } from '~/services/api';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';

@@ -1,4 +1,4 @@
-import { cache } from './redis';
+import { cache } from '../services/redis';
 import type { Command } from '~/helpers/command';
 
 export interface CommandCooldownManagerCheckOptions {

@@ -4,32 +4,45 @@ import { Collection } from '@discordjs/collection';
 
 import type { BotModule } from '~/helpers/module';
 
-let old: Collection<string, BotModule> | null = null;
+class Modules extends Collection<string, BotModule> {
+    public async load(): Promise<this> {
+        const directory = (await readdir('./src/modules'))
+            .filter(path => path !== 'index.ts');
 
-export async function getModules(force = false) {
-    if (!force && old) return old;
+        await Promise.all(
+            directory.map(async (file) => {
+                const importable = file.replace('.ts', '');
+                const existing = this.get(importable);
+                if (existing) return;
 
-    const modules = new Collection<string, BotModule>();
+                const imported = (await import(`./${file}`)) as { default: BotModule; };
 
-    const allFiles = await readdir('./src/modules');
-    const files = allFiles
-        .filter(file => file !== 'index.ts')
-        .map(file => file.replace('.ts', ''));
+                // eslint-disable-next-line ts/no-unnecessary-condition
+                if (!imported.default.register) {
+                    throw new TypeError(`Invalid cron ${file}`);
+                }
+                this.set(file, imported.default);
+            }),
+        );
 
-    await Promise.all(
-        files.map(async (file) => {
-            const imported = (await import(`./${file}`)) as { default?: BotModule; };
+        return this;
+    }
 
-            // necessary to check dangerous assertion :(
+    async registerModules(): Promise<void> {
+        await this.load();
 
-            if (typeof imported.default?.register !== 'function') {
-                throw new TypeError(`Invalid module ${file}`);
-            }
+        const orderedModules = [...this.values()].sort((a, b) => {
+            if (!('priority' in a) && !('priority' in b)) return 0;
+            if (!('priority' in a)) return 1;
+            if (!('priority' in b)) return -1;
+            if (a.priority === b.priority) return 0;
+            return a.priority < b.priority ? 1 : -1;
+        });
 
-            modules.set(file, imported.default);
-        }),
-    );
-
-    old = modules;
-    return modules;
+        for (const module of orderedModules) {
+            await module.register();
+        }
+    }
 }
+
+export const modules = new Modules();

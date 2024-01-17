@@ -2,7 +2,7 @@ import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import { equals } from 'ramda';
 
 import { parseParameters } from '.';
-import type { BasicCommand, Command } from '.';
+import type { Command } from '.';
 
 export function parseCommand(
     command: Command,
@@ -37,6 +37,6 @@ export function parseCommand(
                 : parameters.rest,
             path,
         },
-        command: command as BasicCommand,
+        command,
     };
 }

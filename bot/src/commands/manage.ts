@@ -1,5 +1,5 @@
 import { defineCommand, parseUserParameter } from '~/helpers/command';
-import { permissions } from '~/services/permissions';
+import { permissions } from '~/providers/permissions';
 
 export default defineCommand({
     name: 'manage',
