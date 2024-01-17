@@ -38,7 +38,7 @@
     "devDependencies": {
         "@mastondzn/eslint": "0.6.9",
         "@synopsis/tsconfig": "0.0.1",
-        "@types/node": "20.11.2",
+        "@types/node": "20.11.5",
         "@types/ramda": "0.29.9",
         "dotenv-cli": "7.3.0",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
