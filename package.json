@@ -45,7 +45,7 @@
         "@commitlint/types": "17.8.1",
         "@manypkg/cli": "0.21.2",
         "@mastondzn/eslint": "0.6.9",
-        "@types/node": "20.11.2",
+        "@types/node": "20.11.5",
         "bumpp": "9.3.0",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-plugin-unicorn": "50.0.1",
