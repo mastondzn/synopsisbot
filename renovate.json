@@ -4,12 +4,10 @@
     "packageRules": [
         {
             "matchPackagePatterns": ["@twurple/*"],
-            "matchSourceUrls": ["https://github.com/twurple/twurple"],
             "groupName": "twurple"
         },
         {
             "matchPackagePatterns": ["@radix-ui/*"],
-            "matchSourceUrls": ["https://github.com/radix-ui/primitives"],
             "groupName": "radix-ui"
         },
         {
@@ -18,7 +16,6 @@
         },
         {
             "matchPackagePatterns": ["eslint"],
-            "matchUpdateTypes": ["minor", "patch"],
             "groupName": "eslint"
         }
     ],
