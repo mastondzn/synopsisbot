@@ -46,7 +46,7 @@
         "@manypkg/cli": "0.20.0",
         "@mastondzn/eslint": "0.6.9",
         "@types/node": "20.11.2",
-        "bumpp": "9.2.1",
+        "bumpp": "9.3.0",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-plugin-unicorn": "50.0.1",
         "eslint-ts-patch": "8.56.0-0",
