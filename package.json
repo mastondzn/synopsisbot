@@ -40,9 +40,9 @@
         "typecheck": "turbo run typecheck"
     },
     "dependencies": {
-        "@commitlint/cli": "17.6.3",
-        "@commitlint/config-conventional": "17.6.3",
-        "@commitlint/types": "17.4.4",
+        "@commitlint/cli": "17.8.1",
+        "@commitlint/config-conventional": "17.8.1",
+        "@commitlint/types": "17.8.1",
         "@manypkg/cli": "0.21.2",
         "@mastondzn/eslint": "0.6.9",
         "@types/node": "20.11.2",
