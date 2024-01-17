@@ -24,6 +24,5 @@
             "groupName": "eslint"
         }
     ],
-    "rangeStrategy": "pin",
-    "ignoreDeps": ["node"]
+    "rangeStrategy": "pin"
 }
