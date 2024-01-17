@@ -2,7 +2,7 @@
     "name": "@synopsis/root",
     "version": "0.1.0",
     "private": true,
-    "packageManager": "pnpm@8.9.0",
+    "packageManager": "pnpm@8.14.1",
     "author": {
         "name": "mastondzn",
         "url": "https://github.com/mastondzn"
