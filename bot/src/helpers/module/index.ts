@@ -4,5 +4,3 @@ export interface BotModule {
     description?: string;
     register: () => Promise<void> | void;
 }
-
-export const defineModule = (module: BotModule): BotModule => module;

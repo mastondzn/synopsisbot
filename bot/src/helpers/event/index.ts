@@ -4,7 +4,7 @@ import type {
 
 export type EventHandlers = {
     [Key in keyof ClientEvents]: (
-        ...emitted: ClientEvents[Key]
+        emitted: ClientEvents[Key][0]
     ) => Promise<void> | void;
 };
 

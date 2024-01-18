@@ -12,36 +12,35 @@ export interface CommandMetadata {
 };
 
 class Commands extends Collection<string, Command & { meta: CommandMetadata; }> {
-    public async reload(): Promise<this> {
-        const directory = (await readdir('./src/commands')).filter(path => path !== 'index.ts');
+    public async load(force = false): Promise<this> {
+        const directory = (await readdir('./src/commands'))
+            .filter(path => path !== 'index.ts');
+
         const version = new Date();
 
         await Promise.all(
             directory.map(async (file) => {
-                // bypasses the esm cache when reloading
                 const importable = file.replace('.ts', '');
                 const existing = this.get(importable);
-                const hash = await computeMetaHash(`src/commands/${file}`);
-                if (existing && existing.meta.hash.equals(hash)) return;
+                if (existing && !force) return;
 
-                const imported = (await import(`./${file}?version=${version.getTime()}`)) as { default: Command; };
+                const hash = await computeMetaHash(`src/commands/${file}`);
+                if (existing && force && existing.meta.hash.equals(hash)) return;
+
+                let path = `./${file}`;
+                // bypasses the esm cache when reloading
+                if (force) path += `?version=${version.getTime()}`;
+
+                const imported = (await import(path)) as { default: Command; };
                 if (!imported.default.name) throw new TypeError(`Invalid command ${file}`);
 
                 this.set(file, Object.assign(
                     imported.default,
-                    { meta: {
-                        version,
-                        hash,
-                    } },
+                    { meta: { version, hash } },
                 ));
             }),
         );
 
-        return this;
-    }
-
-    async verify(): Promise<this> {
-        if (this.size === 0) await this.reload();
         return this;
     }
 }

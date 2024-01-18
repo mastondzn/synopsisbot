@@ -2,7 +2,7 @@ import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/array';
 import type { CommandFragment } from '~/helpers/command';
 import { defineCommand } from '~/helpers/command';
-import { chat } from '~/services/chat';
+import { chat } from '~/services';
 
 const activeChannels = new Set<string>();
 

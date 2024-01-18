@@ -1,35 +1,43 @@
 import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
+import type { ChatClient } from '@kararty/dank-twitch-irc';
 
 import type { BotEventHandler } from '~/helpers/event';
 
-let old: Collection<string, BotEventHandler> | null = null;
+class EventHandlers extends Collection<string, BotEventHandler> {
+    public async load(): Promise<this> {
+        const directory = (await readdir('./src/events'))
+            .filter(path => path !== 'index.ts');
 
-export async function getEventHandlers(force = false) {
-    if (!force && old) return old;
+        await Promise.all(
+            directory.map(async (file) => {
+                const importable = file.replace('.ts', '');
+                const existing = this.get(importable);
+                if (existing) return;
 
-    const events = new Collection<string, BotEventHandler>();
+                const imported = (await import(`./${file}`)) as { default: BotEventHandler; };
+                // eslint-disable-next-line ts/no-unnecessary-condition
+                if (!imported.default.handler) {
+                    throw new TypeError(`Invalid cron ${file}`);
+                }
+                this.set(file, imported.default);
+            }),
+        );
 
-    const allFiles = await readdir('./src/events');
-    const files = allFiles
-        .filter(file => file !== 'index.ts')
-        .map(file => file.replace('.ts', ''));
+        return this;
+    }
 
-    await Promise.all(
-        files.map(async (file) => {
-            const imported = (await import(`./${file}`)) as { default?: BotEventHandler; };
+    async registerEvents(chat: ChatClient): Promise<void> {
+        await this.load();
 
-            // necessary to check dangerous assertion :(
-            // eslint-disable-next-line ts/no-unnecessary-condition
-            if (!imported?.default?.event && typeof imported?.default?.handler !== 'function') {
-                throw new TypeError(`Invalid event ${file}`);
-            }
-
-            events.set(file, imported.default);
-        }),
-    );
-
-    old = events;
-    return events;
+        for (const [, { event, handler }] of this) {
+            chat.on(event, (...parameters) => {
+                // @ts-expect-error ts cant realize this is fine
+                return void handler(...parameters);
+            });
+        }
+    }
 }
+
+export const eventHandlers = new EventHandlers();

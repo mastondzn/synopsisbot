@@ -1,14 +1,15 @@
-import { type NewCommand, commands as commandsTable } from '@synopsis/db';
+import { type NewCommand, schema } from '@synopsis/db';
 
 import { commands } from '~/commands';
-import { defineModule } from '~/helpers/module';
-import { db } from '~/services/database';
+import { prefixes } from '~/helpers/log-prefixes';
+import { defineModule } from '~/helpers/module/define';
+import { db } from '~/services';
 
 export default defineModule({
     name: 'db-commands',
     priority: 0,
     register: async () => {
-        await commands.verify();
+        await commands.load();
 
         const databaseCommands = commands.map((command) => {
             return {
@@ -23,14 +24,14 @@ export default defineModule({
 
         for (const command of databaseCommands) {
             await db
-                .insert(commandsTable) //
+                .insert(schema.commands) //
                 .values(command)
                 .onConflictDoUpdate({
-                    target: commandsTable.name,
+                    target: schema.commands.name,
                     set: command,
                 });
         }
 
-        console.log('[module:db-commands] set commands info in db');
+        console.log(prefixes['db-commands'], 'set commands info in db');
     },
 });

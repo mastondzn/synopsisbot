@@ -46,7 +46,7 @@ export default defineCommand({
         },
         run: async () => {
             const old = commands.clone();
-            await commands.reload();
+            await commands.load(true);
             const difference = new Collection<string, Command & { meta: CommandMetadata; }>();
 
             for (const [key, value] of commands) {

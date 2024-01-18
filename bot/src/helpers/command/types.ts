@@ -1,27 +1,21 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
-import type { z } from 'zod';
 
 import type { parseCommand } from './simplify';
-import type { GlobalLevel, LocalLevel } from '~/services/permissions';
-import type { RemoveIndexSignature } from '~/types/general';
+import type { GlobalLevel, LocalLevel } from '~/providers';
 
-export interface CommandContext<
-    TOptions extends z.ZodRawShape = z.ZodRawShape,
-> {
+export interface CommandContext {
     message: PrivmsgMessage;
     parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
-    options: RemoveIndexSignature<z.infer<z.ZodObject<TOptions>>>;
     cancel: () => Promise<void>;
 }
 
 export type CommandFragment =
-    ({ channel?: string; })
-    & ({ say: string; }
-    | {
-        reply: string;
-        to?: Pick<PrivmsgMessage, 'messageID'>;
-    }
-    | { action: string; });
+     ({ say: string; }
+     | { action: string; }
+     | {
+         reply: string;
+         to?: Pick<PrivmsgMessage, 'messageID'>;
+     }) & ({ channel?: string; });
 
 export type CommandResult =
     | AsyncGenerator<CommandFragment>
@@ -33,8 +27,7 @@ export type CommandResult =
     // eslint-disable-next-line ts/no-invalid-void-type
     | void;
 
-export type CommandFunction<TOptions extends z.ZodRawShape>
-    = (context: CommandContext<TOptions>) => CommandResult;
+export type CommandFunction = (context: CommandContext) => CommandResult;
 
 export interface CommandPermissions {
     local?: LocalLevel;
@@ -42,11 +35,10 @@ export interface CommandPermissions {
     mode?: 'any' | 'all' | 'custom';
 }
 
-export interface Subcommand<TOptions extends z.ZodRawShape> {
+export interface Subcommand {
     path: string[];
-    options?: TOptions;
     permissions?: CommandPermissions;
-    run: CommandFunction<TOptions>;
+    run: CommandFunction;
 }
 
 export interface BaseCommand {
@@ -60,18 +52,13 @@ export interface BaseCommand {
     };
 }
 
-export type BasicCommand<
-    TOptions extends z.ZodRawShape = z.ZodRawShape,
-> = BaseCommand & {
-    options?: TOptions;
+export type BasicCommand = BaseCommand & {
     permissions?: CommandPermissions;
-    run: CommandFunction<TOptions>;
+    run: CommandFunction;
 };
 
-export type CommandWithSubcommands<TOptions extends z.ZodRawShape> = BaseCommand & {
-    subcommands: Subcommand<TOptions>[];
+export type CommandWithSubcommands = BaseCommand & {
+    subcommands: Subcommand[];
 };
 
-export type Command<
-    TOptions extends z.ZodRawShape = z.ZodRawShape,
-> = BasicCommand<TOptions> | CommandWithSubcommands<TOptions>;
+export type Command = BasicCommand | CommandWithSubcommands;

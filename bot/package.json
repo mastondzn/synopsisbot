@@ -25,6 +25,7 @@
         "@twurple/api": "7.0.7",
         "@twurple/auth": "7.0.7",
         "@twurple/eventsub-ws": "7.0.7",
+        "chalk": "^5.3.0",
         "cron": "3.1.6",
         "eventemitter3": "5.0.1",
         "hono": "3.12.5",
@@ -46,7 +47,6 @@
         "eslint-ts-patch": "8.56.0-0",
         "ts-jest": "29.1.1",
         "tsx": "4.7.0",
-        "typed-emitter": "2.1.0",
         "typescript": "5.3.3",
         "vitest": "1.2.0"
     }

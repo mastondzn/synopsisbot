@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { commands } from '~/commands';
 
 beforeAll(async () => {
-    await commands.verify();
+    await commands.load();
 });
 
 // need to fix db call during import

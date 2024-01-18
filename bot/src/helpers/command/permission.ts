@@ -1,5 +1,5 @@
 import type { BasicCommand } from '.';
-import type { GlobalLevel, LocalLevel } from '~/services/permissions';
+import type { GlobalLevel, LocalLevel } from '~/providers';
 
 export function getCommandPermissions(command: BasicCommand): {
     global: GlobalLevel;

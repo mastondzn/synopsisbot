@@ -3,7 +3,7 @@ import ms from 'pretty-ms';
 
 import { rollBeverageWithModifier } from './data';
 import { defineCommand } from '~/helpers/command';
-import { db } from '~/services/database';
+import { db } from '~/services';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
 

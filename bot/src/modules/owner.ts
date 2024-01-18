@@ -1,7 +1,7 @@
 import { env } from '@synopsis/env/node';
 
-import { defineModule } from '~/helpers/module';
-import { permissions } from '~/services/permissions';
+import { defineModule } from '~/helpers/module/define';
+import { permissions } from '~/providers';
 
 export default defineModule({
     name: 'owner',

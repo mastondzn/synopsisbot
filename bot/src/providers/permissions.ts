@@ -9,7 +9,7 @@ import {
 } from '@synopsis/db';
 import { z } from 'zod';
 
-import { db } from './database';
+import { db } from '../services/database';
 
 export const localLevels = [
     'broadcaster',
