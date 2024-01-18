@@ -18,6 +18,8 @@ async function main() {
         migrationsFolder: './migrations',
     });
     console.log('Migrations complete!');
+
+    await db.raw.end();
 }
 
 void main();

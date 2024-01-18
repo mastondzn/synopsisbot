@@ -5,16 +5,6 @@
             "outputs": ["dist/**", ".next/**"],
             "dependsOn": ["^build"]
         },
-        "@synopsis/website#build": {
-            "outputs": ["dist/**", ".next/**"],
-            "dependsOn": ["^build"],
-            "env": [
-                "NEXT_PUBLIC_TWITCH_CLIENT_ID",
-                "NEXT_PUBLIC_TWITCH_BOT_USERNAME",
-                "NEXT_PUBLIC_TWITCH_BOT_ID",
-                "NEXT_PUBLIC_DOMAIN_NAME"
-            ]
-        },
         "dev": {
             "dependsOn": ["^build"],
             "cache": false
@@ -42,25 +32,10 @@
         },
         "db:generate": {
             "cache": false
+        },
+        "db:seed": {
+            "cache": false
         }
     },
-    "globalDependencies": ["./packages/eslint-config", "./packages/tsconfig"],
-    "globalEnv": [
-        "PORT",
-        "NODE_ENV",
-        "TWITCH_CLIENT_ID",
-        "TWITCH_CLIENT_SECRET",
-        "TWITCH_BOT_USERNAME",
-        "TWITCH_BOT_ID",
-        "TWITCH_BOT_OWNER_USERNAME",
-        "TWITCH_BOT_OWNER_ID",
-        "DB_HOST",
-        "DB_USERNAME",
-        "DB_PASSWORD",
-        "DB_NAME",
-        "REDIS_HOST",
-        "REDIS_PASSWORD",
-        "APP_SECRET",
-        "DOMAIN_NAME"
-    ]
+    "globalDependencies": ["./packages/tsconfig"]
 }

@@ -2,8 +2,8 @@ import { serve } from '@hono/node-server';
 import { env } from '@synopsis/env/node';
 import { Hono } from 'hono';
 
-import { prometheus } from '../providers/prometheus';
 import { prefixes } from '~/helpers/log-prefixes';
+import { prometheus } from '~/providers';
 
 export const rpc = new Hono()
     .get('/metrics', async ({ text }) => {
