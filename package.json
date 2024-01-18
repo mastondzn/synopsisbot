@@ -1,6 +1,6 @@
 {
     "name": "@synopsis/root",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "private": true,
     "packageManager": "pnpm@8.14.1",
     "author": {
@@ -15,7 +15,9 @@
     "bugs": {
         "url": "https://github.com/mastondzn/bot/issues"
     },
-    "engines": { "node": ">=20" },
+    "engines": {
+        "node": ">=20"
+    },
     "workspaces": [
         "bot",
         "website",
