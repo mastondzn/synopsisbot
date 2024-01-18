@@ -6,17 +6,16 @@ type BaseOptions = Omit<RequestInit, 'body'> & {
     throwHttpErrors?: boolean;
 };
 
-export async function jfetch<TJson extends boolean>(
+export async function jfetch(
     {
         url,
-        json = true,
         throwHttpErrors,
         body,
         ...rest
-    }: BaseOptions & { json?: TJson | boolean; },
+    }: BaseOptions,
 ): Promise<{
     response: Response;
-    body: TJson;
+    body: unknown;
 }> {
     const response = await fetch(url, {
         ...rest,
@@ -29,8 +28,7 @@ export async function jfetch<TJson extends boolean>(
 
     return {
         response,
-        // @ts-expect-error its fine
-        body: json ? await response.json() : await response.text(),
+        body: await response.json(),
     };
 }
 
