@@ -165,7 +165,7 @@ services:
             - ~/volumes/synopsisbot/redis:/data
 
     website:
-        image: ghcr.io/mastondzn/bot-website:latest
+        image: ghcr.io/mastondzn/synopsisbot-website:latest
         container_name: website
         env_file:
             - .env
@@ -184,8 +184,10 @@ services:
             - com.centurylinklabs.watchtower.enable=true
 
     bot:
-        image: ghcr.io/mastondzn/bot:latest
+        image: ghcr.io/mastondzn/synopsisbot:latest
         container_name: bot
+        ports: 
+            - 3002:3002
         env_file:
             - .env
         depends_on:
