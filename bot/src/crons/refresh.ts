@@ -1,4 +1,3 @@
-import { ClientError } from '@kararty/dank-twitch-irc';
 import { env } from '@synopsis/env/node';
 
 import { defineCron } from '~/helpers/cron/define';
@@ -29,8 +28,10 @@ export default defineCron({
 
         const newToken = await authProvider.refreshAccessTokenForIntent('chat');
         chat.configuration.password = newToken.accessToken;
-        // Marks an error that mandates a disconnect of the whole client and all its connections
-        chat.emitError(new ClientError('refreshing auth'));
+        for (const connection of chat.connections) {
+            connection.close();
+        }
+
         const line = `Bot token refreshed, expires in ${newToken.expiresIn} seconds.`;
         console.log(prefixes.refresh, line);
         await chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);

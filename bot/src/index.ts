@@ -36,8 +36,8 @@ await chat.login({
     password: botToken.accessToken,
 });
 
-await modules.registerModules();
 await eventHandlers.registerEvents(chat);
+await modules.registerModules();
 await cronJobs.start();
 
 const line = `MrDestructoid connected and ready. (${env.NODE_ENV})`;
