@@ -1,23 +1,26 @@
 import { env } from '@synopsis/env/node';
+import prettyMilliseconds from 'pretty-ms';
 
 import { defineCron } from '~/helpers/cron/define';
 import { prefixes } from '~/helpers/log-prefixes';
-import { authProvider, chat } from '~/services';
+import { authProvider, chat, db } from '~/services';
 
 export default defineCron({
     name: 'refresh',
     // every 30 minutes
     cronTime: '0 */30 * * * *',
     onTick: async () => {
-        const token = await authProvider.getAccessTokenForIntent('chat');
-        if (!token?.expiresIn) {
+        const token = await db.find.authedUserById(env.TWITCH_BOT_ID);
+        if (!token?.expiresAt) {
             console.warn(prefixes.refresh, 'Token not found or no expiration');
             return;
         }
 
+        const expiresIn = token.expiresAt.getTime() - Date.now();
         // if it expires in more than 30 minutes, don't refresh
-        if (token.expiresIn > 30 * 60) {
-            const line = `Token does not need refreshing, expires in ${token.expiresIn} seconds`;
+        if (expiresIn > 30 * 60 * 1000) {
+            let line = `Token does not need refreshing, expires at ${token.expiresAt.toISOString()} seconds.`;
+            line += ` (in ${prettyMilliseconds(expiresIn)})`;
             await chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
             console.log(prefixes.refresh, line);
             return;
