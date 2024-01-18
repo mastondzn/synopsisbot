@@ -26,7 +26,7 @@
         "postgres": "3.4.3"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.10",
+        "@mastondzn/eslint": "0.6.11",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.5",
         "dotenv-cli": "7.3.0",

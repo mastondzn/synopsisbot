@@ -37,7 +37,7 @@
         "zod": "3.22.4"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.10",
+        "@mastondzn/eslint": "0.6.11",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.5",
         "@types/ramda": "0.29.9",

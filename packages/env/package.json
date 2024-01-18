@@ -21,7 +21,7 @@
         "@t3-oss/env-core": "0.7.3"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.10",
+        "@mastondzn/eslint": "0.6.11",
         "@synopsis/tsconfig": "0.0.1",
         "@t3-oss/env-nextjs": "0.7.3",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",

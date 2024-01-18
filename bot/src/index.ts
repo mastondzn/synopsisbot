@@ -5,9 +5,7 @@ import { env } from '@synopsis/env/node';
 import { cronJobs } from './crons';
 import { eventHandlers } from './events';
 import { modules } from './modules';
-import { authProvider } from './services/auth';
-import { chat } from './services/chat';
-import { db } from './services/database';
+import { authProvider, chat, db } from './services';
 
 Sentry.init({
     dsn: 'https://87270fc0d3264875c1071ecfec1840ce@o4506493464805376.ingest.sentry.io/4506564237983744',
