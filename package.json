@@ -15,14 +15,12 @@
     "bugs": {
         "url": "https://github.com/mastondzn/bot/issues"
     },
+    "engines": { "node": ">=20" },
     "workspaces": [
         "bot",
         "website",
         "packages/*"
     ],
-    "engines": {
-        "node": ">=18.16.0"
-    },
     "scripts": {
         "build": "turbo run build",
         "clean": "rimraf node_modules .turbo .vercel dist",
