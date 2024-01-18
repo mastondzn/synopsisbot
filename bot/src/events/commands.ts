@@ -7,11 +7,9 @@ import { getCommandName, getCommandPermissions } from '~/helpers/command';
 import { prefix } from '~/helpers/command/prefix';
 import { parseCommand } from '~/helpers/command/simplify';
 import { defineEventHandler } from '~/helpers/event';
-import { cooldowns } from '~/providers/cooldown';
-import { permissions } from '~/providers/permissions';
-import { chat } from '~/services/chat';
-import { db } from '~/services/database';
-import { cache } from '~/services/redis';
+import { prefixes } from '~/helpers/log-prefixes';
+import { cooldowns, permissions } from '~/providers';
+import { cache, chat, db } from '~/services';
 
 async function hasDevelopmentProcess(): Promise<boolean> {
     const developmentProcess = await cache.get('dev-announce');
@@ -84,10 +82,10 @@ export default defineEventHandler({
         }
 
         console.log(
-            '[events:commands]',
+            prefixes.commands,
             `executing command ${foundCommand.name} from ${message.senderUsername} in ${channel}`,
         );
-        console.log('[events:commands]', `${message.senderUsername}: "${text}"`);
+        console.log(prefixes.commands, `${message.senderUsername}: ${text}`);
 
         const context: CommandContext = {
             message,
@@ -132,7 +130,7 @@ export default defineEventHandler({
                 }
             }
 
-            console.log('[events:commands]', `command ${foundCommand.name} executed successfully`);
+            console.log(prefixes.commands, `command ${foundCommand.name} executed successfully`);
         } catch (error) {
             captureException(error);
 

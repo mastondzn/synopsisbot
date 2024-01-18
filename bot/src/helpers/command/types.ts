@@ -1,7 +1,7 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
 import type { parseCommand } from './simplify';
-import type { GlobalLevel, LocalLevel } from '~/providers/permissions';
+import type { GlobalLevel, LocalLevel } from '~/providers';
 
 export interface CommandContext {
     message: PrivmsgMessage;

@@ -1,8 +1,9 @@
 import { type NewCommand, schema } from '@synopsis/db';
 
 import { commands } from '~/commands';
+import { prefixes } from '~/helpers/log-prefixes';
 import { defineModule } from '~/helpers/module/define';
-import { db } from '~/services/database';
+import { db } from '~/services';
 
 export default defineModule({
     name: 'db-commands',
@@ -31,6 +32,6 @@ export default defineModule({
                 });
         }
 
-        console.log('[module:db-commands] set commands info in db');
+        console.log(prefixes['db-commands'], 'set commands info in db');
     },
 });

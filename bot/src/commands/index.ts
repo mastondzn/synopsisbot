@@ -23,7 +23,7 @@ class Commands extends Collection<string, Command & { meta: CommandMetadata; }> 
                 const importable = file.replace('.ts', '');
                 const existing = this.get(importable);
                 if (existing && !force) return;
-                console.log(`hashing ${file}`);
+
                 const hash = await computeMetaHash(`src/commands/${file}`);
                 if (existing && force && existing.meta.hash.equals(hash)) return;
 

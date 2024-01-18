@@ -2,7 +2,7 @@ import { channels } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { defineModule } from '~/helpers/module/define';
-import { db } from '~/services/database';
+import { db } from '~/services';
 
 export default defineModule({
     name: 'default-channels',

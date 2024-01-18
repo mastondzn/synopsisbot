@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/node';
 import { ProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '@synopsis/env/node';
 
+import { cronJobs } from './crons';
 import { eventHandlers } from './events';
 import { modules } from './modules';
 import { authProvider } from './services/auth';
@@ -37,6 +38,7 @@ await chat.login({
 
 await modules.registerModules();
 await eventHandlers.registerEvents(chat);
+await cronJobs.start();
 
 const line = `MrDestructoid connected and ready. (${env.NODE_ENV})`;
 void chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);

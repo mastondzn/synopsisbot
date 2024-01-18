@@ -1,6 +1,7 @@
 import { env } from '@synopsis/env/node';
 
 import { defineEventHandler } from '~/helpers/event';
+import { prefixes } from '~/helpers/log-prefixes';
 
 export default defineEventHandler({
     event: 'PART',
@@ -10,7 +11,8 @@ export default defineEventHandler({
         }
 
         console.log(
-            `[events:parts] ${message.partedUsername} parted ${message.channelName}`,
+            prefixes.parts,
+            `${message.partedUsername} parted ${message.channelName}`,
         );
     },
 });

@@ -2,7 +2,7 @@ import type { ChatClient } from '@kararty/dank-twitch-irc';
 import ms from 'pretty-ms';
 
 import { defineCommand } from '~/helpers/command';
-import { chat } from '~/services/chat';
+import { chat } from '~/services';
 
 const startedAt = new Date();
 

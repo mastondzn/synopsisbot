@@ -3,6 +3,7 @@ import { env } from '@synopsis/env/node';
 import { Hono } from 'hono';
 
 import { prometheus } from '../providers/prometheus';
+import { prefixes } from '~/helpers/log-prefixes';
 
 export const rpc = new Hono()
     .get('/metrics', async ({ text }) => {
@@ -21,5 +22,5 @@ if (env.NODE_ENV !== 'test') {
         fetch: rpc.fetch,
         port: 3002,
     });
-    console.log('RPC server listening on port 3002');
+    console.log(prefixes.rpc, 'rpc server listening on port 3002');
 }

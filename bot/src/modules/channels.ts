@@ -1,7 +1,6 @@
+import { prefixes } from '~/helpers/log-prefixes';
 import { defineModule } from '~/helpers/module/define';
-import { api } from '~/services/api';
-import { chat } from '~/services/chat';
-import { db } from '~/services/database';
+import { api, chat, db } from '~/services';
 
 export default defineModule({
     name: 'channels',
@@ -19,12 +18,12 @@ export default defineModule({
 
         if (channels.length !== channelIds.length) {
             console.warn(
-                '[modules:channels]',
+                prefixes.channels,
                 `missing ${channelIds.length - channels.length} channels after api call`,
             );
         }
 
-        console.log('[modules:channels]', `joining ${channels.length} channels`);
+        console.log(prefixes.channels, `joining ${channels.length} channels`);
         await chat.joinAll(channels);
     },
 });
