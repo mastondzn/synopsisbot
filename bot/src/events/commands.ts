@@ -22,7 +22,9 @@ export default defineEventHandler({
         const text = message.messageText;
         const channel = message.channelName;
 
-        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
+        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(
+            channel,
+        );
 
         if (
             !message.messageText.startsWith(prefix) || //
@@ -36,7 +38,8 @@ export default defineEventHandler({
 
         await commands.load();
         const foundCommand =
-            commands.find((c) => c.name === wantedCommand || c.aliases?.includes(wantedCommand)) ?? null;
+            commands.find((c) => c.name === wantedCommand || c.aliases?.includes(wantedCommand)) ??
+            null;
         if (!foundCommand) return;
 
         const parsed = parseCommand(foundCommand, message);
@@ -49,21 +52,33 @@ export default defineEventHandler({
             db.find.channelModeByLogin(channel),
             // if we're in production and theres a dev process running don't reply to commands in default channels
             cooldowns.isOnCooldown({ command, channel, userName: message.senderUsername }),
-            hasDevelopmentProcess().then((doesHave) => env.NODE_ENV === 'production' && doesHave && inDefaultChannel),
+            hasDevelopmentProcess().then(
+                (doesHave) => env.NODE_ENV === 'production' && doesHave && inDefaultChannel,
+            ),
             // scuffed
             wantedPermissions.mode === 'custom'
                 ? Promise.resolve(true)
                 : // eslint-disable-next-line unicorn/no-nested-ternary
                   wantedPermissions.mode === 'all'
-                  ? permissions.pleasesGlobalAndLocal(wantedPermissions.global, wantedPermissions.local, message)
-                  : permissions.pleasesGlobalOrLocal(wantedPermissions.global, wantedPermissions.local, message),
+                  ? permissions.pleasesGlobalAndLocal(
+                        wantedPermissions.global,
+                        wantedPermissions.local,
+                        message,
+                    )
+                  : permissions.pleasesGlobalOrLocal(
+                        wantedPermissions.global,
+                        wantedPermissions.local,
+                        message,
+                    ),
         ]);
 
         const dontExecute: boolean = developmentProcessCheck || isOnCooldown || !isPermitted;
 
-        const cancel = () => cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
+        const cancel = () =>
+            cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
 
-        if (!mode) console.warn(`[events:commands] mode for channel ${channel} not found in database`);
+        if (!mode)
+            console.warn(`[events:commands] mode for channel ${channel} not found in database`);
 
         if (dontExecute) {
             await cancel();
@@ -101,7 +116,11 @@ export default defineEventHandler({
 
             if (!commandResult) {
                 //
-            } else if ('reply' in commandResult || 'action' in commandResult || 'say' in commandResult) {
+            } else if (
+                'reply' in commandResult ||
+                'action' in commandResult ||
+                'say' in commandResult
+            ) {
                 await consumeFragment({ fragment: commandResult });
             } else {
                 for await (const fragment of commandResult) {

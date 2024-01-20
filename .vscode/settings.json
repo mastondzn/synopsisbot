@@ -27,6 +27,7 @@
 
     // Disable the default formatter, use eslint instead
     "prettier.enable": true,
+    "prettier.prettierPath": "./node_modules/prettier",
     "editor.formatOnSave": true,
 
     // Auto fix
