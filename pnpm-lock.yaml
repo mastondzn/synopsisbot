@@ -32,9 +32,6 @@ importers:
       eslint:
         specifier: npm:eslint-ts-patch@8.56.0-0
         version: /eslint-ts-patch@8.56.0-0
-      eslint-plugin-unicorn:
-        specifier: 50.0.1
-        version: 50.0.1(eslint-ts-patch@8.56.0-0)
       eslint-ts-patch:
         specifier: 8.56.0-0
         version: 8.56.0-0
@@ -138,9 +135,6 @@ importers:
       eslint:
         specifier: npm:eslint-ts-patch@8.56.0-0
         version: /eslint-ts-patch@8.56.0-0
-      eslint-plugin-unicorn:
-        specifier: 50.0.1
-        version: 50.0.1(eslint-ts-patch@8.56.0-0)
       eslint-ts-patch:
         specifier: 8.56.0-0
         version: 8.56.0-0
@@ -193,9 +187,6 @@ importers:
       eslint:
         specifier: npm:eslint-ts-patch@8.56.0-0
         version: /eslint-ts-patch@8.56.0-0
-      eslint-plugin-unicorn:
-        specifier: 50.0.1
-        version: 50.0.1(eslint-ts-patch@8.56.0-0)
       eslint-ts-patch:
         specifier: 8.56.0-0
         version: 8.56.0-0
@@ -245,9 +236,6 @@ importers:
       eslint:
         specifier: npm:eslint-ts-patch@8.56.0-0
         version: /eslint-ts-patch@8.56.0-0
-      eslint-plugin-unicorn:
-        specifier: 50.0.1
-        version: 50.0.1(eslint-ts-patch@8.56.0-0)
       eslint-ts-patch:
         specifier: 8.56.0-0
         version: 8.56.0-0
