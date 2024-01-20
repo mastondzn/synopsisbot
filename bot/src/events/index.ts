@@ -7,8 +7,7 @@ import type { BotEventHandler } from '~/helpers/event';
 
 class EventHandlers extends Collection<string, BotEventHandler> {
     public async load(): Promise<this> {
-        const directory = (await readdir('./src/events'))
-            .filter(path => path !== 'index.ts');
+        const directory = (await readdir('./src/events')).filter((path) => path !== 'index.ts');
 
         await Promise.all(
             directory.map(async (file) => {
@@ -16,7 +15,7 @@ class EventHandlers extends Collection<string, BotEventHandler> {
                 const existing = this.get(importable);
                 if (existing) return;
 
-                const imported = (await import(`./${file}`)) as { default: BotEventHandler; };
+                const imported = (await import(`./${file}`)) as { default: BotEventHandler };
                 // eslint-disable-next-line ts/no-unnecessary-condition
                 if (!imported.default.handler) {
                     throw new TypeError(`Invalid cron ${file}`);

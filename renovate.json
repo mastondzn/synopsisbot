@@ -1,10 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended",
-        "group:definitelyTyped",
-        "schedule:earlyMondays"
-    ],
+    "extends": ["config:recommended", "group:definitelyTyped", "schedule:earlyMondays"],
     "enabledManagers": ["npm"],
     "packageRules": [
         {

@@ -6,14 +6,7 @@ type BaseOptions = Omit<RequestInit, 'body'> & {
     throwHttpErrors?: boolean;
 };
 
-export async function jfetch(
-    {
-        url,
-        throwHttpErrors,
-        body,
-        ...rest
-    }: BaseOptions,
-): Promise<{
+export async function jfetch({ url, throwHttpErrors, body, ...rest }: BaseOptions): Promise<{
     response: Response;
     body: unknown;
 }> {
@@ -33,7 +26,7 @@ export async function jfetch(
 }
 
 export async function zfetch<TSchema extends z.ZodType>(
-    options: BaseOptions & { schema: TSchema; },
+    options: BaseOptions & { schema: TSchema },
 ): Promise<{
     response: Response;
     body: z.infer<TSchema>;

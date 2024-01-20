@@ -5,10 +5,9 @@ import { CronJob } from 'cron';
 
 import type { Cron } from '~/helpers/cron/types';
 
-class Crons extends Collection<string, Cron & { job?: CronJob; }> {
+class Crons extends Collection<string, Cron & { job?: CronJob }> {
     public async load(): Promise<this> {
-        const directory = (await readdir('./src/crons'))
-            .filter(path => path !== 'index.ts');
+        const directory = (await readdir('./src/crons')).filter((path) => path !== 'index.ts');
 
         await Promise.all(
             directory.map(async (file) => {
@@ -16,7 +15,7 @@ class Crons extends Collection<string, Cron & { job?: CronJob; }> {
                 const existing = this.get(importable);
                 if (existing) return;
 
-                const imported = (await import(`./${file}`)) as { default: Cron; };
+                const imported = (await import(`./${file}`)) as { default: Cron };
                 if (!imported.default.name) throw new TypeError(`Invalid cron ${file}`);
 
                 this.set(file, imported.default);

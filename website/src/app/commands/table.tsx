@@ -20,7 +20,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProperties<
         <div className="w-[400px] rounded-md border md:w-[550px]">
             <Table>
                 <TableHeader>
-                    {table.getHeaderGroups().map(headerGroup => (
+                    {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => {
                                 return (
@@ -28,9 +28,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProperties<
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext(),
-                                            )}
+                                                  header.column.columnDef.header,
+                                                  header.getContext(),
+                                              )}
                                     </TableHead>
                                 );
                             })}
@@ -38,25 +38,23 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProperties<
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows.length > 0
-                        ? (
-                                table.getRowModel().rows.map(row => (
-                                    <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                        {row.getVisibleCells().map(cell => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            )
-                        : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
+                    {table.getRowModel().rows.length > 0 ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </TableCell>
+                                ))}
                             </TableRow>
-                            )}
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={columns.length} className="h-24 text-center">
+                                No results.
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </div>

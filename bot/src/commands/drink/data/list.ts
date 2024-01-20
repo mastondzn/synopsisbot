@@ -4,13 +4,13 @@ export const beveragesArray = [
     {
         identifier: 'milk',
         emoji: '🥛',
-        message: 'You\'ll have a Glass of Milk.',
+        message: "You'll have a Glass of Milk.",
         weight: 80,
         points: 20,
         modifiers: [
             {
                 name: 'expired',
-                message: 'It\'s expired though!',
+                message: "It's expired though!",
                 chance: 0.1,
                 multiplier: -0.6,
             },
@@ -25,13 +25,13 @@ export const beveragesArray = [
         modifiers: [
             {
                 name: 'hot',
-                message: 'It\'s too hot!',
+                message: "It's too hot!",
                 chance: 0.2,
                 multiplier: 0.6,
             },
             {
                 name: 'perfect',
-                message: 'It\'s just the right temperature!',
+                message: "It's just the right temperature!",
                 chance: 0.2,
                 multiplier: 1.6,
             },

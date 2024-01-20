@@ -5,14 +5,15 @@ import type { Beverage, Modifier } from './types';
 import { pickOne } from '~/helpers/array';
 
 export const beverages: ReadonlyCollection<string, Beverage> = new Collection(
-    beveragesArray.map(beverage => [beverage.identifier, beverage]),
+    beveragesArray.map((beverage) => [beverage.identifier, beverage]),
 );
 
-export function weighedRoll<T extends { weight: number; }>(
+export function weighedRoll<T extends { weight: number }>(
     collection: ReadonlyCollection<string, T>,
     totalWeight?: number,
 ) {
-    totalWeight = totalWeight ?? collection.reduce((accumulator, item) => accumulator + item.weight, 0);
+    totalWeight =
+        totalWeight ?? collection.reduce((accumulator, item) => accumulator + item.weight, 0);
     const roll = Math.random() * totalWeight;
 
     let weight = 0;
@@ -41,7 +42,10 @@ export function rollModifier(item: Beverage): Modifier | null {
     return null;
 }
 
-const beveragesTotalWeight = beverages.reduce((accumulator, beverage) => accumulator + beverage.weight, 0);
+const beveragesTotalWeight = beverages.reduce(
+    (accumulator, beverage) => accumulator + beverage.weight,
+    0,
+);
 
 export const rollBeverage = () => weighedRoll(beverages, beveragesTotalWeight);
 
@@ -57,7 +61,7 @@ export function rollBeverageWithModifier() {
 }
 
 export const beverageChances = beverages
-    .map(beverage => ({
+    .map((beverage) => ({
         identifier: beverage.identifier,
         chance: beverage.weight / beveragesTotalWeight,
     }))

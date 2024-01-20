@@ -16,7 +16,7 @@ export default defineCron({
             url: `https://bot.${env.DOMAIN_NAME}/api/dev-announce`,
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${env.APP_SECRET}`,
+                Authorization: `Bearer ${env.APP_SECRET}`,
                 'Content-Type': 'application/json',
             },
             body: { announce_for: 120 },

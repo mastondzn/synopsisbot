@@ -3,14 +3,14 @@ import { z } from 'zod';
 import { zfetch } from '~/helpers/fetch';
 
 const questionSchema = z.object({
-    category: z.string().transform(string => decodeURIComponent(string)),
+    category: z.string().transform((string) => decodeURIComponent(string)),
     type: z.literal('multiple'),
     difficulty: z.enum(['easy', 'medium', 'hard']),
-    question: z.string().transform(string => decodeURIComponent(string)),
-    correct_answer: z.string().transform(string => decodeURIComponent(string)),
+    question: z.string().transform((string) => decodeURIComponent(string)),
+    correct_answer: z.string().transform((string) => decodeURIComponent(string)),
     incorrect_answers: z
         .array(z.string())
-        .transform(array => array.map(string => decodeURIComponent(string))),
+        .transform((array) => array.map((string) => decodeURIComponent(string))),
 });
 
 const responseSchema = z.object({

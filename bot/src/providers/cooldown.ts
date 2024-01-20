@@ -54,11 +54,7 @@ class CommandCooldownManager {
         return false;
     }
 
-    async clear({
-        command,
-        channel,
-        userName,
-    }: CommandCooldownManagerCheckOptions): Promise<void> {
+    async clear({ command, channel, userName }: CommandCooldownManagerCheckOptions): Promise<void> {
         const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
         const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
 

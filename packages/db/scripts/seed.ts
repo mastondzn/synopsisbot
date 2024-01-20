@@ -14,24 +14,29 @@ async function main() {
 
     await db
         .insert(channels)
-        .values([{
-            mode: 'all',
-            twitchId: env.TWITCH_BOT_OWNER_ID,
-            twitchLogin: env.TWITCH_BOT_OWNER_USERNAME,
-        }, {
-            mode: 'all',
-            twitchId: env.TWITCH_BOT_ID,
-            twitchLogin: env.TWITCH_BOT_USERNAME,
-        }])
+        .values([
+            {
+                mode: 'all',
+                twitchId: env.TWITCH_BOT_OWNER_ID,
+                twitchLogin: env.TWITCH_BOT_OWNER_USERNAME,
+            },
+            {
+                mode: 'all',
+                twitchId: env.TWITCH_BOT_ID,
+                twitchLogin: env.TWITCH_BOT_USERNAME,
+            },
+        ])
         .onConflictDoNothing();
 
     await db
         .insert(globalPermissions)
-        .values([{
-            permission: 'owner',
-            userId: env.TWITCH_BOT_OWNER_ID,
-            userLogin: env.TWITCH_BOT_OWNER_USERNAME,
-        }])
+        .values([
+            {
+                permission: 'owner',
+                userId: env.TWITCH_BOT_OWNER_ID,
+                userLogin: env.TWITCH_BOT_OWNER_USERNAME,
+            },
+        ])
         .onConflictDoNothing();
 
     console.log('Seeding complete!');

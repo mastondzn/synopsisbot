@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
         scope: scopesFromTwitch,
     } = responseParseResult.data;
 
-    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch(error =>
+    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch((error) =>
         error instanceof Error ? { error: error.message } : { error: 'Unknown Error' },
     );
 
@@ -121,11 +121,8 @@ export async function GET(request: NextRequest) {
         .values(user)
         .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
-    return await setJWTCookie(
-        redirect(localUrl),
-        {
-            twitchId: tokenInfo.userId,
-            twitchLogin: tokenInfo.userName,
-        },
-    );
+    return await setJWTCookie(redirect(localUrl), {
+        twitchId: tokenInfo.userId,
+        twitchLogin: tokenInfo.userName,
+    });
 }

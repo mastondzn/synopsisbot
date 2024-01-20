@@ -16,7 +16,10 @@ class BotClient extends ChatClient {
         await this.connect();
     }
 
-    public async collectMessage({ filter, timeout = 10 }: {
+    public async collectMessage({
+        filter,
+        timeout = 10,
+    }: {
         filter: (message: PrivmsgMessage) => unknown;
         timeout?: number;
     }): Promise<PrivmsgMessage> {
@@ -37,7 +40,11 @@ class BotClient extends ChatClient {
         });
     }
 
-    public async collectMessages({ filter, exitOn, timeout = 10 }: {
+    public async collectMessages({
+        filter,
+        exitOn,
+        timeout = 10,
+    }: {
         filter: (message: PrivmsgMessage) => unknown;
         exitOn?: (message: PrivmsgMessage, collected: PrivmsgMessage[]) => unknown;
         timeout?: number;

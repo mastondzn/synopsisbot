@@ -9,13 +9,14 @@ export interface CommandContext {
     cancel: () => Promise<void>;
 }
 
-export type CommandFragment =
-     ({ say: string; }
-     | { action: string; }
-     | {
-         reply: string;
-         to?: Pick<PrivmsgMessage, 'messageID'>;
-     }) & ({ channel?: string; });
+export type CommandFragment = (
+    | { say: string }
+    | { action: string }
+    | {
+          reply: string;
+          to?: Pick<PrivmsgMessage, 'messageID'>;
+      }
+) & { channel?: string };
 
 export type CommandResult =
     | AsyncGenerator<CommandFragment>

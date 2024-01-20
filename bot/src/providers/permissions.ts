@@ -169,13 +169,16 @@ class PermissionsService {
 
     async getLocalPermission(message: PrivmsgMessage): Promise<LocalLevel> {
         const localFromMessage = this.getLocalPermissionFromMessage(message);
-        const localFromDatabase = await this.getDbLocalPermission(message.channelID, message.senderUserID);
+        const localFromDatabase = await this.getDbLocalPermission(
+            message.channelID,
+            message.senderUserID,
+        );
         if (localFromDatabase === 'banned') {
             return 'banned';
         }
 
-        const permission
-            = localFromDatabase && localFromMessage
+        const permission =
+            localFromDatabase && localFromMessage
                 ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
                 : localFromDatabase ?? localFromMessage ?? 'normal';
         return permission;
@@ -231,8 +234,7 @@ class PermissionsService {
             return;
         }
 
-        await
-        db
+        await db
             .update(localPermissionsTable)
             .set(databasePermission)
             .where(
@@ -243,7 +245,7 @@ class PermissionsService {
             );
     }
 
-    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User; }) {
+    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User }) {
         const existingDatabasePermission = await this.getDbGlobalPermission(user.id);
 
         if (permission === 'normal') {
@@ -304,15 +306,15 @@ class PermissionsService {
         const { global, local } = await this.getPermission(message);
 
         if (
-            (global === 'banned' && wantedGlobalPermission !== 'banned')
-            || (local === 'banned' && wantedLocalPermission !== 'banned')
+            (global === 'banned' && wantedGlobalPermission !== 'banned') ||
+            (local === 'banned' && wantedLocalPermission !== 'banned')
         ) {
             return false;
         }
 
         return (
-            pleasesGlobal(wantedGlobalPermission, global)
-            || pleasesLocal(wantedLocalPermission, local)
+            pleasesGlobal(wantedGlobalPermission, global) ||
+            pleasesLocal(wantedLocalPermission, local)
         );
     }
 }

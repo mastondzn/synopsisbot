@@ -11,12 +11,7 @@ import { cn } from '~/utils/tailwind';
 export function Header() {
     return (
         <Link href="/">
-            <Image
-                src={black}
-                className="w-[350px] pt-8 dark:invert"
-                alt=""
-                priority={true}
-            />
+            <Image src={black} className="w-[350px] pt-8 dark:invert" alt="" priority={true} />
         </Link>
     );
 }
@@ -40,7 +35,7 @@ export function Footer() {
     );
 }
 
-export function PageBase({ children, className }: PropsWithChildren<{ className?: string; }>) {
+export function PageBase({ children, className }: PropsWithChildren<{ className?: string }>) {
     return (
         <div
             className={cn(

@@ -7,7 +7,7 @@ export function splitOnce(string: string, separator: string): [string, string] |
 
     if (index === -1) {
         return string;
-    };
+    }
 
     return [string.slice(0, index), string.slice(index + separator.length)];
-};
+}

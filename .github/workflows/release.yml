@@ -13,12 +13,12 @@ jobs:
         steps:
             - uses: actions/checkout@v3
               with:
-                fetch-depth: 0
+                  fetch-depth: 0
 
             - uses: actions/setup-node@v3
               with:
-                node-version: 20
+                  node-version: 20
 
             - run: npx changelogithub
               env:
-                GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

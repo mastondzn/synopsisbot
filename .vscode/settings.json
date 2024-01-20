@@ -18,11 +18,7 @@
         "pnpm-lock.yaml": true
     },
 
-    "eslint.workingDirectories": [
-        { "pattern": "./packages/*/" },
-        "./bot",
-        "./website"
-    ],
+    "eslint.workingDirectories": [{ "pattern": "./packages/*/" }, "./bot", "./website"],
 
     "editor.defaultFormatter": "esbenp.prettier-vscode",
 

@@ -10,11 +10,7 @@ jobs:
     build-and-push-image:
         strategy:
             matrix:
-                image:
-                    [
-                        "${{ github.repository }}",
-                        "${{ github.repository }}-website",
-                    ]
+                image: ['${{ github.repository }}', '${{ github.repository }}-website']
 
         runs-on: ubuntu-latest
 
@@ -58,7 +54,7 @@ jobs:
               if: github.event_name == 'push'
               with:
                   ref: ${{ github.ref }}
-                  check-name: "ci"
+                  check-name: 'ci'
                   repo-token: ${{ secrets.GITHUB_TOKEN }}
                   wait-interval: 8
 

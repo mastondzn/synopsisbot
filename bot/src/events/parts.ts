@@ -10,9 +10,6 @@ export default defineEventHandler({
             return;
         }
 
-        console.log(
-            prefixes.parts,
-            `${message.partedUsername} parted ${message.channelName}`,
-        );
+        console.log(prefixes.parts, `${message.partedUsername} parted ${message.channelName}`);
     },
 });

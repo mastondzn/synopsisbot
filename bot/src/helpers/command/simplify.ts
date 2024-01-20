@@ -4,10 +4,7 @@ import { equals } from 'ramda';
 import { parseParameters } from '.';
 import type { Command } from '.';
 
-export function parseCommand(
-    command: Command,
-    message: string | PrivmsgMessage,
-) {
+export function parseCommand(command: Command, message: string | PrivmsgMessage) {
     const text = typeof message === 'string' ? message : message.messageText;
 
     const parameters = parseParameters(text);
@@ -16,8 +13,8 @@ export function parseCommand(
     if ('subcommands' in command) {
         const { subcommands, ...rest } = command;
         const sorted = subcommands.sort((a, b) => b.path.length - a.path.length);
-        const subcommand = sorted.find(
-            ({ path }) => equals(path, parameters.rest.slice(0, path.length)),
+        const subcommand = sorted.find(({ path }) =>
+            equals(path, parameters.rest.slice(0, path.length)),
         );
 
         if (!subcommand) return null;
@@ -29,12 +26,10 @@ export function parseCommand(
     return {
         parameters: {
             ...parameters,
-            text: (path?.length
-                ? parameters.rest.slice(path.length).join(' ')
-                : parameters.text) ?? null,
-            rest: path?.length
-                ? parameters.rest.slice(path.length)
-                : parameters.rest,
+            text:
+                (path?.length ? parameters.rest.slice(path.length).join(' ') : parameters.text) ??
+                null,
+            rest: path?.length ? parameters.rest.slice(path.length) : parameters.rest,
             path,
         },
         command,

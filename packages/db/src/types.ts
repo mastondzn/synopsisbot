@@ -10,7 +10,9 @@ import type { DatabaseSchema } from './schema';
 
 export type DrizzleDatabase = PostgresJsDatabase<DatabaseSchema>;
 export type KyselyDatabase = {
-    [T in keyof DatabaseSchema]: DatabaseSchema[T] extends AnyTable<TableConfig> ? Kyselify<DatabaseSchema[T]> : never;
+    [T in keyof DatabaseSchema]: DatabaseSchema[T] extends AnyTable<TableConfig>
+        ? Kyselify<DatabaseSchema[T]>
+        : never;
 };
 
 export type Database = DrizzleDatabase & {

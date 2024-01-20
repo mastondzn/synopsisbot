@@ -2,7 +2,7 @@
     "extends": "@synopsis/tsconfig/tsconfig.base.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": { "~/*": ["./src/*"] }
+        "paths": { "~/*": ["./src/*"] },
     },
-    "include": ["src/**/*", "scripts/**/*", "drizzle.config.ts"]
+    "include": ["src/**/*", "scripts/**/*", "drizzle.config.ts"],
 }

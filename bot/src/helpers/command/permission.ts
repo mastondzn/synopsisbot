@@ -7,11 +7,7 @@ export function getCommandPermissions(command: BasicCommand): {
     mode: 'all' | 'custom' | 'any';
 } {
     const {
-        permissions: {
-            local = 'normal',
-            global = 'normal',
-            mode = 'all',
-        } = {
+        permissions: { local = 'normal', global = 'normal', mode = 'all' } = {
             local: 'normal',
             global: 'normal',
             mode: 'all',
