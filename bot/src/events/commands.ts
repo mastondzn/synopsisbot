@@ -24,7 +24,12 @@ export default defineEventHandler({
 
         const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(channel);
 
-        if (!message.messageText.startsWith(prefix) || (env.NODE_ENV === 'development' && !inDefaultChannel)) return;
+        if (
+            !message.messageText.startsWith(prefix) || //
+            (env.NODE_ENV === 'development' && !inDefaultChannel)
+        ) {
+            return;
+        }
 
         const wantedCommand = getCommandName(message);
         if (!wantedCommand) return;
@@ -44,13 +49,12 @@ export default defineEventHandler({
             db.find.channelModeByLogin(channel),
             // if we're in production and theres a dev process running don't reply to commands in default channels
             cooldowns.isOnCooldown({ command, channel, userName: message.senderUsername }),
-            hasDevelopmentProcess().then(
-                (hasDevelopmentProcess_) => env.NODE_ENV === 'production' && hasDevelopmentProcess_ && inDefaultChannel,
-            ),
+            hasDevelopmentProcess().then((doesHave) => env.NODE_ENV === 'production' && doesHave && inDefaultChannel),
             // scuffed
             wantedPermissions.mode === 'custom'
-                ? Promise.resolve(true) // eslint-disable-next-line unicorn/no-nested-ternary
-                : wantedPermissions.mode === 'all'
+                ? Promise.resolve(true)
+                : // eslint-disable-next-line unicorn/no-nested-ternary
+                  wantedPermissions.mode === 'all'
                   ? permissions.pleasesGlobalAndLocal(wantedPermissions.global, wantedPermissions.local, message)
                   : permissions.pleasesGlobalOrLocal(wantedPermissions.global, wantedPermissions.local, message),
         ]);
