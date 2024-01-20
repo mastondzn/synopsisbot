@@ -28,13 +28,12 @@
         "postgres": "3.4.3"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.11",
+        "@mastondzn/eslint": "0.6.13",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.5",
         "dotenv-cli": "7.3.0",
         "drizzle-kit": "0.20.13",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
-        "eslint-plugin-unicorn": "50.0.1",
         "eslint-ts-patch": "8.56.0-0",
         "is-docker": "3.0.0",
         "tsx": "4.7.0",

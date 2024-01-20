@@ -58,8 +58,7 @@ export default defineEventHandler({
             // scuffed
             wantedPermissions.mode === 'custom'
                 ? Promise.resolve(true)
-                : // eslint-disable-next-line unicorn/no-nested-ternary
-                  wantedPermissions.mode === 'all'
+                : wantedPermissions.mode === 'all'
                   ? permissions.pleasesGlobalAndLocal(
                         wantedPermissions.global,
                         wantedPermissions.local,

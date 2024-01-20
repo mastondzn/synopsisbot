@@ -37,8 +37,7 @@ export function ThemeSwitch({ ...props }: Omit<ButtonProperties, 'children'>) {
         >
             {theme === 'dark' ? (
                 <IconMoon className="h-6 w-6" />
-            ) : // eslint-disable-next-line unicorn/no-nested-ternary
-            theme === 'light' ? (
+            ) : theme === 'light' ? (
                 <IconSun className="h-6 w-6" />
             ) : null}
         </Button>
