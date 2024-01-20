@@ -5,8 +5,14 @@ export default defineConfig({
         tsconfigPath: './tsconfig.json',
     },
 
+    react: {
+        overrides: {
+            'react/prop-types': 'off',
+        },
+    },
+
     tailwindcss: {
-        tags: [],
+        tags: ['twc', 'twx'],
         callees: ['cva', 'cn', 'clsx'],
         config: './tailwind.config.cjs',
     },

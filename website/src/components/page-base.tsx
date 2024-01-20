@@ -6,7 +6,7 @@ import type { PropsWithChildren } from 'react';
 import { Button } from './button';
 import { ThemeSwitch } from './theme-switch';
 import black from '../../public/synopsisblack.png';
-import { cn } from '~/utils/tw';
+import { cn } from '~/utils/tailwind';
 
 export function Header() {
     return (

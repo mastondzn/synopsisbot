@@ -1,8 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '~/utils/tw';
-
-/* eslint-disable react/prop-types */
+import { cn } from '~/utils/tailwind';
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
     ({ className, ...props }, reference) => (

@@ -7,7 +7,9 @@ export default function Page() {
                 <p className="col-span-2 row-span-2 justify-self-end text-8xl font-extrabold">
                     404
                 </p>
-                <p className="col-span-3 text-2xl font-bold">This page does not exist.</p>
+                <p className="col-span-3 text-2xl font-bold">
+                    This page does not exist.
+                </p>
             </div>
         </PageBase>
     );

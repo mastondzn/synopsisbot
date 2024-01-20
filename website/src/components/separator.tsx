@@ -3,12 +3,11 @@
 import * as SeparatorPrimitive from '@radix-ui/react-separator';
 import * as React from 'react';
 
-import { cn } from '~/utils/tw';
+import { cn } from '~/utils/tailwind';
 
 const Separator = React.forwardRef<
     React.ElementRef<typeof SeparatorPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
-    // eslint-disable-next-line react/prop-types
 >(({ className, orientation = 'horizontal', decorative = true, ...props }, reference) => (
     <SeparatorPrimitive.Root
         ref={reference}

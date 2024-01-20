@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Providers } from './providers';
 import { fontSans } from '~/utils/fonts';
-import { cn } from '~/utils/tw';
+import { cn } from '~/utils/tailwind';
 
 export const metadata = {
     title: 'Synopsis Bot',

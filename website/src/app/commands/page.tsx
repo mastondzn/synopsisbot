@@ -1,7 +1,7 @@
 import { columns } from './columns';
 import { DataTable } from './table';
 import { PageBase } from '~/components/page-base';
-import { db } from '~/utils/db';
+import { db } from '~/services/db';
 
 export const revalidate = 600;
 export const dynamic = 'force-dynamic';

@@ -2,7 +2,7 @@ import { env } from '@synopsis/env/next';
 
 import { createState } from '~/utils/auth';
 import { redirect } from '~/utils/responses';
-import { getUrl } from '~/utils/url';
+import { localUrl } from '~/utils/url';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +12,7 @@ export async function GET() {
     const state = await createState();
 
     url.searchParams.set('client_id', env.TWITCH_CLIENT_ID);
-    url.searchParams.set('redirect_uri', `${getUrl()}/api/auth/acknowledge`);
+    url.searchParams.set('redirect_uri', `${localUrl}/api/auth/acknowledge`);
     url.searchParams.set('response_type', 'code');
     url.searchParams.set('scope', '');
     url.searchParams.set('state', state);
