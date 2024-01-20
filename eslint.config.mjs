@@ -1,6 +1,6 @@
 import { defineConfig } from '@mastondzn/eslint';
 
 export default defineConfig({
-    yaml: false,
+    stylistic: false,
     ignores: ['packages', 'bot', 'website'],
 });
