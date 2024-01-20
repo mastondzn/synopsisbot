@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation';
 
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
-import { db } from '~/utils/db';
-import { cn } from '~/utils/tw';
+import { db } from '~/services/db';
+import { cn } from '~/utils/tailwind';
 
 export const revalidate = 3600;
 

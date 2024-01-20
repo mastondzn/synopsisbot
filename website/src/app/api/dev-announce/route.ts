@@ -2,7 +2,7 @@ import { env } from '@synopsis/env/next';
 import type { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getRedis } from '~/utils/redis';
+import { cache } from '~/services/redis';
 import { json } from '~/utils/responses';
 
 export const dynamic = 'force-dynamic';
@@ -23,9 +23,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         return json({ ok: false, error: 'Unexpected shape' }, { status: 400 });
     }
 
-    const redis = getRedis();
-
-    await redis.set('dev-announce', 'true', 'EX', parsedBody.data.announce_for);
-
+    await cache.set('dev-announce', 'true', 'EX', parsedBody.data.announce_for);
     return json({ ok: true }, { status: 200 });
 }

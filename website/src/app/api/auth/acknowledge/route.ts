@@ -4,11 +4,11 @@ import { getTokenInfo } from '@twurple/auth';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
+import { db } from '~/services/db';
 import { consumeState } from '~/utils/auth';
-import { db } from '~/utils/db';
-import { setJWTCookie } from '~/utils/encode';
+import { setJWTCookie } from '~/utils/jwt/encode';
 import { json, redirect } from '~/utils/responses';
-import { getUrl } from '~/utils/url';
+import { localUrl } from '~/utils/url';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         `client_secret=${env.TWITCH_CLIENT_SECRET}`,
         `code=${code}`,
         'grant_type=authorization_code',
-        `redirect_uri=${getUrl()}/api/auth/acknowledge`,
+        `redirect_uri=${localUrl}/api/auth/acknowledge`,
     ].join('&');
 
     const response = await fetch('https://id.twitch.tv/oauth2/token', {
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
         .onConflictDoUpdate({ target: authedUsers.twitchId, set: user });
 
     return await setJWTCookie(
-        redirect(getUrl()), //
+        redirect(localUrl),
         {
             twitchId: tokenInfo.userId,
             twitchLogin: tokenInfo.userName,

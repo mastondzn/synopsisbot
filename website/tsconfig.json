@@ -10,17 +10,11 @@
             "es2023"
         ],
         "baseUrl": ".",
-        "paths": {
-            "~/*": [
-                "./src/*"
-            ]
-        },
+        "paths": { "~/*": ["./src/*"] },
         "resolveJsonModule": true,
         "isolatedModules": true,
         "plugins": [
-            {
-                "name": "next"
-            }
+            { "name": "next" }
         ]
     },
     "include": [
@@ -32,7 +26,5 @@
         "**/*.mjs",
         ".next/types/**/*.ts"
     ],
-    "exclude": [
-        "node_modules"
-    ]
+    "exclude": ["node_modules"]
 }

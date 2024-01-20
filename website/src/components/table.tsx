@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '~/utils/tw';
+import { cn } from '~/utils/tailwind';
 
 /* eslint-disable react/prop-types */
 
