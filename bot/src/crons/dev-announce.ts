@@ -20,13 +20,7 @@ export default defineCron({
                 'Content-Type': 'application/json',
             },
             body: { announce_for: 120 },
-        });
-
-        if ('error' in response) {
-            console.error(prefixes['dev-announce'], 'failed to fetch');
-            console.error(prefixes['dev-announce'], response.error);
-            return;
-        }
+        }).catch(() => ({ response: { ok: false } }));
 
         if (!response.ok) {
             console.error(prefixes['dev-announce'], 'failed to announce dev mode to remote server');
