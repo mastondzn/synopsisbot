@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { cn } from '~/utils/tailwind';
 
-/* eslint-disable react/prop-types */
-
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
     ({ className, ...props }, reference) => (
         <div className="w-full overflow-auto">
