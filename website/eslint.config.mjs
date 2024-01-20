@@ -8,7 +8,7 @@ export default defineConfig({
     react: {
         overrides: {
             'react/prop-types': 'off',
-        }
+        },
     },
 
     tailwindcss: {
