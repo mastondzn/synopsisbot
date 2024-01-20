@@ -62,7 +62,8 @@ export default async function Page({ params }: { params: { command: string } }) 
                 <p>
                     {command.permissionMode === 'custom'
                         ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
-                        : command.permissionMode === 'all'
+                        : // eslint-disable-next-line unicorn/no-nested-ternary
+                          command.permissionMode === 'all'
                           ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
                           : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
                 </p>
