@@ -16,18 +16,22 @@ Sentry.init({
 });
 
 const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
-authProvider.addUser(botUser.twitchId, {
-    accessToken: botUser.accessToken,
-    refreshToken: botUser.refreshToken,
-    expiresIn: botUser.expiresAt.getTime() - Date.now(),
-    obtainmentTimestamp: botUser.obtainedAt.getTime(),
-    scope: botUser.scopes,
-}, ['chat']);
+authProvider.addUser(
+    botUser.twitchId,
+    {
+        accessToken: botUser.accessToken,
+        refreshToken: botUser.refreshToken,
+        expiresIn: botUser.expiresAt.getTime() - Date.now(),
+        obtainmentTimestamp: botUser.obtainedAt.getTime(),
+        scope: botUser.scopes,
+    },
+    ['chat'],
+);
 
 const botToken = await authProvider.getAccessTokenForIntent('chat');
 if (!botToken?.expiresIn) {
     throw new Error('Bot token not found or no expiration');
-};
+}
 
 await chat.login({
     username: env.TWITCH_BOT_USERNAME,

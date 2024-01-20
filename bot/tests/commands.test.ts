@@ -13,23 +13,24 @@ describe('commands', () => {
     });
 
     it('should return a list of commands with names', () => {
-        expect(commands.map(command => command.name).every(Boolean)).toBe(true);
+        expect(commands.map((command) => command.name).every(Boolean)).toBe(true);
     });
 
     it('should return a list of commands with run methods or subcommands with run methods', () => {
-        expect(commands.every((command) => {
-            if ('run' in command && typeof command.run === 'function') {
-                return true;
-            }
+        expect(
+            commands.every((command) => {
+                if ('run' in command && typeof command.run === 'function') {
+                    return true;
+                }
 
-            if ('subcommands' in command) {
-                return command.subcommands.every(
-                    subcommand => 'run' in subcommand
-                    && typeof subcommand.run === 'function',
-                );
-            }
+                if ('subcommands' in command) {
+                    return command.subcommands.every(
+                        (subcommand) => 'run' in subcommand && typeof subcommand.run === 'function',
+                    );
+                }
 
-            return false;
-        })).toBe(true);
+                return false;
+            }),
+        ).toBe(true);
     });
 });

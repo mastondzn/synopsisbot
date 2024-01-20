@@ -19,14 +19,11 @@ const entries = [
 
 const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'] as const;
 
-const max = entries.reduce(
-    (accumulator, [, value]) => Math.max(accumulator, value.length),
-    0,
-);
+const max = entries.reduce((accumulator, [, value]) => Math.max(accumulator, value.length), 0);
 
 export const prefixes = Object.fromEntries(
     [...entries].map(([key, value], index) => {
         const color = colors[index % colors.length]!;
         return [key, chalk[color](value.padStart(max, ' '))];
     }),
-) as Record<typeof entries[number][0], string>;
+) as Record<(typeof entries)[number][0], string>;

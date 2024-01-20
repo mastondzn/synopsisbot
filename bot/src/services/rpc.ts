@@ -5,15 +5,14 @@ import { Hono } from 'hono';
 import { prefixes } from '~/helpers/log-prefixes';
 import { prometheus } from '~/providers';
 
-export const rpc = new Hono()
-    .get('/metrics', async ({ text }) => {
-        const metrics = await prometheus.metrics();
+export const rpc = new Hono().get('/metrics', async ({ text }) => {
+    const metrics = await prometheus.metrics();
 
-        return text(metrics, {
-            status: 200,
-            headers: { 'content-type': prometheus.contentType },
-        });
+    return text(metrics, {
+        status: 200,
+        headers: { 'content-type': prometheus.contentType },
     });
+});
 
 export type RPC = typeof rpc;
 

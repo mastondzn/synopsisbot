@@ -9,12 +9,11 @@ import { computeMetaHash } from '~/helpers/hash';
 export interface CommandMetadata {
     version: Date;
     hash: Buffer;
-};
+}
 
-class Commands extends Collection<string, Command & { meta: CommandMetadata; }> {
+class Commands extends Collection<string, Command & { meta: CommandMetadata }> {
     public async load(force = false): Promise<this> {
-        const directory = (await readdir('./src/commands'))
-            .filter(path => path !== 'index.ts');
+        const directory = (await readdir('./src/commands')).filter((path) => path !== 'index.ts');
 
         const version = new Date();
 
@@ -31,13 +30,10 @@ class Commands extends Collection<string, Command & { meta: CommandMetadata; }> 
                 // bypasses the esm cache when reloading
                 if (force) path += `?version=${version.getTime()}`;
 
-                const imported = (await import(path)) as { default: Command; };
+                const imported = (await import(path)) as { default: Command };
                 if (!imported.default.name) throw new TypeError(`Invalid command ${file}`);
 
-                this.set(file, Object.assign(
-                    imported.default,
-                    { meta: { version, hash } },
-                ));
+                this.set(file, Object.assign(imported.default, { meta: { version, hash } }));
             }),
         );
 

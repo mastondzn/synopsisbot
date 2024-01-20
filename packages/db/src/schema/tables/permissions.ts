@@ -18,7 +18,7 @@ export const localPermissions = pgTable(
 
         createdAt: timestamp('created_at').notNull().defaultNow(),
     },
-    table => ({ cpk: primaryKey(table.channelId, table.userId) }),
+    (table) => ({ cpk: primaryKey(table.channelId, table.userId) }),
 );
 export type LocalPermission = InferModel<typeof localPermissions>;
 export type NewLocalPermission = InferModel<typeof localPermissions, 'insert'>;

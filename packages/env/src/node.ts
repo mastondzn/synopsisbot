@@ -13,8 +13,8 @@ export const env = createEnv({
     clientPrefix: 'NEXT_PUBLIC_',
 
     skipValidation:
-        process.env['NODE_ENV'] === 'test'
-        || (process.env['SKIP_ENV_VALIDATION']?.length
+        process.env['NODE_ENV'] === 'test' ||
+        (process.env['SKIP_ENV_VALIDATION']?.length
             ? !['0', 'false'].includes(process.env['SKIP_ENV_VALIDATION'])
             : true),
 });

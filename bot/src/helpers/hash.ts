@@ -30,8 +30,8 @@ export async function computeMetaHash(target: string, inputHash: Hash | null = n
     }
 
     // sort the directory entries to ensure consistent hash
-    const info = (await readdir(target, { withFileTypes: true })).sort(
-        (a, b) => a.name.localeCompare(b.name),
+    const info = (await readdir(target, { withFileTypes: true })).sort((a, b) =>
+        a.name.localeCompare(b.name),
     );
 
     for (const item of info) {

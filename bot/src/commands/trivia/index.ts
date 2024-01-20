@@ -52,15 +52,15 @@ export default defineCommand({
                 const incomingContent = incoming.messageText.toLowerCase().trim();
 
                 const isValidAnswer = answers
-                    .map(answer => answer.toLowerCase())
+                    .map((answer) => answer.toLowerCase())
                     .includes(incomingContent);
                 const isValidLetter = alphabet
-                    .map(letter => letter.toLowerCase())
+                    .map((letter) => letter.toLowerCase())
                     .includes(incomingContent);
 
                 if (isValidAnswer) {
                     const letterIndex = answers
-                        .map(answer => answer.toLowerCase())
+                        .map((answer) => answer.toLowerCase())
                         .indexOf(incomingContent);
                     const letter = alphabet[letterIndex]!;
                     exhaustedAnswers.add(letter);

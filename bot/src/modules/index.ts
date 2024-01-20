@@ -6,8 +6,7 @@ import type { BotModule } from '~/helpers/module';
 
 class Modules extends Collection<string, BotModule> {
     public async load(): Promise<this> {
-        const directory = (await readdir('./src/modules'))
-            .filter(path => path !== 'index.ts');
+        const directory = (await readdir('./src/modules')).filter((path) => path !== 'index.ts');
 
         await Promise.all(
             directory.map(async (file) => {
@@ -15,7 +14,7 @@ class Modules extends Collection<string, BotModule> {
                 const existing = this.get(importable);
                 if (existing) return;
 
-                const imported = (await import(`./${file}`)) as { default: BotModule; };
+                const imported = (await import(`./${file}`)) as { default: BotModule };
 
                 // eslint-disable-next-line ts/no-unnecessary-condition
                 if (!imported.default.register) {

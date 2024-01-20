@@ -134,9 +134,9 @@ services:
         container_name: watchtower
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        environment: 
+        environment:
             WATCHTOWER_NOTIFICATION_REPORT: true
-            WATCHTOWER_NOTIFICATION_URL: > 
+            WATCHTOWER_NOTIFICATION_URL: >
                 discord://${DISCORD_WEBHOOK_TOKEN?err}@${DISCORD_WEBHOOK_CHANNEL?err}
             WATCHTOWER_LABEL_ENABLE: true
             WATCHTOWER_POLL_INTERVAL: 20
@@ -187,7 +187,7 @@ services:
     bot:
         image: ghcr.io/mastondzn/synopsisbot:latest
         container_name: bot
-        ports: 
+        ports:
             - 3002:3002
         env_file:
             - .env

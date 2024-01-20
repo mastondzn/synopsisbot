@@ -30,7 +30,10 @@ export const publicEnvironmentSchema = z.object({
     NEXT_PUBLIC_DOMAIN_NAME: z.string(),
 });
 
-export const environmentSchema = z.object({ ...serverEnvironmentSchema.shape, ...publicEnvironmentSchema.shape });
+export const environmentSchema = z.object({
+    ...serverEnvironmentSchema.shape,
+    ...publicEnvironmentSchema.shape,
+});
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;
 export type PublicEnvironment = z.infer<typeof publicEnvironmentSchema>;

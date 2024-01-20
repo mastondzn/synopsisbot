@@ -30,8 +30,8 @@
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
         "dev": "turbo run dev",
-        "format:check": "eslint .",
-        "format": "eslint .",
+        "format:check": "prettier . -c",
+        "format": "prettier . -w",
         "lint:fix": "turbo run lint -- --fix",
         "lint": "turbo run lint",
         "preinstall": "npx only-allow pnpm",
@@ -51,6 +51,7 @@
         "eslint-plugin-unicorn": "50.0.1",
         "eslint-ts-patch": "8.56.0-0",
         "only-allow": "1.2.1",
+        "prettier": "^3.2.4",
         "rimraf": "5.0.5",
         "turbo": "1.11.3",
         "typescript": "5.3.3"

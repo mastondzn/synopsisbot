@@ -24,7 +24,7 @@ export default defineCron({
             await chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
             console.log(prefixes.refresh, line);
             return;
-        };
+        }
 
         console.log(prefixes.refresh, 'Refreshing bot token');
         await chat.say(env.TWITCH_BOT_OWNER_USERNAME, 'Refreshing bot token...');

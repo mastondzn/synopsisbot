@@ -14,7 +14,7 @@ export default defineModule({
 
         const channels = await api.helix.users
             .getUsersByIds(channelIds)
-            .then(response => response.map(({ name }) => name));
+            .then((response) => response.map(({ name }) => name));
 
         if (channels.length !== channelIds.length) {
             console.warn(

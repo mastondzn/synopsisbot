@@ -6,13 +6,13 @@ import { getEncodedAppSecret } from './encode';
 
 export type VerifyJWTResult =
     | {
-        ok: true;
-        jwt: JwtShape;
-    }
+          ok: true;
+          jwt: JwtShape;
+      }
     | {
-        ok: false;
-        error: string;
-    };
+          ok: false;
+          error: string;
+      };
 
 export async function verifyJWT(jwt: string | null | undefined): Promise<VerifyJWTResult> {
     try {
@@ -22,7 +22,7 @@ export async function verifyJWT(jwt: string | null | undefined): Promise<VerifyJ
 
         const secret = getEncodedAppSecret();
         const decoded = await jwtVerify(jwt, secret, { algorithms: ['HS256'] }) //
-            .catch(error => ({
+            .catch((error) => ({
                 error: error instanceof Error ? error.message : 'Unknown Error',
             }));
 

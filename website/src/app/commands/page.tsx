@@ -10,7 +10,7 @@ async function getCommands() {
     const commands = await db.query.commands.findMany();
 
     return commands
-        .map(command => ({
+        .map((command) => ({
             name: command.name,
             description: command.description ?? '-',
             aliases: command.aliases?.length ? command.aliases.join(', ') : '-',
