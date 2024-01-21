@@ -6,7 +6,7 @@ import Link from 'next/link';
 export interface Command {
     name: string;
     description: string;
-    aliases: string;
+    aliases: string[] | undefined;
 }
 
 function Linked({ name, children }: { name: string; children: React.ReactNode }) {
@@ -45,10 +45,11 @@ export const columns: ColumnDef<Command>[] = [
         header: () => 'Aliases',
         cell: ({ row }) => {
             const name = row.getValue<string>('name');
+            const aliases = row.getValue<string[] | undefined>('aliases');
 
             return (
                 <Linked name={name}>
-                    <p className="px-4 py-3">{row.getValue<string>('aliases')}</p>
+                    <p className="px-4 py-3">{aliases?.length ? aliases.join(', ') : '-'}</p>
                 </Linked>
             );
         },

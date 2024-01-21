@@ -3,10 +3,15 @@
     "type": "module",
     "version": "0.0.1",
     "private": true,
-    "main": "src/index.ts",
+    "exports": {
+        "./rpc": {
+            "types": "./dist/rpc.d.ts"
+        }
+    },
     "scripts": {
-        "dev": "pnpm with-env tsx watch src/index.ts",
         "start": "pnpm with-env tsx src/index.ts",
+        "dev": "pnpm start",
+        "build": "tsup --entry.rpc src/services/rpc/index.ts --format esm --dts",
         "test": "SKIP_ENV_VALIDATION=true vitest",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
@@ -47,6 +52,7 @@
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
         "ts-jest": "29.1.1",
+        "tsup": "^8.0.1",
         "tsx": "4.7.0",
         "typescript": "5.3.3",
         "vitest": "1.2.0"

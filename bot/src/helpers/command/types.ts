@@ -42,7 +42,7 @@ type CommandUsage = [string, string][];
 
 export interface BaseCommand {
     name: string;
-    description?: string;
+    description: string;
     usage?: CommandUsage;
     aliases?: string[];
     cooldown?: number;

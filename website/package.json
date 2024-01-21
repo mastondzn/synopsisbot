@@ -38,12 +38,14 @@
         "superjson": "2.2.1",
         "tailwind-merge": "2.2.0",
         "tailwindcss-animate": "1.0.7",
+        "ts-pattern": "^5.0.6",
         "zod": "3.22.4"
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.6.13",
         "@mastondzn/eslint-plugin-tailwindcss": "3.14.1",
         "@next/eslint-plugin-next": "14.0.4",
+        "@synopsis/bot": "workspace:^",
         "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.5",
         "@types/react": "18.2.48",

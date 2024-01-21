@@ -1,75 +1,58 @@
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
-import { db } from '~/services/db';
-import { cn } from '~/utils/tailwind';
+import { rpcClient } from '~/utils/rpc';
+import { twx } from '~/utils/tailwind';
 
 export const revalidate = 3600;
 
-async function getCommand(wanted: string) {
-    const command = await db.query.commands.findFirst({
-        where: ({ name }, { eq }) => eq(name, wanted),
-    });
-    return command ?? null;
-}
+const H3 = twx.h3`mb-2 text-lg font-medium`;
 
 export default async function Page({ params }: { params: { command: string } }) {
-    const command = await getCommand(params.command);
+    const response = await rpcClient.commands.$get();
+    const json = await response.json();
+    const command = json.data.find((command) => command.name === params.command);
 
     if (!command) {
-        return redirect('/404');
+        return notFound();
     }
 
-    const usage = command.usage?.split('\n').map((line) => {
-        const isExample = line.startsWith(command.name);
-
-        return {
-            line: isExample ? `sb ${line.trim()}` : line.trim(),
-            isExample,
-        };
-    }) ?? [{ line: 'No special usage instructions. Use as normal.', isExample: false }];
+    const cooldownText = command.cooldown
+        ? `You'll be on cooldown for ${command.cooldown} seconds.`
+        : "You'll be on cooldown for the default amount.";
 
     return (
         <PageBase>
             <div className="max-w-[500px]">
                 <div className="space-y-1">
-                    <h4 className="pb-2 text-3xl font-bold leading-none">{command.name}</h4>
-                    <p className="text-lg">{command.description ?? 'No command description.'}</p>
+                    <h1 className="pb-2 text-3xl font-bold leading-none">{command.name}</h1>
+                    <h2 className="text-lg">{command.description ?? 'No command description.'}</h2>
                 </div>
                 <Separator className="my-4" />
-                <h4 className="text-lg font-medium">Usage</h4>
-                {usage.map(({ line, isExample }, index) => {
-                    return isExample ? (
-                        <p key={index} className={cn('pt-2 font-semibold text-primary')}>
-                            {line}
+                <H3 className="mb-2 text-lg font-medium">Usage</H3>
+                <div className="flex flex-col gap-1">
+                    {command.usage?.map(([example, line], index) => {
+                        return (
+                            <div className="gap-2" key={index}>
+                                <p className="font-semibold text-primary">{example}</p>
+                                <p>{line}</p>
+                            </div>
+                        );
+                    }) ?? (
+                        <p className="my-2">
+                            {'No special usage instructions for this command. Use it normally.'}
                         </p>
-                    ) : (
-                        <p key={index} className={index === 0 ? 'pt-2' : ''}>
-                            {line}
-                        </p>
-                    );
-                })}
+                    )}
+                </div>
                 <Separator className="my-4" />
-                <h4 className="mb-2 text-lg font-medium">Aliases</h4>
+                <H3 className="mb-2 text-lg font-medium">Aliases</H3>
                 <p>
-                    {command.aliases?.length
-                        ? command.aliases.join(', ')
-                        : 'No additional command aliases.'}
+                    {command.aliases?.length ? command.aliases.join(', ') : 'No command aliases.'}
                 </p>
                 <Separator className="my-4" />
-                <h4 className="mb-2 text-lg font-medium">Permissions</h4>
-                <p>
-                    {command.permissionMode === 'custom'
-                        ? 'This command has custom permissions. That means depending on its usage, it may require different permissions.'
-                        : command.permissionMode === 'all'
-                          ? `Requires ${command.localPermission} local level and ${command.globalPermission} global level.`
-                          : `Requires ${command.localPermission} local level or ${command.globalPermission} global level.`}
-                </p>
-                <Separator className="my-4" />
-                <h4 className="mb-2 text-lg font-medium">Cooldown</h4>
-                <p>{`User cooldown: ${command.userCooldown} seconds`}</p>
-                <p>{`Global cooldown: ${command.globalCooldown} seconds`}</p>
+                <H3 className="mb-2 text-lg font-medium">Cooldown</H3>
+                <p>{cooldownText}</p>
             </div>
         </PageBase>
     );
