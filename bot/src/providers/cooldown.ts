@@ -1,64 +1,39 @@
-import { cache } from '../services/redis';
-import type { Command } from '~/helpers/command';
+import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 
-export interface CommandCooldownManagerCheckOptions {
-    command: Command;
-    channel: string;
-    userName: string;
+import type { BasicCommand } from '~/helpers/command';
+import { TTLSet } from '~/helpers/ttl-set';
+
+const defaultUserCooldown = 3;
+
+function cooldownKey(message: Pick<PrivmsgMessage, 'senderUsername'>) {
+    return `ucd:${message.senderUsername}`;
 }
 
-const defaultUserCooldown = 5;
-const defaultGlobalCooldown = 0;
+class CommandCooldownManager extends TTLSet<string> {
+    public isOnCooldown(message: Pick<PrivmsgMessage, 'senderUsername'>): boolean {
+        const key = cooldownKey(message);
 
-function makeUserCooldownKey({ userName, channel, command }: CommandCooldownManagerCheckOptions) {
-    return `ucd:${channel}:${command.name}:${userName}`;
-}
-
-function makeGlobalCooldownKey({
-    channel,
-    command,
-}: Omit<CommandCooldownManagerCheckOptions, 'userName'>) {
-    return `gcd:${channel}:${command.name}`;
-}
-
-class CommandCooldownManager {
-    // returns true if user is on cooldown
-    // returns false if user is ok
-    async isOnCooldown({
-        command,
-        channel,
-        userName,
-    }: CommandCooldownManagerCheckOptions): Promise<boolean> {
-        const userCooldown = command.cooldown?.user ?? defaultUserCooldown;
-        const globalCooldown = command.cooldown?.global ?? defaultGlobalCooldown;
-
-        const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
-        const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
-
-        const [existingUserEntry, existingGlobalEntry] = await Promise.all([
-            cache.exists(userCooldownKey),
-            globalCooldown > 0 ? cache.exists(globalCooldownKey) : Promise.resolve(0),
-        ]);
-
-        if (existingUserEntry || existingGlobalEntry) {
+        const existing = this.has(key);
+        if (existing) {
             return true;
         }
-
-        await Promise.all([
-            cache.set(userCooldownKey, '1', 'EX', userCooldown),
-            globalCooldown > 0
-                ? cache.set(globalCooldownKey, '1', 'EX', globalCooldown)
-                : Promise.resolve(),
-        ]);
 
         return false;
     }
 
-    async clear({ command, channel, userName }: CommandCooldownManagerCheckOptions): Promise<void> {
-        const userCooldownKey = makeUserCooldownKey({ command, channel, userName });
-        const globalCooldownKey = makeGlobalCooldownKey({ command, channel });
+    public addCooldown(
+        message: Pick<PrivmsgMessage, 'senderUsername'>,
+        command: Pick<BasicCommand, 'cooldown'>,
+    ) {
+        const time = command.cooldown ?? defaultUserCooldown;
+        const key = cooldownKey(message);
 
-        await Promise.all([cache.del(userCooldownKey), cache.del(globalCooldownKey)]);
+        this.set(key, time);
+    }
+
+    public removeCooldown(message: Pick<PrivmsgMessage, 'senderUsername'>) {
+        const key = cooldownKey(message);
+        this.delete(key);
     }
 }
 

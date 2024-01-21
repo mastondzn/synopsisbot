@@ -2,9 +2,9 @@ import { type ChatClient, type ClientMixin, applyReplacements } from '@kararty/d
 
 import { retry } from '~/helpers/retry';
 
-async function replacement<A extends unknown[]>(
-    oldFunction: (...arguments_: A) => Promise<void>,
-    ...arguments_: A
+async function replacement<TArguments extends unknown[]>(
+    oldFunction: (...arguments_: TArguments) => Promise<void>,
+    ...arguments_: TArguments
 ): Promise<void> {
     await retry(() => oldFunction(...arguments_), {
         retries: 3,

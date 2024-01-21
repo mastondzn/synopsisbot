@@ -1,6 +1,6 @@
 import { prefixes } from '~/helpers/log-prefixes';
 import { defineModule } from '~/helpers/module/define';
-import { api, chat, db } from '~/services';
+import { chat, db, helix } from '~/services';
 
 export default defineModule({
     name: 'channels',
@@ -12,7 +12,7 @@ export default defineModule({
 
         const channelIds = allChannels.map(({ twitchId }) => twitchId);
 
-        const channels = await api.helix.users
+        const channels = await helix.users
             .getUsersByIds(channelIds)
             .then((response) => response.map(({ name }) => name));
 

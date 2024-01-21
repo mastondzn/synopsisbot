@@ -14,10 +14,7 @@ export default defineCommand({
     subcommands: [
         {
             path: ['eval'],
-            permissions: {
-                global: 'owner',
-                mode: 'all',
-            },
+            permissions: { global: 'owner' },
             run: async ({ parameters }) => {
                 if (!parameters.text) {
                     return { reply: 'No code to eval.' };
@@ -43,10 +40,7 @@ export default defineCommand({
         },
         {
             path: ['reload'],
-            permissions: {
-                global: 'owner',
-                mode: 'all',
-            },
+            permissions: { global: 'owner' },
             run: async () => {
                 const old = commands.clone();
                 await commands.load(true);

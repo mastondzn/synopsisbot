@@ -1,15 +1,8 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
-import {
-    type NewGlobalPermission,
-    type NewLocalPermission,
-    and,
-    eq,
-    globalPermissions as globalPermissionsTable,
-    localPermissions as localPermissionsTable,
-} from '@synopsis/db';
+import { type NewGlobalPermission, type NewLocalPermission, and, eq, schema } from '@synopsis/db';
 import { z } from 'zod';
 
-import { db } from '../services/database';
+import { db } from '~/services';
 
 export const localLevels = [
     'broadcaster',
@@ -38,21 +31,16 @@ export function determineHighestLocalLevel(...levels: LocalLevel[]): LocalLevel 
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = localLevels.indexOf(level);
-        if (index === -1) {
-            throw new Error('Invalid local permission level.');
-        }
-        if (highestIndex === null || index < highestIndex) {
-            highestIndex = index;
-        }
-    }
-    if (highestIndex === null) {
-        throw new Error('No local permission levels provided.');
+
+        if (index === -1) throw new Error('Invalid local permission level.');
+        if (highestIndex === null || index < highestIndex) highestIndex = index;
     }
 
+    if (highestIndex === null) throw new Error('No local permission levels provided.');
+
     const level = localLevels[highestIndex];
-    if (!level) {
-        throw new Error('Invalid local permission level.');
-    }
+    if (!level) throw new Error('Invalid local permission level.');
+
     return level;
 }
 
@@ -60,29 +48,23 @@ export function determineHighestGlobalLevel(...levels: GlobalLevel[]): GlobalLev
     let highestIndex: number | null = null;
     for (const level of levels) {
         const index = globalLevels.indexOf(level);
-        if (index === -1) {
-            throw new Error('Invalid local permission level.');
-        }
-        if (highestIndex === null || index < highestIndex) {
-            highestIndex = index;
-        }
+        if (index === -1) throw new Error('Invalid local permission level.');
+
+        if (highestIndex === null || index < highestIndex) highestIndex = index;
     }
 
-    if (highestIndex === null) {
-        throw new Error('No local permission levels provided.');
-    }
+    if (highestIndex === null) throw new Error('No local permission levels provided.');
 
     const level = globalLevels[highestIndex];
-    if (!level) {
-        throw new Error('Invalid local permission level.');
-    }
+    if (!level) throw new Error('Invalid local permission level.');
+
     return level;
 }
 
 /**
  * @param wantedLevel The level the user wants to have
  * @param actualLevel The level the user actually has
- * @returns wether or not the user has a high enough level
+ * @returns whether or not the user has a high enough level
  */
 export function pleasesLocal(wantedLevel: LocalLevel, actualLevel: LocalLevel): boolean {
     return determineHighestLocalLevel(wantedLevel, actualLevel) === actualLevel;
@@ -91,7 +73,7 @@ export function pleasesLocal(wantedLevel: LocalLevel, actualLevel: LocalLevel): 
 /**
  * @param wantedLevel the level the user wants to have
  * @param actualLevel the level the user actually has
- * @returns wether or not the user has a high enough level
+ * @returns whether or not the user has a high enough level
  */
 export function pleasesGlobal(wantedLevel: GlobalLevel, actualLevel: GlobalLevel): boolean {
     return determineHighestGlobalLevel(wantedLevel, actualLevel) === actualLevel;
@@ -117,30 +99,30 @@ class PermissionsService {
         channelId: string,
         userId: string,
     ): Promise<LocalLevelFromDatabase | null> {
-        const [result] = await db
-            .select({
-                permission: localPermissionsTable.permission,
+        const result = await db.query.localPermissions
+            .findFirst({
+                where: (localPermissions, { and, eq }) => {
+                    return and(
+                        eq(localPermissions.channelId, channelId),
+                        eq(localPermissions.userId, userId),
+                    );
+                },
+                columns: { permission: true },
             })
-            .from(localPermissionsTable)
-            .where(
-                and(
-                    eq(localPermissionsTable.channelId, channelId),
-                    eq(localPermissionsTable.userId, userId),
-                ),
-            )
-            .limit(1);
+            .catch();
 
         return result?.permission ?? null;
     }
 
     private async getDbGlobalPermission(userId: string): Promise<GlobalLevelFromDatabase | null> {
-        const [result] = await db
-            .select({
-                permission: globalPermissionsTable.permission,
+        const result = await db.query.globalPermissions
+            .findFirst({
+                where: (globalPermissions, { eq }) => {
+                    return eq(globalPermissions.userId, userId);
+                },
+                columns: { permission: true },
             })
-            .from(globalPermissionsTable)
-            .where(eq(globalPermissionsTable.userId, userId))
-            .limit(1);
+            .catch();
 
         return result?.permission ?? null;
     }
@@ -155,15 +137,9 @@ class PermissionsService {
         const isBroadcaster = channelName === senderUsername;
         const isVip = badges.hasVIP;
 
-        if (isBroadcaster) {
-            return 'broadcaster';
-        }
-        if (isMod) {
-            return 'moderator';
-        }
-        if (isVip) {
-            return 'vip';
-        }
+        if (isBroadcaster) return 'broadcaster';
+        if (isMod) return 'moderator';
+        if (isVip) return 'vip';
         return null;
     }
 
@@ -173,15 +149,17 @@ class PermissionsService {
             message.channelID,
             message.senderUserID,
         );
+
+        // if the user is banned, we don't care about the other permissions
         if (localFromDatabase === 'banned') {
             return 'banned';
         }
 
-        const permission =
-            localFromDatabase && localFromMessage
-                ? determineHighestLocalLevel(localFromDatabase, localFromMessage)
-                : localFromDatabase ?? localFromMessage ?? 'normal';
-        return permission;
+        if (localFromDatabase && localFromMessage) {
+            return determineHighestLocalLevel(localFromDatabase, localFromMessage);
+        }
+
+        return localFromDatabase ?? localFromMessage ?? 'normal';
     }
 
     async getPermission(message: PrivmsgMessage): Promise<{
@@ -210,11 +188,11 @@ class PermissionsService {
                 return;
             }
             await db
-                .delete(localPermissionsTable)
+                .delete(schema.localPermissions)
                 .where(
                     and(
-                        eq(localPermissionsTable.channelId, channel.id),
-                        eq(localPermissionsTable.userId, user.id),
+                        eq(schema.localPermissions.channelId, channel.id),
+                        eq(schema.localPermissions.userId, user.id),
                     ),
                 );
 
@@ -230,17 +208,17 @@ class PermissionsService {
         };
 
         if (!existingDatabasePermission) {
-            await db.insert(localPermissionsTable).values(databasePermission);
+            await db.insert(schema.localPermissions).values(databasePermission);
             return;
         }
 
         await db
-            .update(localPermissionsTable)
+            .update(schema.localPermissions)
             .set(databasePermission)
             .where(
                 and(
-                    eq(localPermissionsTable.channelId, channel.id),
-                    eq(localPermissionsTable.userId, user.id),
+                    eq(schema.localPermissions.channelId, channel.id),
+                    eq(schema.localPermissions.userId, user.id),
                 ),
             );
     }
@@ -253,8 +231,8 @@ class PermissionsService {
                 return;
             }
             await db
-                .delete(globalPermissionsTable)
-                .where(eq(globalPermissionsTable.userId, user.id));
+                .delete(schema.globalPermissions)
+                .where(eq(schema.globalPermissions.userId, user.id));
             return;
         }
 
@@ -265,14 +243,14 @@ class PermissionsService {
         };
 
         if (!existingDatabasePermission) {
-            await db.insert(globalPermissionsTable).values(databasePermission);
+            await db.insert(schema.globalPermissions).values(databasePermission);
             return;
         }
 
         await db
-            .update(globalPermissionsTable)
+            .update(schema.globalPermissions)
             .set(databasePermission)
-            .where(eq(globalPermissionsTable.userId, user.id));
+            .where(eq(schema.globalPermissions.userId, user.id));
     }
 
     async pleasesLocal(wantedPermission: LocalLevel, message: PrivmsgMessage): Promise<boolean> {
@@ -285,37 +263,16 @@ class PermissionsService {
         return pleasesGlobal(wantedPermission, current);
     }
 
-    async pleasesGlobalAndLocal(
-        wantedGlobalPermission: GlobalLevel,
-        wantedLocalPermission: LocalLevel,
+    async pleasesPermissions(
+        wanted: { global: GlobalLevel; local: LocalLevel },
         message: PrivmsgMessage,
     ): Promise<boolean> {
         const [global, local] = await Promise.all([
-            this.pleasesGlobal(wantedGlobalPermission, message.senderUserID),
-            this.pleasesLocal(wantedLocalPermission, message),
+            this.pleasesGlobal(wanted.global, message.senderUserID),
+            this.pleasesLocal(wanted.local, message),
         ]);
 
         return global && local;
-    }
-
-    async pleasesGlobalOrLocal(
-        wantedGlobalPermission: GlobalLevel,
-        wantedLocalPermission: LocalLevel,
-        message: PrivmsgMessage,
-    ): Promise<boolean> {
-        const { global, local } = await this.getPermission(message);
-
-        if (
-            (global === 'banned' && wantedGlobalPermission !== 'banned') ||
-            (local === 'banned' && wantedLocalPermission !== 'banned')
-        ) {
-            return false;
-        }
-
-        return (
-            pleasesGlobal(wantedGlobalPermission, global) ||
-            pleasesLocal(wantedLocalPermission, local)
-        );
     }
 }
 

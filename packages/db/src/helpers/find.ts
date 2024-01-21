@@ -37,7 +37,7 @@ export class FindHelpers {
 
     async channelModeById(id: string) {
         const result = await this.db.query.channels.findFirst({
-            where: ({ twitchLogin }, { eq }) => eq(twitchLogin, id),
+            where: ({ twitchId }, { eq }) => eq(twitchId, id),
             columns: { mode: true },
         });
 

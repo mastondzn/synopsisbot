@@ -1,22 +1,25 @@
-import type { BasicCommand } from '.';
-import type { GlobalLevel, LocalLevel } from '~/providers';
+import type { BasicCommand, CommandPermission } from '.';
 
-export function getCommandPermissions(command: BasicCommand): {
-    global: GlobalLevel;
-    local: LocalLevel;
-    mode: 'all' | 'custom' | 'any';
-} {
-    const {
-        permissions: { local = 'normal', global = 'normal', mode = 'all' } = {
-            local: 'normal',
-            global: 'normal',
-            mode: 'all',
-        },
-    } = command;
-
-    return {
-        global,
-        local,
-        mode,
+export function simplifyCommandPermissions(command: BasicCommand): Required<CommandPermission>[] {
+    const defaults: Required<CommandPermission> = {
+        global: 'normal',
+        local: 'normal',
     };
+
+    if (!command.permissions) return [defaults];
+
+    if (!Array.isArray(command.permissions)) {
+        if ('mode' in command.permissions) return [{ mode: 'custom' }];
+
+        return [{ ...defaults, ...command.permissions }];
+    }
+
+    return command.permissions.map((permission) => {
+        if ('mode' in permission) return { mode: 'custom' };
+
+        return {
+            ...defaults,
+            ...permission,
+        };
+    });
 }

@@ -3,19 +3,18 @@ import { permissions } from '~/providers';
 
 export default defineCommand({
     name: 'manage',
-    description: 'Lets ambassadors or broadcasters manage the bot in their channels.',
-    permissions: {
-        local: 'ambassador',
-        global: 'owner',
-        mode: 'any',
-    },
+    description: 'Lets ambassadors manage the bot in their channels.',
+    permissions: [{ local: 'ambassador' }, { global: 'owner' }],
     usage: [
-        'manage ban <user>', //
-        'Sets the user to banned permission, preventing them from using the bot in the current channel.',
-
-        'manage unban <user>',
-        'Sets the user to normal permission, re-allowing them to use the bot in the current channel.',
-    ].join('\n'),
+        [
+            'manage ban <user>',
+            'Sets the user to banned permission, preventing them from using the bot in the current channel.',
+        ],
+        [
+            'manage unban <user>',
+            'Sets the user to normal permission, re-allowing them to use the bot in the current channel.',
+        ],
+    ],
 
     subcommands: [
         {
@@ -23,7 +22,7 @@ export default defineCommand({
             run: async (context) => {
                 const message = context.message;
 
-                const user = await parseUserParameter(context, 1, true);
+                const user = await parseUserParameter(context, 0, true);
                 if (!user.ok) {
                     return { reply: user.reason };
                 }
@@ -63,7 +62,7 @@ export default defineCommand({
                 }
                 await permissions.setLocalPermission('banned', { channel, user });
                 return {
-                    reply: `Banned user ${user.login} from using the bot in this channel.`,
+                    reply: `Banned ${user.login} from using the bot in this channel.`,
                 };
             },
         },
@@ -72,7 +71,7 @@ export default defineCommand({
             run: async (context) => {
                 const message = context.message;
 
-                const user = await parseUserParameter(context, 1, true);
+                const user = await parseUserParameter(context, 0, true);
                 if (!user.ok) {
                     return { reply: user.reason };
                 }
@@ -114,10 +113,4 @@ export default defineCommand({
             },
         },
     ],
-
-    run: () => {
-        return {
-            reply: "Please specify a subcommand such as 'sb manage ban <user>' or 'sb manage unban <user>'.",
-        };
-    },
 });

@@ -1,8 +1,25 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import { equals } from 'ramda';
 
-import { parseParameters } from '.';
 import type { Command } from '.';
+
+export function parseParameters(message: string | PrivmsgMessage) {
+    const text = typeof message === 'string' ? message : message.messageText;
+
+    const split = text.split(/\s+/);
+    const [prefix, command = null, ...rest] = split;
+    if (!prefix || !command) {
+        throw new Error('Failed to parse command');
+    }
+
+    return {
+        text: rest.join(' ') || null,
+        split,
+        command,
+        prefix,
+        rest,
+    };
+}
 
 export function parseCommand(command: Command, message: string | PrivmsgMessage) {
     const text = typeof message === 'string' ? message : message.messageText;

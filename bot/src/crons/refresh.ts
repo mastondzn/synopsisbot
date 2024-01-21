@@ -19,16 +19,13 @@ export default defineCron({
         const expiresIn = token.expiresAt.getTime() - Date.now();
         // if it expires in more than 30 minutes, don't refresh
         if (expiresIn > 30 * 60 * 1000) {
-            let line = `Token does not need refreshing, expires at ${token.expiresAt.toISOString()} seconds.`;
+            let line = `Token does not need refreshing, expires at ${token.expiresAt.toISOString()}.`;
             line += ` (in ${prettyMilliseconds(expiresIn)})`;
-            await chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
             console.log(prefixes.refresh, line);
             return;
         }
 
         console.log(prefixes.refresh, 'Refreshing bot token');
-        await chat.say(env.TWITCH_BOT_OWNER_USERNAME, 'Refreshing bot token...');
-
         const newToken = await authProvider.refreshAccessTokenForIntent('chat');
         chat.configuration.password = newToken.accessToken;
         for (const connection of chat.connections) {
@@ -37,6 +34,5 @@ export default defineCron({
 
         const line = `Bot token refreshed, expires in ${newToken.expiresIn} seconds.`;
         console.log(prefixes.refresh, line);
-        await chat.say(env.TWITCH_BOT_OWNER_USERNAME, line);
     },
 });

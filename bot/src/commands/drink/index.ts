@@ -20,12 +20,9 @@ export default defineCommand({
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [
-        'drink',
-        'Have a drink!',
-        '',
-        'drink points',
-        'Check how many hydration points you have.',
-    ].join('\n'),
+        ['drink', 'Get a random drink and gain hydration points!'],
+        ['drink points', 'Check how many hydration points you have.'],
+    ],
 
     subcommands: [
         {
