@@ -3,7 +3,7 @@ import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import type { BasicCommand } from '~/helpers/command';
 import { TTLSet } from '~/helpers/ttl-set';
 
-const defaultUserCooldown = 30;
+const defaultUserCooldown = 3;
 
 function cooldownKey(message: Pick<PrivmsgMessage, 'senderUsername'>) {
     return `ucd:${message.senderUsername}`;
