@@ -6,7 +6,6 @@ import type { GlobalLevel, LocalLevel } from '~/providers';
 export interface CommandContext {
     message: PrivmsgMessage;
     parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
-    cancel: () => Promise<void>;
 }
 
 export type CommandFragment = (
@@ -22,39 +21,35 @@ export type CommandResult =
     | AsyncGenerator<CommandFragment>
     | Generator<CommandFragment>
     | Promise<CommandFragment>
-    | CommandFragment
-    // side effect/cancelled command
-    | Promise<void>
-    // eslint-disable-next-line ts/no-invalid-void-type
-    | void;
+    | CommandFragment;
 
 export type CommandFunction = (context: CommandContext) => CommandResult;
 
-export interface CommandPermissions {
-    local?: LocalLevel;
-    global?: GlobalLevel;
-    mode?: 'any' | 'all' | 'custom';
-}
+export type CommandPermission =
+    | {
+          local?: LocalLevel;
+          global?: GlobalLevel;
+      }
+    | { mode?: 'custom' };
 
 export interface Subcommand {
     path: string[];
-    permissions?: CommandPermissions;
+    permissions?: CommandPermission[] | CommandPermission;
     run: CommandFunction;
 }
+
+type CommandUsage = [string, string][];
 
 export interface BaseCommand {
     name: string;
     description?: string;
-    usage?: string;
+    usage?: CommandUsage;
     aliases?: string[];
-    cooldown?: {
-        user?: number; // seconds
-        global?: number; // seconds
-    };
+    cooldown?: number;
 }
 
 export type BasicCommand = BaseCommand & {
-    permissions?: CommandPermissions;
+    permissions?: CommandPermission[] | CommandPermission;
     run: CommandFunction;
 };
 

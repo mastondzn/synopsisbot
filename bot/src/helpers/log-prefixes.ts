@@ -6,15 +6,17 @@ const entries = [
     ['auth', '[services:auth]'],
 
     ['channels', '[modules:channels]'],
-    ['db-commands', '[modules:db-commands]'],
+    ['dbCommands', '[modules:db-commands]'],
 
     ['refresh', '[crons:refresh]'],
-    ['dev-announce', '[crons:dev-announce]'],
+    ['devAnnounce', '[crons:dev-announce]'],
 
     ['commands', '[events:commands]'],
     ['init', '[events:init]'],
     ['joins', '[events:joins]'],
     ['parts', '[events:parts]'],
+
+    ['self', '[self]'],
 ] as const satisfies [string, string][];
 
 const colors = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'] as const;

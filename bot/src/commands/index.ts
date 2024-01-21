@@ -39,6 +39,10 @@ class Commands extends Collection<string, Command & { meta: CommandMetadata }> {
 
         return this;
     }
+
+    public findByName(name: string) {
+        return this.find((c) => c.name === name || c.aliases?.includes(name));
+    }
 }
 
 export const commands = new Commands();

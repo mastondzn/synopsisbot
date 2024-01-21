@@ -62,5 +62,17 @@
         "json",
         "jsonc",
         "toml"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "username": "synopsis",
+            "database": "synopsis",
+            "name": "synopsisbot"
+        }
     ]
 }

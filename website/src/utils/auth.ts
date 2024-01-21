@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 
 import { eq, states } from '@synopsis/db';
 
-import { db } from '../services/db';
+import { db } from '~/services/db';
 
 export async function createState() {
     const state = randomBytes(16).toString('hex');

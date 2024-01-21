@@ -1,20 +1,25 @@
 import { captureException } from '@sentry/node';
-import { env } from '@synopsis/env/node';
+import locatePromise from 'p-locate';
+import { Lock } from 'semaphore-async-await';
 
 import { commands } from '~/commands';
-import type { CommandContext, CommandFragment } from '~/helpers/command';
-import { getCommandName, getCommandPermissions } from '~/helpers/command';
+import type { CommandContext } from '~/helpers/command';
+import { getCommandName } from '~/helpers/command';
+import {
+    developmentIsNotRunning,
+    isNotOnCooldown,
+    isPermitted,
+    isValidChannelMode,
+} from '~/helpers/command/checks';
+import { consumeFragment } from '~/helpers/command/fragment';
 import { prefix } from '~/helpers/command/prefix';
 import { parseCommand } from '~/helpers/command/simplify';
 import { defineEventHandler } from '~/helpers/event';
 import { prefixes } from '~/helpers/log-prefixes';
-import { cooldowns, permissions } from '~/providers';
-import { cache, chat, db } from '~/services';
+import { cooldowns } from '~/providers';
+import { chat } from '~/services';
 
-async function hasDevelopmentProcess(): Promise<boolean> {
-    const developmentProcess = await cache.get('dev-announce');
-    return developmentProcess === 'true';
-}
+const semaphores = new Map<string, Lock>();
 
 export default defineEventHandler({
     event: 'PRIVMSG',
@@ -22,112 +27,64 @@ export default defineEventHandler({
         const text = message.messageText;
         const channel = message.channelName;
 
-        const inDefaultChannel = [env.TWITCH_BOT_OWNER_USERNAME, env.TWITCH_BOT_USERNAME].includes(
-            channel,
-        );
+        if (!text.startsWith(prefix)) return;
 
-        if (
-            !message.messageText.startsWith(prefix) || //
-            (env.NODE_ENV === 'development' && !inDefaultChannel)
-        ) {
-            return;
-        }
-
-        const wantedCommand = getCommandName(message);
-        if (!wantedCommand) return;
+        const wanted = getCommandName(text);
+        if (!wanted) return;
 
         await commands.load();
-        const foundCommand =
-            commands.find((c) => c.name === wantedCommand || c.aliases?.includes(wantedCommand)) ??
-            null;
-        if (!foundCommand) return;
+        const commandFound = commands.findByName(wanted);
+        if (!commandFound) return;
 
-        const parsed = parseCommand(foundCommand, message);
+        const parsed = parseCommand(commandFound, message);
         if (!parsed) return;
-        const { parameters, command } = parsed;
+        const command = parsed.command;
+        const parameters = parsed.parameters;
 
-        const wantedPermissions = getCommandPermissions(command);
+        const semaphore = semaphores.get(message.senderUsername) ?? new Lock();
+        semaphores.set(message.senderUsername, semaphore);
 
-        const [mode, isOnCooldown, developmentProcessCheck, isPermitted] = await Promise.all([
-            db.find.channelModeByLogin(channel),
-            // if we're in production and theres a dev process running don't reply to commands in default channels
-            cooldowns.isOnCooldown({ command, channel, userName: message.senderUsername }),
-            hasDevelopmentProcess().then(
-                (doesHave) => env.NODE_ENV === 'production' && doesHave && inDefaultChannel,
-            ),
-            // scuffed
-            wantedPermissions.mode === 'custom'
-                ? Promise.resolve(true)
-                : wantedPermissions.mode === 'all'
-                  ? permissions.pleasesGlobalAndLocal(
-                        wantedPermissions.global,
-                        wantedPermissions.local,
-                        message,
-                    )
-                  : permissions.pleasesGlobalOrLocal(
-                        wantedPermissions.global,
-                        wantedPermissions.local,
-                        message,
-                    ),
-        ]);
+        const isReleased = semaphore.tryAcquire();
+        if (!isReleased) return;
 
-        const dontExecute: boolean = developmentProcessCheck || isOnCooldown || !isPermitted;
+        // TODO: instead of this we should just throw "user" errors and catch them
+        const checks = [
+            isValidChannelMode(message),
+            isNotOnCooldown(message),
+            developmentIsNotRunning(message),
+            isPermitted(message, command),
+        ] as const;
 
-        const cancel = () =>
-            cooldowns.clear({ command: foundCommand, channel, userName: message.senderUsername });
-
-        if (!mode)
-            console.warn(`[events:commands] mode for channel ${channel} not found in database`);
-
-        if (dontExecute) {
-            await cancel();
+        // if result is true, it means the check passed, so we dont want to locate
+        // because we want to exit as soon as possible
+        const located = await locatePromise(checks, (result) => !result);
+        // if any of the checks failed (found), we don't execute the command
+        if (typeof located === 'boolean') {
+            // release the semaphore for this user
+            semaphore.release();
             return;
         }
 
         console.log(
             prefixes.commands,
-            `executing command ${foundCommand.name} from ${message.senderUsername} in ${channel}`,
+            `#${message.channelName} ${message.senderUsername}: ${text}`,
         );
-        console.log(prefixes.commands, `${message.senderUsername}: ${text}`);
 
         const context: CommandContext = {
             message,
-            cancel,
             parameters,
-        };
-
-        const consumeFragment = async ({ fragment }: { fragment: CommandFragment }) => {
-            if ('reply' in fragment) {
-                return chat.reply(
-                    fragment.channel ?? channel,
-                    fragment.to?.messageID ?? message.messageID,
-                    fragment.reply,
-                );
-            } else if ('action' in fragment) {
-                return chat.me(fragment.channel ?? channel, fragment.action);
-            } else if ('say' in fragment) {
-                return chat.say(fragment.channel ?? channel, fragment.say);
-            }
         };
 
         try {
             const commandResult = await command.run(context);
 
-            if (!commandResult) {
-                //
-            } else if (
-                'reply' in commandResult ||
-                'action' in commandResult ||
-                'say' in commandResult
-            ) {
-                await consumeFragment({ fragment: commandResult });
+            if ('reply' in commandResult || 'action' in commandResult || 'say' in commandResult) {
+                await consumeFragment(commandResult, message);
             } else {
                 for await (const fragment of commandResult) {
-                    await consumeFragment({ fragment });
+                    await consumeFragment(fragment, message);
                 }
             }
-
-            console.log(prefixes.commands, `command ${foundCommand.name} executed successfully`);
         } catch (error) {
             captureException(error);
 
@@ -135,11 +92,14 @@ export default defineEventHandler({
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 '[events:commands]',
-                `error executing command ${foundCommand.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
+                `error executing command ${commandFound.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
             );
             console.error(error);
 
             await chat.reply(channel, message.messageID, `Something went wrong :/ (${when})`);
+        } finally {
+            semaphore.release();
+            cooldowns.addCooldown(message, command);
         }
     },
 });

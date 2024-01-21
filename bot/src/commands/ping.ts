@@ -1,16 +1,9 @@
-import type { ChatClient } from '@kararty/dank-twitch-irc';
 import ms from 'pretty-ms';
 
 import { defineCommand } from '~/helpers/command';
 import { chat } from '~/services';
 
 const startedAt = new Date();
-
-async function getLatency(chat: ChatClient) {
-    const now = Date.now();
-    await chat.ping();
-    return Date.now() - now;
-}
 
 export default defineCommand({
     name: 'ping',
@@ -25,7 +18,7 @@ export default defineCommand({
             lines.push('MrDestructoid Pong!');
         }
 
-        const latency = await getLatency(chat);
+        const latency = await chat.getLatency();
 
         lines.push(
             `Latency is ${latency}ms.`,
@@ -35,6 +28,8 @@ export default defineCommand({
             })}.`,
         );
 
-        return { reply: lines.join(' ') };
+        return {
+            reply: lines.join(' '),
+        };
     },
 });

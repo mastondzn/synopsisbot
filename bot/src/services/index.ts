@@ -1,4 +1,4 @@
-export * from './api';
+export * from './apis';
 export * from './auth';
 export * from './chat';
 export * from './database';

@@ -1,7 +1,7 @@
 import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
 import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
 
-import { RetryMixin } from '~/helpers/mixins';
+import { LogMixin, RetryMixin } from '~/helpers/mixins';
 
 class BotClient extends ChatClient {
     public async login({
@@ -71,6 +71,12 @@ class BotClient extends ChatClient {
             }, timeout * 1000);
         });
     }
+
+    public async getLatency(): Promise<number> {
+        const now = Date.now();
+        await this.ping();
+        return Date.now() - now;
+    }
 }
 
 export const chat = new BotClient({
@@ -78,4 +84,5 @@ export const chat = new BotClient({
 });
 
 chat.use(new AlternateMessageModifier(chat));
+chat.use(new LogMixin());
 chat.use(new RetryMixin());

@@ -23,10 +23,10 @@ export default defineCron({
         }).catch(() => ({ response: { ok: false } }));
 
         if (!response.ok) {
-            console.error(prefixes['dev-announce'], 'failed to announce dev mode to remote server');
+            console.error(prefixes.devAnnounce, 'failed to announce dev mode to remote server');
             return;
         }
 
-        console.log(prefixes['dev-announce'], 'announced dev mode to remote server');
+        console.log(prefixes.devAnnounce, 'announced dev mode to remote server');
     },
 });
