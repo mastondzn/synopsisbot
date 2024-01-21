@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { command: string } }) 
             <div className="max-w-[500px]">
                 <div className="space-y-1">
                     <h1 className="pb-2 text-3xl font-bold leading-none">{command.name}</h1>
-                    <h2 className="text-lg">{command.description ?? 'No command description.'}</h2>
+                    <h2 className="text-lg">{command.description}</h2>
                 </div>
                 <Separator className="my-4" />
                 <H3 className="mb-2 text-lg font-medium">Usage</H3>
