@@ -45,7 +45,6 @@
         "@commitlint/types": "18.4.4",
         "@manypkg/cli": "0.21.2",
         "@mastondzn/eslint": "0.6.13",
-        "@synopsis/tsconfig": "0.0.1",
         "@types/node": "20.11.5",
         "bumpp": "9.3.0",
         "eslint": "npm:eslint-ts-patch@8.56.0-0",

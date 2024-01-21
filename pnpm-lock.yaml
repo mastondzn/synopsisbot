@@ -23,9 +23,6 @@ importers:
       '@mastondzn/eslint':
         specifier: 0.6.13
         version: 0.6.13(@mastondzn/eslint-plugin-tailwindcss@3.14.1)(@next/eslint-plugin-next@14.0.4)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react-refresh@0.4.5)(eslint-plugin-react@7.33.2)(eslint-ts-patch@8.56.0-0)(typescript@5.3.3)
-      '@synopsis/tsconfig':
-        specifier: workspace:0.0.1
-        version: link:packages/tsconfig
       '@types/node':
         specifier: 20.11.5
         version: 20.11.5
@@ -361,7 +358,7 @@ importers:
         specifier: 14.0.4
         version: 14.0.4
       '@synopsis/bot':
-        specifier: workspace:^
+        specifier: 0.0.1
         version: link:../bot
       '@synopsis/tsconfig':
         specifier: 0.0.1
