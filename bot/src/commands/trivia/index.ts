@@ -39,7 +39,7 @@ export default defineCommand({
             .replace(/, ([^,]*)$/, ', or $1');
 
         yield {
-            reply: `New Trivia! [${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
+            reply: `[${trivia.category}] ${trivia.question} Is it ${answersAsString}? 30 seconds to answer!`,
         };
 
         const exhaustedAnswers = new Set<string>();
