@@ -1,12 +1,12 @@
 import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/array';
 import type { CommandFragment } from '~/helpers/command';
-import { defineCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command';
 import { chat } from '~/services';
 
 const activeChannels = new Set<string>();
 
-export default defineCommand({
+export default createCommand({
     name: 'trivia',
     description: 'Starts a multiple choice trivia session in chat.',
 

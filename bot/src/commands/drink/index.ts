@@ -2,7 +2,7 @@ import { type CommandUser, commandUsers, eq } from '@synopsis/db';
 import ms from 'pretty-ms';
 
 import { rollBeverageWithModifier } from './data';
-import { defineCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command';
 import { db } from '~/services';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
@@ -16,7 +16,7 @@ function hydratedRecently(
     return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
 }
 
-export default defineCommand({
+export default createCommand({
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [

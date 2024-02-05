@@ -1,8 +1,8 @@
 import { captureException } from '@sentry/node';
 
-import { defineEventHandler } from '~/helpers/event';
+import { createEventHandler } from '~/helpers/event';
 
-export default defineEventHandler({
+export default createEventHandler({
     event: 'error',
     handler: (error) => {
         console.error(error);

@@ -6,9 +6,9 @@ import { Collection } from '@discordjs/collection';
 import type { CommandMetadata } from '.';
 import { commands } from '.';
 import type { Command } from '~/helpers/command';
-import { defineCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command';
 
-export default defineCommand({
+export default createCommand({
     name: 'dev',
     description: 'Lets the owner do some things.',
     subcommands: [

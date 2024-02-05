@@ -1,5 +1,5 @@
 import type { Cron } from './types';
 
-export function defineCron(cron: Cron) {
+export function createCron(cron: Cron) {
     return cron;
 }

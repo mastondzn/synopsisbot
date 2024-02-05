@@ -1,11 +1,11 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 import { env } from '@synopsis/env/node';
 
-import { defineCron } from '../helpers/cron/define';
+import { createCron } from '../helpers/cron/define';
 import { jfetch } from '~/helpers/fetch';
 import { prefixes } from '~/helpers/log-prefixes';
 
-export default defineCron({
+export default createCron({
     name: 'dev-announce',
     // every 2 minutes
     cronTime: '*/2 * * * *',

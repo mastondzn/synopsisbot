@@ -4,7 +4,7 @@ export type EventHandlers = {
     [Key in keyof ClientEvents]: (emitted: ClientEvents[Key][0]) => Promise<void> | void;
 };
 
-export function defineEventHandler<T extends keyof ClientEvents>(handler: {
+export function createEventHandler<T extends keyof ClientEvents>(handler: {
     event: T;
     description?: string;
     handler: EventHandlers[T];
@@ -12,4 +12,4 @@ export function defineEventHandler<T extends keyof ClientEvents>(handler: {
     return handler;
 }
 
-export type BotEventHandler = ReturnType<typeof defineEventHandler>;
+export type BotEventHandler = ReturnType<typeof createEventHandler>;

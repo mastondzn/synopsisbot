@@ -1,7 +1,7 @@
 import { commands } from '.';
-import { defineCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command';
 
-export default defineCommand({
+export default createCommand({
     name: 'commands',
     description: 'List commands available to you.',
     run: () => {

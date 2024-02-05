@@ -1,9 +1,9 @@
 import { env } from '@synopsis/env/node';
 
-import { defineEventHandler } from '~/helpers/event';
+import { createEventHandler } from '~/helpers/event';
 import { prefixes } from '~/helpers/log-prefixes';
 
-export default defineEventHandler({
+export default createEventHandler({
     event: 'PART',
     handler: (message) => {
         if (message.partedUsername !== env.TWITCH_BOT_USERNAME) {

@@ -1,11 +1,11 @@
 import ms from 'pretty-ms';
 
-import { defineCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command';
 import { chat } from '~/services';
 
 const startedAt = new Date();
 
-export default defineCommand({
+export default createCommand({
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
     aliases: ['pong'],

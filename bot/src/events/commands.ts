@@ -14,14 +14,14 @@ import {
 import { consumeFragment } from '~/helpers/command/fragment';
 import { prefix } from '~/helpers/command/prefix';
 import { parseCommand } from '~/helpers/command/simplify';
-import { defineEventHandler } from '~/helpers/event';
+import { createEventHandler } from '~/helpers/event';
 import { prefixes } from '~/helpers/log-prefixes';
 import { cooldowns } from '~/providers';
 import { chat } from '~/services';
 
 const semaphores = new Map<string, Lock>();
 
-export default defineEventHandler({
+export default createEventHandler({
     event: 'PRIVMSG',
     handler: async (message) => {
         const text = message.messageText;

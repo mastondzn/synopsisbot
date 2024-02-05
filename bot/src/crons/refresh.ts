@@ -1,11 +1,11 @@
 import { env } from '@synopsis/env/node';
 import prettyMilliseconds from 'pretty-ms';
 
-import { defineCron } from '~/helpers/cron/define';
+import { createCron } from '~/helpers/cron/define';
 import { prefixes } from '~/helpers/log-prefixes';
 import { authProvider, chat, db } from '~/services';
 
-export default defineCron({
+export default createCron({
     name: 'refresh',
     // every 30 minutes
     cronTime: '0 */30 * * * *',
