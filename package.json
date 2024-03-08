@@ -16,7 +16,7 @@
         "url": "https://github.com/mastondzn/bot/issues"
     },
     "engines": {
-        "node": ">=20"
+        "node": "21.7.1"
     },
     "workspaces": [
         "bot",
@@ -50,7 +50,7 @@
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
         "only-allow": "1.2.1",
-        "prettier": "^3.2.4",
+        "prettier": "3.2.4",
         "rimraf": "5.0.5",
         "turbo": "1.11.3",
         "typescript": "5.3.3"
