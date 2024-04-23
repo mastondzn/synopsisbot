@@ -96,8 +96,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       hono:
-        specifier: 3.12.5
-        version: 3.12.5
+        specifier: 4.2.7
+        version: 4.2.7
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
@@ -265,7 +265,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.1.11
-        version: 0.1.11(hono@3.12.5)(zod@3.22.4)
+        version: 0.1.11(hono@4.2.7)(zod@3.22.4)
       '@radix-ui/react-separator':
         specifier: 1.0.3
         version: 1.0.3(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
@@ -303,8 +303,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       hono:
-        specifier: 3.12.5
-        version: 3.12.5
+        specifier: 4.2.7
+        version: 4.2.7
       ioredis:
         specifier: 5.3.2
         version: 5.3.2
@@ -1498,13 +1498,13 @@ packages:
     engines: {node: '>=18.14.1'}
     dev: false
 
-  /@hono/zod-validator@0.1.11(hono@3.12.5)(zod@3.22.4):
+  /@hono/zod-validator@0.1.11(hono@4.2.7)(zod@3.22.4):
     resolution: {integrity: sha512-PQXeHUP0+36qpRt8yfeD7N2jbK3ETlGvSN6dMof/HwUC/APRokQRjpXZm4rrlG71Ft0aWE01+Bm4XejqPie5Uw==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.19.1
     dependencies:
-      hono: 3.12.5
+      hono: 4.2.7
       zod: 3.22.4
     dev: false
 
@@ -5665,8 +5665,8 @@ packages:
     resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
     dev: true
 
-  /hono@3.12.5:
-    resolution: {integrity: sha512-oIuZfMGwk/IUIAOW+9/VZhT4g99Wce39GYBs2nhY7386iYFAprI8vF2/+nfXjzlrY+CXGJ0+GxF833nN0oRp2w==}
+  /hono@4.2.7:
+    resolution: {integrity: sha512-k1xHi86tJnRIVvqhFMBDGFKJ8r5O+bEsT4P59ZK59r0F300Xd910/r237inVfuT/VmE86RQQffX4OYNda6dLXw==}
     engines: {node: '>=16.0.0'}
     dev: false
 
