@@ -24,8 +24,7 @@
         "@mastondzn/eslint": "0.6.13",
         "@synopsis/tsconfig": "0.0.1",
         "@t3-oss/env-nextjs": "0.7.3",
-        "eslint": "npm:eslint-ts-patch@8.56.0-0",
-        "eslint-ts-patch": "8.56.0-0",
+        "eslint": "^8.57.0",
         "zod": "3.22.4"
     }
 }
