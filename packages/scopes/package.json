@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.9.0",
-        "@synopsis/tsconfig": "0.0.1",
+        "@synopsis/tsconfig": "workspace:*",
         "eslint": "^8.57.0"
     }
 }
