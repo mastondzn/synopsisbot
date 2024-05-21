@@ -16,6 +16,22 @@ class BotClient extends ChatClient {
         await this.connect();
     }
 
+    /**
+     * Collects a single message that satisfies the filter
+     * @param options Options for the collection
+     * @param options.filter Predicate that the message should satisfy
+     * @param options.timeout Time in seconds to wait until the promise rejects
+     * @returns Promise that resolves to the message
+     *
+     * @example
+     * ```typescript
+     * // collects the first message from 'someuser'
+     * const message = await chat.collectMessage({
+     *     filter: (message) => message.senderUsername === 'someuser',
+     *     timeout: 10,
+     * });
+     * ```
+     */
     public async collectMessage({
         filter,
         timeout = 10,
@@ -40,6 +56,20 @@ class BotClient extends ChatClient {
         });
     }
 
+    /**
+     * Collects a single message that satisfies the predicate
+     * @param options Options for the collection
+     * @param options.filter Predicate that the message should satisfy
+     * @param options.exitOn Predicate that should return true to exit the collection
+     * @param options.timeout Time in seconds to wait until the promise rejects
+     * @returns Promise that resolves to the message
+     *
+     * @example
+     * const message = await chat.collectMessage({
+     *     filter: (message) => message.senderUsername === 'someuser',
+     *     timeout: 10,
+     * });
+     */
     public async collectMessages({
         filter,
         exitOn,
