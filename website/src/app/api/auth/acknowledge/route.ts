@@ -88,8 +88,9 @@ export async function GET(request: NextRequest) {
         scope: scopesFromTwitch,
     } = responseParseResult.data;
 
-    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch((error) =>
-        error instanceof Error ? { error: error.message } : { error: 'Unknown Error' },
+    const tokenInfo = await getTokenInfo(accessToken, env.TWITCH_CLIENT_ID).catch(
+        (error: unknown) =>
+            error instanceof Error ? { error: error.message } : { error: 'Unknown Error' },
     );
 
     if ('error' in tokenInfo) {
