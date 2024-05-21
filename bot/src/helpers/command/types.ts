@@ -1,4 +1,4 @@
-import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
+import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 
 import type { parseCommand } from './simplify';
 import type { GlobalLevel, LocalLevel } from '~/providers';

@@ -2,7 +2,7 @@ import {
     AlternateMessageModifier,
     ChatClient,
     type PrivmsgMessage,
-} from '@kararty/dank-twitch-irc';
+} from '@mastondzn/dank-twitch-irc';
 
 import { LogMixin, RetryMixin } from '~/helpers/mixins';
 

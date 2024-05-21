@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs/promises';
 
 import { Collection } from '@discordjs/collection';
-import type { ChatClient } from '@kararty/dank-twitch-irc';
+import type { ChatClient } from '@mastondzn/dank-twitch-irc';
 
 import type { BotEventHandler } from '~/helpers/event';
 

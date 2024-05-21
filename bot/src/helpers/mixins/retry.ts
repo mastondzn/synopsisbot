@@ -1,4 +1,4 @@
-import { type ChatClient, type ClientMixin, applyReplacements } from '@kararty/dank-twitch-irc';
+import { type ChatClient, type ClientMixin, applyReplacements } from '@mastondzn/dank-twitch-irc';
 
 import { retry } from '~/helpers/retry';
 

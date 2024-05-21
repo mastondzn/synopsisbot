@@ -56,9 +56,9 @@ importers:
       '@hono/node-server':
         specifier: 1.11.1
         version: 1.11.1
-      '@kararty/dank-twitch-irc':
-        specifier: 6.2.0
-        version: 6.2.0
+      '@mastondzn/dank-twitch-irc':
+        specifier: 7.1.0
+        version: 7.1.0
       '@sentry/node':
         specifier: 8.2.1
         version: 8.2.1
@@ -1376,9 +1376,6 @@ packages:
     resolution: {integrity: sha512-f5DRIOZf7wxogefH03RjMPMdBF7ADTWUMoOs9kaJo06EfwF+aFhMZMDZxHg/Xe12hptN9xoZjGso2fdjapBRIA==}
     engines: {node: '>=10'}
 
-  '@kararty/dank-twitch-irc@6.2.0':
-    resolution: {integrity: sha512-2Uy+90F3F3vHJe/g21d5Tc//C0IxmlQYvjkmAdtlBu1aWKZ5PSHmGs/2M8JZd5rScy/edBx+bzfRqdjKpBIiag==}
-
   '@manypkg/cli@0.21.4':
     resolution: {integrity: sha512-EACxxb+c/t6G0l1FrlyewZeBnyR5V1cLkXjnBfsay5TN1UgbilFpG6POglzn+lVJet9NqnEKe3RLHABzkIDZ0Q==}
     engines: {node: '>=14.18.0'}
@@ -1395,6 +1392,9 @@ packages:
   '@manypkg/tools@1.1.0':
     resolution: {integrity: sha512-SkAyKAByB9l93Slyg8AUHGuM2kjvWioUTCckT/03J09jYnfEzMO/wSXmEhnKGYs6qx9De8TH4yJCl0Y9lRgnyQ==}
     engines: {node: '>=14.18.0'}
+
+  '@mastondzn/dank-twitch-irc@7.1.0':
+    resolution: {integrity: sha512-kb58tW4DruOj2oJ6XMaG1N9h/vgA+40ci5VFlxRUD3Qq9eA8pDdB53LaU210Drfbof0oaZ4u8FP+NlQkJ1/gPQ==}
 
   '@mastondzn/eslint-plugin-tailwindcss@3.15.1':
     resolution: {integrity: sha512-62bbP+T+4hpNB67BGRqhb9TOUamMXoFTcdcvT3YOc7O42lAlp7OVtq2W6GcbWr5zm1jnFgqDkRDQ0eVBtp6a+w==}
@@ -2395,6 +2395,9 @@ packages:
   assertion-error@1.1.0:
     resolution: {integrity: sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==}
 
+  async-sema@3.1.1:
+    resolution: {integrity: sha512-tLRNUXati5MFePdAk8dw7Qt7DpxPB60ofAgn8WRhW6a2rcimZnYBP9oxHiv0OHy+Wz7kPMG+t4LGdt31+4EmGg==}
+
   autoprefixer@10.4.19:
     resolution: {integrity: sha512-BaENR2+zBZ8xXhM4pUaKUxlVdxZ0EZhjvbopwnXmxRUfqDmwSpC2lAi/QXvx7NRdPCo1WKEcEF6mV64si1z4Ew==}
     engines: {node: ^10 || ^12 || >=14}
@@ -3385,9 +3388,6 @@ packages:
   event-emitter@0.3.5:
     resolution: {integrity: sha512-D9rRn9y7kLPnJ+hMq7S/nhvoKwwvVJahBi2BPmx3bvbsEdK3W9ii8cBSGjP+72/LnM4n6fo3+dkCX5FeTQruXA==}
 
-  eventemitter3@4.0.7:
-    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
-
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
 
@@ -4269,9 +4269,6 @@ packages:
   lodash.mergewith@4.6.2:
     resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
 
-  lodash.pickby@4.6.0:
-    resolution: {integrity: sha512-AZV+GsS/6ckvPOVQPXSiFFacKvKB4kOQu6ynt9wz0F3LO4R9Ij4K1ddYsIytDpSgLz88JHd9P+oaLeej5/Sl7Q==}
-
   lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
 
@@ -4332,9 +4329,6 @@ packages:
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
-
-  make-error-cause@2.3.0:
-    resolution: {integrity: sha512-etgt+n4LlOkGSJbBTV9VROHA5R7ekIPS4vfh+bCAoJgRrJWdqJCBbpS3osRJ/HrT7R68MzMiY3L3sDJ/Fd8aBg==}
 
   make-error@1.3.6:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
@@ -6800,24 +6794,6 @@ snapshots:
       string-argv: 0.3.2
       type-detect: 4.0.8
 
-  '@kararty/dank-twitch-irc@6.2.0':
-    dependencies:
-      debug-logger: 0.4.1
-      duplexify: 4.1.2
-      eventemitter3: 4.0.7
-      lodash.camelcase: 4.3.0
-      lodash.pickby: 4.6.0
-      make-error-cause: 2.3.0
-      ms: 2.1.3
-      randombytes: 2.1.0
-      semaphore-async-await: 1.5.1
-      simple-websocket: 9.1.0
-      split2: 4.2.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
   '@manypkg/cli@0.21.4':
     dependencies:
       '@manypkg/get-packages': 2.2.1
@@ -6851,6 +6827,19 @@ snapshots:
       globby: 11.1.0
       jju: 1.4.0
       read-yaml-file: 1.1.0
+
+  '@mastondzn/dank-twitch-irc@7.1.0':
+    dependencies:
+      async-sema: 3.1.1
+      debug-logger: 0.4.1
+      duplexify: 4.1.2
+      eventemitter3: 5.0.1
+      simple-websocket: 9.1.0
+      split2: 4.2.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   '@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3)':
     dependencies:
@@ -8081,6 +8070,8 @@ snapshots:
       is-shared-array-buffer: 1.0.3
 
   assertion-error@1.1.0: {}
+
+  async-sema@3.1.1: {}
 
   autoprefixer@10.4.19(postcss@8.4.38):
     dependencies:
@@ -9325,8 +9316,6 @@ snapshots:
       d: 1.0.1
       es5-ext: 0.10.62
 
-  eventemitter3@4.0.7: {}
-
   eventemitter3@5.0.1: {}
 
   execa@5.1.1:
@@ -10403,8 +10392,6 @@ snapshots:
 
   lodash.mergewith@4.6.2: {}
 
-  lodash.pickby@4.6.0: {}
-
   lodash.snakecase@4.1.1: {}
 
   lodash.sortby@4.7.0: {}
@@ -10457,10 +10444,6 @@ snapshots:
   make-dir@4.0.0:
     dependencies:
       semver: 7.6.2
-
-  make-error-cause@2.3.0:
-    dependencies:
-      make-error: 1.3.6
 
   make-error@1.3.6: {}
 

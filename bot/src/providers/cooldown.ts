@@ -1,4 +1,4 @@
-import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
+import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 
 import type { BasicCommand } from '~/helpers/command';
 import { TTLSet } from '~/helpers/ttl-set';
