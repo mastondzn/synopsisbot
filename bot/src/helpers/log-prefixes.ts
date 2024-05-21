@@ -6,7 +6,6 @@ const entries = [
     ['auth', '[services:auth]'],
 
     ['channels', '[modules:channels]'],
-    ['dbCommands', '[modules:db-commands]'],
 
     ['refresh', '[crons:refresh]'],
     ['devAnnounce', '[crons:dev-announce]'],
