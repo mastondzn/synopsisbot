@@ -3,9 +3,9 @@ import type { Config } from 'drizzle-kit';
 import isDocker from 'is-docker';
 
 export default {
+    dialect: 'postgresql',
     schema: './src/schema/index.ts',
     out: './migrations',
-    driver: 'pg',
     dbCredentials: {
         host: isDocker() ? 'db' : 'localhost',
         user: env.DB_USERNAME,
