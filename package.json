@@ -2,7 +2,7 @@
     "name": "@synopsis/root",
     "version": "0.3.3",
     "private": true,
-    "packageManager": "pnpm@8.14.1",
+    "packageManager": "pnpm@9.1.2",
     "author": {
         "name": "mastondzn",
         "url": "https://github.com/mastondzn"
@@ -50,7 +50,7 @@
         "eslint": "npm:eslint-ts-patch@8.56.0-0",
         "eslint-ts-patch": "8.56.0-0",
         "only-allow": "1.2.1",
-        "prettier": "^3.2.4",
+        "prettier": "^3.2.5",
         "rimraf": "5.0.5",
         "turbo": "1.11.3",
         "typescript": "5.3.3"
