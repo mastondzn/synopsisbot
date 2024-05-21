@@ -1,6 +1,5 @@
 import type { Buffer } from 'node:buffer';
-import type { Hash } from 'node:crypto';
-import { createHash } from 'node:crypto';
+import { type Hash, createHash } from 'node:crypto';
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 

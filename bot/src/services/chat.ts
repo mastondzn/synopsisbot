@@ -1,5 +1,8 @@
-import type { PrivmsgMessage } from '@kararty/dank-twitch-irc';
-import { AlternateMessageModifier, ChatClient } from '@kararty/dank-twitch-irc';
+import {
+    AlternateMessageModifier,
+    ChatClient,
+    type PrivmsgMessage,
+} from '@kararty/dank-twitch-irc';
 
 import { LogMixin, RetryMixin } from '~/helpers/mixins';
 

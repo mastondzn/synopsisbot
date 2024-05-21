@@ -44,7 +44,7 @@
         "@commitlint/config-conventional": "19.2.2",
         "@commitlint/types": "19.0.3",
         "@manypkg/cli": "0.21.4",
-        "@mastondzn/eslint": "0.6.13",
+        "@mastondzn/eslint": "0.9.0",
         "@types/node": "20.12.12",
         "bumpp": "9.4.1",
         "eslint": "^8.57.0",

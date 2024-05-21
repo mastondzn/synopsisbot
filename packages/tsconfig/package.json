@@ -9,7 +9,7 @@
         "tsconfig.node.json"
     ],
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.13",
+        "@mastondzn/eslint": "0.9.0",
         "eslint": "^8.57.0"
     }
 }

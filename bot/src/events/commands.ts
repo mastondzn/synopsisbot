@@ -3,8 +3,7 @@ import locatePromise from 'p-locate';
 import { Lock } from 'semaphore-async-await';
 
 import { commands } from '~/commands';
-import type { CommandContext } from '~/helpers/command';
-import { getCommandName } from '~/helpers/command';
+import { type CommandContext, getCommandName } from '~/helpers/command';
 import {
     developmentIsNotRunning,
     isNotOnCooldown,

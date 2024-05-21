@@ -9,7 +9,7 @@
         "paths": { "~/*": ["./src/*"] },
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "plugins": [{ "name": "next" }],
+        "plugins": [{ "name": "next" }]
     },
     "include": [
         "eslint.config.mjs",
@@ -18,7 +18,7 @@
         "**/*.tsx",
         "**/*.cjs",
         "**/*.mjs",
-        ".next/types/**/*.ts",
+        ".next/types/**/*.ts"
     ],
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules"]
 }

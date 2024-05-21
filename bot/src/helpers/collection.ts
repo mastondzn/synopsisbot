@@ -1,5 +1,4 @@
-import type { ReadonlyCollection } from '@discordjs/collection';
-import { Collection } from '@discordjs/collection';
+import { Collection, type ReadonlyCollection } from '@discordjs/collection';
 
 export function difference<K, V>(
     left: ReadonlyCollection<K, V>,

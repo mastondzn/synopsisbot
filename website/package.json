@@ -42,7 +42,7 @@
         "zod": "3.23.8"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.6.13",
+        "@mastondzn/eslint": "0.9.0",
         "@mastondzn/eslint-plugin-tailwindcss": "3.15.1",
         "@next/eslint-plugin-next": "14.2.3",
         "@synopsis/bot": "0.0.1",

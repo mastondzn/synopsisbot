@@ -3,10 +3,8 @@ import { inspect } from 'node:util';
 
 import { Collection } from '@discordjs/collection';
 
-import type { CommandMetadata } from '.';
-import { commands } from '.';
-import type { Command } from '~/helpers/command';
-import { createCommand } from '~/helpers/command';
+import { type CommandMetadata, commands } from '.';
+import { type Command, createCommand } from '~/helpers/command';
 
 export default createCommand({
     name: 'dev',

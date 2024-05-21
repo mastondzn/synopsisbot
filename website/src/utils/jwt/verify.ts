@@ -22,7 +22,7 @@ export async function verifyJWT(jwt: string | null | undefined): Promise<VerifyJ
 
         const secret = getEncodedAppSecret();
         const decoded = await jwtVerify(jwt, secret, { algorithms: ['HS256'] }) //
-            .catch((error) => ({
+            .catch((error: unknown) => ({
                 error: error instanceof Error ? error.message : 'Unknown Error',
             }));
 

@@ -1,5 +1,4 @@
-import type { ChatClient, ClientMixin } from '@kararty/dank-twitch-irc';
-import { applyReplacements } from '@kararty/dank-twitch-irc';
+import { type ChatClient, type ClientMixin, applyReplacements } from '@kararty/dank-twitch-irc';
 
 import { prefixes } from '../log-prefixes';
 
