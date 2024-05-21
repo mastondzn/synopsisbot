@@ -1,28 +1,28 @@
 import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/array';
-import type { CommandFragment } from '~/helpers/command';
 import { createCommand } from '~/helpers/command';
+import { TTLSet } from '~/helpers/ttl-set';
 import { chat } from '~/services';
 
-const activeChannels = new Set<string>();
+const active = new TTLSet<string>();
 
 export default createCommand({
     name: 'trivia',
     description: 'Starts a multiple choice trivia session in chat.',
 
-    async *run({ message }): AsyncGenerator<CommandFragment> {
-        if (activeChannels.has(message.channelName)) {
+    async *run({ message }) {
+        if (active.has(message.channelName)) {
             return yield { reply: 'There is already a trivia session active in this channel.' };
         }
-        activeChannels.add(message.channelName);
-        setTimeout(() => activeChannels.delete(message.channelName), 1000 * 32);
+
+        active.set(message.channelName, 1000 * 30);
 
         let trivia: Trivia;
         try {
             trivia = await getTrivia();
         } catch (error) {
             console.error(error);
-            activeChannels.delete(message.channelName);
+            active.delete(message.channelName);
             return yield { reply: 'Failed to fetch a question.. :/' };
         }
 
@@ -74,7 +74,7 @@ export default createCommand({
                 const incomingContent = incoming.messageText.toLowerCase().trim();
                 const isCorrectLetter = incomingContent === correctLetter;
                 const isCorrectAnswer = incomingContent === correctAnswer.toLowerCase();
-                const areAnswersExhausted = exhaustedAnswers.size === 3;
+                const areAnswersExhausted = exhaustedAnswers.size === answers.length - 1;
                 return isCorrectLetter || isCorrectAnswer || areAnswersExhausted;
             },
         });
@@ -86,7 +86,7 @@ export default createCommand({
             return isCorrectLetter || isCorrectAnswer;
         });
 
-        activeChannels.delete(message.channelName);
+        active.delete(message.channelName);
 
         if (!winner) {
             return yield {
