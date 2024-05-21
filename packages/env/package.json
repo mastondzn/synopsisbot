@@ -18,13 +18,13 @@
         "zod": "3.22.4"
     },
     "dependencies": {
-        "@t3-oss/env-core": "0.7.3"
+        "@t3-oss/env-core": "0.10.1"
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.6.13",
         "@synopsis/tsconfig": "0.0.1",
-        "@t3-oss/env-nextjs": "0.7.3",
+        "@t3-oss/env-nextjs": "0.10.1",
         "eslint": "^8.57.0",
-        "zod": "3.22.4"
+        "zod": "3.23.8"
     }
 }
