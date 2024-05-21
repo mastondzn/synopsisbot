@@ -2,15 +2,15 @@ import { z } from 'zod';
 
 import { zfetch } from '~/helpers/fetch';
 
+const decoded = z.string().transform((string) => decodeURIComponent(string));
+
 const questionSchema = z.object({
-    category: z.string().transform((string) => decodeURIComponent(string)),
+    category: decoded,
     type: z.literal('multiple'),
     difficulty: z.enum(['easy', 'medium', 'hard']),
-    question: z.string().transform((string) => decodeURIComponent(string)),
-    correct_answer: z.string().transform((string) => decodeURIComponent(string)),
-    incorrect_answers: z
-        .array(z.string())
-        .transform((array) => array.map((string) => decodeURIComponent(string))),
+    question: decoded,
+    correct_answer: decoded,
+    incorrect_answers: z.array(decoded),
 });
 
 const responseSchema = z.object({
