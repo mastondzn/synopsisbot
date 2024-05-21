@@ -28,7 +28,7 @@ export default createCommand({
 
         const correctAnswer = trivia.correct_answer;
         const answers = shuffle([trivia.correct_answer, ...trivia.incorrect_answers]);
-        const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+        const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].slice(0, answers.length);
 
         const correctIndex = answers.indexOf(correctAnswer);
         const correctLetter = alphabet[correctIndex]!.toLowerCase();
