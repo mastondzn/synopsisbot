@@ -20,17 +20,15 @@ export default createCommand({
 
                 // eslint-disable-next-line no-eval
                 const result: unknown = await eval(parameters.text);
-                let inspected =
-                    typeof result === 'string'
-                        ? result
-                        : inspect(result, {
-                              depth: 2,
-                              colors: false,
-                              breakLength: Number.POSITIVE_INFINITY,
-                          }).replaceAll('\n', ' ');
+
+                const inspected = inspect(result, {
+                    depth: 2,
+                    colors: false,
+                    breakLength: Number.POSITIVE_INFINITY,
+                }).replaceAll('\n', ' ');
 
                 if (inspected.length > 475) {
-                    inspected = `${inspected.slice(0, 475)}... (too long)`;
+                    return { reply: `${inspected.slice(0, 475)}... (too long)` };
                 }
 
                 return { reply: inspected };
@@ -51,20 +49,21 @@ export default createCommand({
                     }
                 }
 
-                const lines = ['Reloaded commands,'];
-
                 if (difference.size === 0) {
-                    lines.push('looks like nothing changed.');
-                } else {
-                    lines.push(
-                        difference.size === 1
-                            ? 'one command was changed:'
-                            : `${difference.size} commands were changed:`,
-                        `${[...difference.values()].map((command) => command.name).join(', ')}.`,
-                    );
+                    return { reply: `Reloaded commands, looks like nothing changed.` };
                 }
 
-                return { reply: lines.join(' ') };
+                if (difference.size === 1) {
+                    return {
+                        reply: `Reloaded commands, one command was changed: ${difference.first()?.name}.`,
+                    };
+                }
+
+                return {
+                    reply: `Reloaded commands, ${difference.size} commands were changed: ${difference
+                        .map((command) => command.name)
+                        .join(', ')}.`,
+                };
             },
         },
     ],
