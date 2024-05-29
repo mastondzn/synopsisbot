@@ -3,8 +3,6 @@ import ms from 'pretty-ms';
 import { createCommand } from '~/helpers/command';
 import { chat } from '~/services';
 
-const startedAt = new Date();
-
 export default createCommand({
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
@@ -18,18 +16,14 @@ export default createCommand({
             lines.push('MrDestructoid Pong!');
         }
 
-        const latency = await chat.getLatency();
-
         lines.push(
-            `Latency is ${latency}ms.`,
-            `Uptime is ${ms(Date.now() - startedAt.getTime(), {
+            `Uptime is ${ms(process.uptime() * 1000, {
                 unitCount: 2,
                 secondsDecimalDigits: 0,
             })}.`,
+            `Latency is ${await chat.getLatency()}ms.`,
         );
 
-        return {
-            reply: lines.join(' '),
-        };
+        return { reply: lines.join(' ') };
     },
 });
