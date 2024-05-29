@@ -9,17 +9,16 @@ import { schema } from './schema';
 import type { Database, DatabaseOptions, KyselyDatabase } from './types';
 
 export function createDatabase(options: DatabaseOptions): Database {
-    const sql = postgres(options);
-    const db = drizzle(sql, { ...options, schema });
-    const dialect = new PostgresJSDialect({
-        postgres: sql,
-    });
+    const raw = postgres(options);
+    const db = drizzle(raw, { ...options, schema });
 
     const find = new FindHelpers(db);
     const edit = new EditHelpers(db);
-    const ky = new Kysely<KyselyDatabase>({ dialect });
+    const ky = new Kysely<KyselyDatabase>({
+        dialect: new PostgresJSDialect({ postgres: raw }),
+    });
 
-    return Object.assign(db, { find, edit, ky, raw: sql });
+    return Object.assign(db, { find, edit, ky, raw });
 }
 
 export * from './types';
