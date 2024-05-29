@@ -1,20 +1,24 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
+import type { z } from 'zod';
 
 import type { parseCommand } from './simplify';
 import type { GlobalLevel, LocalLevel } from '~/providers';
 
-export interface CommandContext {
-    message: PrivmsgMessage;
-    parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
+export interface CommandBase {
+    name: string;
+    description: string;
+    usage?: [string, string][];
+    aliases?: string[];
+    cooldown?: number;
+    permissions?: CommandPermission[] | CommandPermission;
 }
+
+export type CommandOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
 
 export type CommandFragment = (
     | { say: string }
     | { action: string }
-    | {
-          reply: string;
-          to?: Pick<PrivmsgMessage, 'messageID'>;
-      }
+    | { reply: string; to?: Pick<PrivmsgMessage, 'messageID'> }
 ) & { channel?: string };
 
 export type CommandResult =
@@ -23,37 +27,27 @@ export type CommandResult =
     | Promise<CommandFragment>
     | CommandFragment;
 
+export interface CommandContext {
+    message: PrivmsgMessage;
+    parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
+    options: Record<string, unknown>;
+}
+
 export type CommandFunction = (context: CommandContext) => CommandResult;
 
-export type CommandPermission =
-    | {
-          local?: LocalLevel;
-          global?: GlobalLevel;
-      }
-    | { mode?: 'custom' };
+export type CommandPermission = { local?: LocalLevel; global?: GlobalLevel } | { mode?: 'custom' };
 
-export interface Subcommand {
-    path: string[];
-    permissions?: CommandPermission[] | CommandPermission;
-    run: CommandFunction;
-}
-
-type CommandUsage = [string, string][];
-
-export interface BaseCommand {
-    name: string;
-    description: string;
-    usage?: CommandUsage;
-    aliases?: string[];
-    cooldown?: number;
-}
-
-export type BasicCommand = BaseCommand & {
-    permissions?: CommandPermission[] | CommandPermission;
+export type BasicCommand = CommandBase & {
+    options?: CommandOptions;
     run: CommandFunction;
 };
 
-export type CommandWithSubcommands = BaseCommand & {
+export type Subcommand = { path: string[] } & {
+    options?: CommandOptions;
+    run: CommandFunction;
+};
+
+export type CommandWithSubcommands = CommandBase & {
     subcommands: Subcommand[];
 };
 
