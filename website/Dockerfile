@@ -1,32 +1,32 @@
 FROM node:20-alpine AS base
-
-FROM base AS builder
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 RUN apk add --no-cache libc6-compat
 RUN apk update
+
+FROM base AS builder
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo
+RUN pnpm add turbo --global
 COPY . .
 RUN turbo prune @synopsis/website --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN npm install pnpm -g
 RUN pnpm install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
-RUN yarn turbo build --filter=@synopsis/website...
+RUN pnpm turbo build --filter=@synopsis/website...
 
 FROM base AS runner
 WORKDIR /app
