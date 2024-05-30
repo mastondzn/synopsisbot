@@ -20,7 +20,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Build the project
 COPY --from=builder /app/out/full/ .
