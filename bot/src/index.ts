@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '@synopsis/env/node';
 
+import { commands } from './commands';
 import { cronJobs } from './crons';
 import { eventHandlers } from './events';
 import { modules } from './modules';
@@ -14,6 +15,8 @@ Sentry.init({
     tracesSampleRate: 1,
     profilesSampleRate: 1,
 });
+
+await commands.load();
 
 const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 authProvider.addUser(

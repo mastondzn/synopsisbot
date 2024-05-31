@@ -25,13 +25,11 @@ export default createEventHandler({
     handler: async (message) => {
         const text = message.messageText;
         const channel = message.channelName;
-
         if (!text.startsWith(prefix)) return;
 
         const wanted = getCommandName(text);
         if (!wanted) return;
 
-        await commands.load();
         const commandFound = commands.findByName(wanted);
         if (!commandFound) return;
 

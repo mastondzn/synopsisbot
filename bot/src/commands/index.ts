@@ -40,7 +40,7 @@ class Commands extends Collection<string, Command & { meta: CommandMetadata }> {
         return this;
     }
 
-    public findByName(name: string) {
+    public findByName(name: string): Command | undefined {
         return this.find((c) => c.name === name || c.aliases?.includes(name));
     }
 }
