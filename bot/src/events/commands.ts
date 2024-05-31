@@ -3,7 +3,7 @@ import locatePromise from 'p-locate';
 import { Lock } from 'semaphore-async-await';
 
 import { commands } from '~/commands';
-import { type CommandContext, getCommandName } from '~/helpers/command';
+import { type CommandContext, getWantedCommand, parseParameters } from '~/helpers/command';
 import {
     developmentIsNotRunning,
     isNotOnCooldown,
@@ -12,7 +12,7 @@ import {
 } from '~/helpers/command/checks';
 import { consumeFragment } from '~/helpers/command/fragment';
 import { prefix } from '~/helpers/command/prefix';
-import { parseCommand } from '~/helpers/command/simplify';
+import { simplifyCommand } from '~/helpers/command/simplify';
 import { createEventHandler } from '~/helpers/event';
 import { prefixes } from '~/helpers/log-prefixes';
 import { cooldowns } from '~/providers';
@@ -27,16 +27,15 @@ export default createEventHandler({
         const channel = message.channelName;
         if (!text.startsWith(prefix)) return;
 
-        const wanted = getCommandName(text);
+        const wanted = getWantedCommand(message);
         if (!wanted) return;
 
-        const commandFound = commands.findByName(wanted);
-        if (!commandFound) return;
+        const unsimplified = commands.findByName(wanted);
+        if (!unsimplified) return;
 
-        const parsed = parseCommand(commandFound, message);
-        if (!parsed) return;
-        const command = parsed.command;
-        const parameters = parsed.parameters;
+        // TODO: if there isn't a found subcommand we should probably notify the user
+        const command = simplifyCommand(unsimplified, message);
+        if (!command) return;
 
         const semaphore = semaphores.get(message.senderUsername) ?? new Lock();
         semaphores.set(message.senderUsername, semaphore);
@@ -69,7 +68,7 @@ export default createEventHandler({
 
         const context: CommandContext = {
             message,
-            parameters,
+            parameters: parseParameters(message),
         };
 
         try {
@@ -89,7 +88,7 @@ export default createEventHandler({
             const errorMessage = error instanceof Error ? error.message : 'unknown error';
             console.error(
                 '[events:commands]',
-                `error executing command ${commandFound.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
+                `error executing command ${unsimplified.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
             );
             console.error(error);
 

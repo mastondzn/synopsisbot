@@ -2,14 +2,17 @@ import type { z } from 'zod';
 
 import type {
     BasicCommand,
+    Command,
     CommandContext,
     CommandOptions,
     CommandResult,
     CommandWithSubcommands,
     Subcommand,
+    SubcommandWithPermission,
 } from './types';
 
 export function createCommand(command: CommandWithSubcommands): CommandWithSubcommands;
+
 export function createCommand<T extends CommandOptions = CommandOptions>(
     command: Omit<BasicCommand, 'run' | 'options'> & {
         options?: T;
@@ -20,7 +23,8 @@ export function createCommand<T extends CommandOptions = CommandOptions>(
         ) => CommandResult;
     },
 ): BasicCommand;
-export function createCommand(command: BasicCommand | CommandWithSubcommands) {
+
+export function createCommand(command: BasicCommand | CommandWithSubcommands): Command {
     return command;
 }
 
@@ -33,6 +37,19 @@ export function createSubcommand<T extends CommandOptions = CommandOptions>(
             },
         ) => CommandResult;
     },
-) {
+): Subcommand;
+
+export function createSubcommand<T extends CommandOptions = CommandOptions>(
+    subcommand: Omit<SubcommandWithPermission, 'run' | 'options'> & {
+        options?: T;
+        run: (
+            context: Omit<CommandContext, 'options'> & {
+                options: { [K in keyof T]: z.infer<T[K]['schema']> };
+            },
+        ) => CommandResult;
+    },
+): SubcommandWithPermission;
+
+export function createSubcommand(subcommand: Subcommand | SubcommandWithPermission) {
     return subcommand;
 }

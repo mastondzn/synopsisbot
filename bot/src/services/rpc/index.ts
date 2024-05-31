@@ -1,4 +1,5 @@
 import { serve } from '@hono/node-server';
+import { env } from '@synopsis/env/node';
 import { Hono } from 'hono';
 
 import { route as commands } from './commands';
@@ -11,8 +12,10 @@ export const rpc = new Hono() //
 
 export type RPC = typeof rpc;
 
-serve({
-    fetch: rpc.fetch,
-    port: 3002,
-});
-console.log(prefixes.rpc, 'rpc server listening on port 3002');
+if (env.NODE_ENV !== 'test') {
+    serve({
+        fetch: rpc.fetch,
+        port: 3002,
+    });
+    console.log(prefixes.rpc, 'rpc server listening on port 3002');
+}

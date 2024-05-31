@@ -1,7 +1,7 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import type { z } from 'zod';
 
-import type { parseCommand } from './simplify';
+import type { CommandParameters } from './parameters';
 import type { GlobalLevel, LocalLevel } from '~/providers';
 
 export interface CommandBase {
@@ -29,7 +29,7 @@ export type CommandResult =
 
 export interface CommandContext {
     message: PrivmsgMessage;
-    parameters: NonNullable<ReturnType<typeof parseCommand>>['parameters'];
+    parameters: CommandParameters;
     options: Record<string, unknown>;
 }
 
@@ -42,13 +42,17 @@ export type BasicCommand = CommandBase & {
     run: CommandFunction;
 };
 
-export type Subcommand = { path: string[] } & {
+export type Subcommand = { path?: string[] } & {
     options?: CommandOptions;
     run: CommandFunction;
 };
 
-export type CommandWithSubcommands = CommandBase & {
-    subcommands: Subcommand[];
-};
+export type SubcommandWithPermission = Subcommand & { permissions: CommandPermission };
+
+export type CommandWithSubcommands =
+    | (Omit<CommandBase, 'permissions'> & {
+          subcommands: SubcommandWithPermission[];
+      })
+    | (CommandBase & { subcommands: Subcommand[] });
 
 export type Command = BasicCommand | CommandWithSubcommands;

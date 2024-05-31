@@ -1,4 +1,4 @@
-export function splitOnce(string: string, separator: string): [string, string] | string {
+export function splitOnce(string: string, separator: string): string[] {
     if (separator.length !== 1) {
         throw new Error('separator must be a single character');
     }
@@ -6,7 +6,7 @@ export function splitOnce(string: string, separator: string): [string, string] |
     const index = string.indexOf(separator);
 
     if (index === -1) {
-        return string;
+        return [string];
     }
 
     return [string.slice(0, index), string.slice(index + separator.length)];

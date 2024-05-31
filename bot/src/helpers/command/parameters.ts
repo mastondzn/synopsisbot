@@ -1,12 +1,36 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 
-import type { CommandContext } from '.';
 import { prefix } from './prefix';
+import type { CommandContext } from './types';
+import { splitOnce } from '../string';
 import { helix } from '~/services';
 
-export function getCommandName(message: string | PrivmsgMessage) {
-    const text = typeof message === 'string' ? message : message.messageText;
-    return text.replace(prefix, '').split(/\s+/)[0];
+export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
+    return splitOnce(text.replace(prefix, ''), ' ')[0];
+}
+
+export interface CommandParameters {
+    text: string | null;
+    command: string;
+    split: string[];
+    rest: string[];
+}
+
+export function parseParameters({
+    messageText: text,
+}: Pick<PrivmsgMessage, 'messageText'>): CommandParameters {
+    const split = text.split(/\s+/);
+    const [prefix, command, ...rest] = split;
+    if (!prefix || !command) {
+        throw new Error('Failed to parse command');
+    }
+
+    return {
+        text: rest.length === 0 ? null : rest.join(' '),
+        split,
+        command,
+        rest,
+    };
 }
 
 export async function parseUserParameter(
