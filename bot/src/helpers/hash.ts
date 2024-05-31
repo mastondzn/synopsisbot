@@ -15,9 +15,8 @@ async function hashFile(path: string, hash: Hash) {
  * resources depending if source files have changed
  */
 export async function computeMetaHash(target: string): Promise<Buffer>;
-export async function computeMetaHash(target: string, inputHash: Hash): Promise<undefined>;
-// @ts-expect-error - its fine
-export async function computeMetaHash(target: string, inputHash: Hash | null = null) {
+export async function computeMetaHash(target: string, inputHash: Hash): Promise<null>;
+export async function computeMetaHash(target: string, inputHash?: Hash): Promise<Buffer | null> {
     const hash = inputHash ?? createHash('sha256');
 
     // check if its a file
@@ -25,15 +24,13 @@ export async function computeMetaHash(target: string, inputHash: Hash | null = n
     if (statInfo.isFile()) {
         await hashFile(target, hash);
         if (!inputHash) return hash.digest();
-        return;
+        return null;
     }
 
-    // sort the directory entries to ensure consistent hash
-    const info = (await readdir(target, { withFileTypes: true })).sort((a, b) =>
-        a.name.localeCompare(b.name),
-    );
+    const info = await readdir(target, { withFileTypes: true });
 
-    for (const item of info) {
+    // sort the directory entries to ensure consistent hash
+    for (const item of info.sort((a, b) => a.name.localeCompare(b.name))) {
         const fullPath = join(target, item.name);
         if (item.isFile()) {
             await hashFile(fullPath, hash);
@@ -46,4 +43,6 @@ export async function computeMetaHash(target: string, inputHash: Hash | null = n
     if (!inputHash) {
         return hash.digest();
     }
+
+    return null;
 }
