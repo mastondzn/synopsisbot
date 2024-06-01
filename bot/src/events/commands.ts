@@ -72,14 +72,14 @@ export default createEventHandler({
         };
 
         try {
-            const commandResult = await command.run(context);
+            const result = await command.run(context);
 
-            if ('reply' in commandResult || 'action' in commandResult || 'say' in commandResult) {
-                await consumeFragment(commandResult, message);
-            } else {
-                for await (const fragment of commandResult) {
+            if ('next' in result) {
+                for await (const fragment of result) {
                     await consumeFragment(fragment, message);
                 }
+            } else {
+                await consumeFragment(result, message);
             }
         } catch (error) {
             captureException(error);
