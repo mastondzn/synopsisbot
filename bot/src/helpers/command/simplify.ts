@@ -32,22 +32,9 @@ export function simplifyCommand(
         return equals(path, messagePath.slice(1, path.length + 1));
     });
 
-    if (!subcommand) return null;
-
-    return { ...rest, ...subcommand };
-}
-
-export function parseParameters({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
-    const split = text.split(/\s+/);
-    const [prefix, command = null, ...rest] = split;
-    if (!prefix || !command) {
-        throw new Error('Failed to parse command');
+    if (!subcommand) {
+        return null;
     }
 
-    return {
-        text: rest.join(' ') || null,
-        split,
-        command,
-        rest,
-    };
+    return Object.assign(rest, subcommand);
 }

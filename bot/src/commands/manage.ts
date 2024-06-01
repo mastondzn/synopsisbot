@@ -1,5 +1,6 @@
-import { createCommand, parseUserParameter } from '~/helpers/command';
-import { permissions } from '~/providers';
+import { createCommand } from '~/helpers/command/define';
+import { parseUserParameter } from '~/helpers/command/parameters';
+import { permissions } from '~/providers/permissions';
 
 export default createCommand({
     name: 'manage',

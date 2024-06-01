@@ -1,4 +1,4 @@
-import type { BasicCommand, CommandPermission } from '.';
+import type { BasicCommand, CommandPermission } from './types';
 
 export function simplifyCommandPermissions(command: BasicCommand): Required<CommandPermission>[] {
     const defaults: Required<CommandPermission> = {

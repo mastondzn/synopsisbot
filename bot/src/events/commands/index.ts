@@ -1,24 +1,19 @@
 import { captureException } from '@sentry/node';
-import locatePromise from 'p-locate';
-import { Lock } from 'semaphore-async-await';
 
+import { cooldowns } from './cooldowns';
+import { locks } from './locks';
 import { commands } from '~/commands';
-import { type CommandContext, getWantedCommand, parseParameters } from '~/helpers/command';
-import {
-    developmentIsNotRunning,
-    isNotOnCooldown,
-    isPermitted,
-    isValidChannelMode,
-} from '~/helpers/command/checks';
+import { CancellationError } from '~/errors/cancellation';
+import { UserError } from '~/errors/user';
+import { ensurePermitted, ensureValidChannelMode } from '~/events/commands/checks';
 import { consumeFragment } from '~/helpers/command/fragment';
+import { getWantedCommand, parseParameters } from '~/helpers/command/parameters';
 import { prefix } from '~/helpers/command/prefix';
 import { simplifyCommand } from '~/helpers/command/simplify';
+import type { CommandContext } from '~/helpers/command/types';
 import { createEventHandler } from '~/helpers/event';
 import { prefixes } from '~/helpers/log-prefixes';
-import { cooldowns } from '~/providers';
-import { chat } from '~/services';
-
-const semaphores = new Map<string, Lock>();
+import { chat } from '~/services/chat';
 
 export default createEventHandler({
     event: 'PRIVMSG',
@@ -33,45 +28,34 @@ export default createEventHandler({
         const unsimplified = commands.findByName(wanted);
         if (!unsimplified) return;
 
-        // TODO: if there isn't a found subcommand we should probably notify the user
-        const command = simplifyCommand(unsimplified, message);
-        if (!command) return;
-
-        const semaphore = semaphores.get(message.senderUsername) ?? new Lock();
-        semaphores.set(message.senderUsername, semaphore);
-
-        const isReleased = semaphore.tryAcquire();
-        if (!isReleased) return;
-
-        // TODO: instead of this we should just throw "user" errors and catch them
-        const checks = [
-            isValidChannelMode(message),
-            isNotOnCooldown(message),
-            developmentIsNotRunning(message),
-            isPermitted(message, command),
-        ] as const;
-
-        // if result is true, it means the check passed, so we dont want to locate
-        // because we want to exit as soon as possible
-        const located = await locatePromise(checks, (result) => !result);
-        // if any of the checks failed (found), we don't execute the command
-        if (typeof located === 'boolean') {
-            // release the semaphore for this user
-            semaphore.release();
-            return;
-        }
-
         console.log(
             prefixes.commands,
             `#${message.channelName} ${message.senderUsername}: ${text}`,
         );
 
-        const context: CommandContext = {
-            message,
-            parameters: parseParameters(message),
-        };
-
         try {
+            locks.ensure(message.senderUsername);
+            cooldowns.ensure(message);
+
+            const command = simplifyCommand(unsimplified, message);
+
+            // Ensure the channel mode is valid for the command, dont want to post where we shouldn't
+            await ensureValidChannelMode(message);
+
+            if (!command) {
+                throw new UserError({
+                    message:
+                        'No valid subcommand was provided. Please see the command info for the correct usage.',
+                });
+            }
+
+            await ensurePermitted(message, command);
+
+            const context: CommandContext = {
+                message,
+                parameters: parseParameters(message),
+            };
+
             const result = await command.run(context);
 
             if ('next' in result) {
@@ -82,20 +66,34 @@ export default createEventHandler({
                 await consumeFragment(result, message);
             }
         } catch (error) {
-            captureException(error);
+            if (error instanceof CancellationError) {
+                console.log(prefixes.commands, 'command execution cancelled');
+            } else if (error instanceof UserError) {
+                const response =
+                    error.options.message ??
+                    'Looks like you did something wrong :/ (no additional info was provided)';
+                await chat.reply(channel, message.messageID, response);
+            } else {
+                const response = 'An unexpected error occured :/ (no additional info was provided)';
+                await chat.reply(channel, message.messageID, response);
+                console.error(error);
+            }
 
-            const when = Date.now();
-            const errorMessage = error instanceof Error ? error.message : 'unknown error';
+            captureException(error, {
+                tags: {
+                    user: `${message.senderUsername}(${message.senderUserID})`,
+                    channel: `${channel}(${message.channelID})`,
+                    text: message.messageText,
+                },
+            });
+
             console.error(
-                '[events:commands]',
-                `error executing command ${unsimplified.name} from ${message.senderUsername} in ${channel} (time: ${when}) ("${text}"): ${errorMessage}`,
+                `error executing command ${unsimplified.name} from ${message.senderUsername} in ${channel} (time: ${message.serverTimestamp.toISOString()}) "${text}"`,
             );
             console.error(error);
-
-            await chat.reply(channel, message.messageID, `Something went wrong :/ (${when})`);
         } finally {
-            semaphore.release();
-            cooldowns.addCooldown(message, command);
+            locks.release(message.senderUsername);
+            cooldowns.addCooldown(message, unsimplified);
         }
     },
 });

@@ -1,7 +1,7 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 
-import type { CommandFragment } from '.';
-import { chat } from '~/services';
+import type { CommandFragment } from './types';
+import { chat } from '~/services/chat';
 
 export function consumeFragment(fragment: CommandFragment, message: PrivmsgMessage): Promise<void> {
     if ('reply' in fragment) {

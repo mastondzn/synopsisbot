@@ -3,7 +3,7 @@ import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import { prefix } from './prefix';
 import type { CommandContext } from './types';
 import { splitOnce } from '../string';
-import { helix } from '~/services';
+import { helix } from '~/services/apis/helix';
 
 export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
     return splitOnce(text.replace(prefix, ''), ' ')[0];

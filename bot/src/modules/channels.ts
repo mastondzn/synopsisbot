@@ -1,6 +1,8 @@
 import { prefixes } from '~/helpers/log-prefixes';
 import { createModule } from '~/helpers/module/define';
-import { chat, db, helix } from '~/services';
+import { helix } from '~/services/apis/helix';
+import { chat } from '~/services/chat';
+import { db } from '~/services/database';
 
 export default createModule({
     name: 'channels',

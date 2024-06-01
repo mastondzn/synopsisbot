@@ -3,7 +3,9 @@ import prettyMilliseconds from 'pretty-ms';
 
 import { createCron } from '~/helpers/cron/define';
 import { prefixes } from '~/helpers/log-prefixes';
-import { authProvider, chat, db } from '~/services';
+import { authProvider } from '~/services/auth';
+import { chat } from '~/services/chat';
+import { db } from '~/services/database';
 
 export default createCron({
     name: 'refresh',

@@ -1,5 +1,5 @@
 import { commands } from '.';
-import { createCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command/define';
 
 export default createCommand({
     name: 'commands',

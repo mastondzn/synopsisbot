@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-import { prometheus } from '~/providers';
+import { prometheus } from '~/providers/prometheus';
 
 export const route = new Hono().get('/', async ({ text }) => {
     const metrics = await prometheus.metrics();

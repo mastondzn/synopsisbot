@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseParameters } from '~/helpers/command/simplify';
+import { parseParameters } from '~/helpers/command/parameters';
 
 describe('parseCommandParams', () => {
     it('should return null text if only the command was passed', () => {

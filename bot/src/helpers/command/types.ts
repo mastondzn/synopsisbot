@@ -2,7 +2,7 @@ import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import type { z } from 'zod';
 
 import type { CommandParameters } from './parameters';
-import type { GlobalLevel, LocalLevel } from '~/providers';
+import type { GlobalLevel, LocalLevel } from '~/providers/permissions';
 
 export interface CommandBase {
     name: string;
@@ -50,9 +50,7 @@ export type Subcommand = { path?: string[] } & {
 export type SubcommandWithPermission = Subcommand & { permissions: CommandPermission };
 
 export type CommandWithSubcommands =
-    | (Omit<CommandBase, 'permissions'> & {
-          subcommands: SubcommandWithPermission[];
-      })
-    | (CommandBase & { subcommands: Subcommand[] });
+    | (CommandBase & { subcommands: Subcommand[] })
+    | (Omit<CommandBase, 'permissions'> & { subcommands: SubcommandWithPermission[] });
 
 export type Command = BasicCommand | CommandWithSubcommands;
