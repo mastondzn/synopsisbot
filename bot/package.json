@@ -5,13 +5,13 @@
     "private": true,
     "exports": {
         "./rpc": {
-            "types": "./dist/rpc.d.ts"
+            "types": "./dist/services/rpc/index.d.ts"
         }
     },
     "scripts": {
         "start": "pnpm with-env tsx src/index.ts",
         "dev": "pnpm start",
-        "build": "tsup --entry.rpc src/services/rpc/index.ts --format esm --dts",
+        "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
         "test": "SKIP_ENV_VALIDATION=true vitest",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
@@ -51,7 +51,8 @@
         "@types/ramda": "0.30.0",
         "dotenv-cli": "7.4.2",
         "eslint": "^8.57.0",
-        "tsup": "8.0.2",
+        "tsc-alias": "^1.8.10",
+        "tslib": "^2.6.2",
         "tsx": "4.10.5",
         "typescript": "5.4.5",
         "vitest": "1.6.0"

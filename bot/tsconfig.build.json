@@ -1,0 +1,13 @@
+{
+    "extends": "@synopsis/tsconfig/tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": { "~/*": ["./src/*"] },
+        "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true,
+        "noEmit": false,
+        "outDir": "dist"
+    },
+    "include": ["src/**/*"]
+}

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { PageBase } from '~/components/page-base';
 import { Separator } from '~/components/separator';
-import { rpcClient } from '~/utils/rpc';
+import { rpc } from '~/utils/rpc';
 import { twx } from '~/utils/tailwind';
 
 export const revalidate = 3600;
@@ -10,7 +10,7 @@ export const revalidate = 3600;
 const H3 = twx.h3`mb-2 text-lg font-medium`;
 
 export default async function Page({ params }: { params: { command: string } }) {
-    const response = await rpcClient.commands.$get();
+    const response = await rpc.commands.$get();
     const json = await response.json();
     const command = json.data.find((command) => command.name === params.command);
 

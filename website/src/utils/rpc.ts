@@ -4,4 +4,4 @@ import isDocker from 'is-docker';
 
 const host = isDocker() ? 'http://bot:3002' : 'http://localhost:3002';
 
-export const rpcClient = hc<RPC>(host);
+export const rpc = hc<RPC>(host);
