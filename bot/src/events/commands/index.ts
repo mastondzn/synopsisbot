@@ -5,9 +5,9 @@ import { locks } from './locks';
 import { commands } from '~/commands';
 import { CancellationError } from '~/errors/cancellation';
 import { UserError } from '~/errors/user';
-import { ensurePermitted, ensureValidChannelMode } from '~/events/commands/checks';
+import { ensurePermitted, ensureValidChannelMode } from '~/helpers/command/checks';
 import { consumeFragment } from '~/helpers/command/fragment';
-import { getWantedCommand, parseParameters } from '~/helpers/command/parameters';
+import { getWantedCommand, parseParametersAndOptions } from '~/helpers/command/parameters';
 import { prefix } from '~/helpers/command/prefix';
 import { simplifyCommand } from '~/helpers/command/simplify';
 import type { CommandContext } from '~/helpers/command/types';
@@ -51,9 +51,12 @@ export default createEventHandler({
 
             await ensurePermitted(message, command);
 
+            const { options, parameters } = parseParametersAndOptions(message, command);
+
             const context: CommandContext = {
                 message,
-                parameters: parseParameters(message),
+                options,
+                parameters,
             };
 
             const result = await command.run(context);
@@ -67,30 +70,24 @@ export default createEventHandler({
             }
         } catch (error) {
             if (error instanceof CancellationError) {
-                console.log(prefixes.commands, 'command execution cancelled');
+                // do nothing
             } else if (error instanceof UserError) {
                 const response =
                     error.options.message ??
                     'Looks like you did something wrong :/ (no additional info was provided)';
                 await chat.reply(channel, message.messageID, response);
             } else {
-                const response = 'An unexpected error occured :/ (no additional info was provided)';
+                const id = captureException(error, {
+                    tags: {
+                        user: `${message.senderUsername}(${message.senderUserID})`,
+                        channel: `${channel}(${message.channelID})`,
+                        text: message.messageText,
+                    },
+                });
+                const response = `An unexpected error occured :/ (id:${id})`;
                 await chat.reply(channel, message.messageID, response);
                 console.error(error);
             }
-
-            captureException(error, {
-                tags: {
-                    user: `${message.senderUsername}(${message.senderUserID})`,
-                    channel: `${channel}(${message.channelID})`,
-                    text: message.messageText,
-                },
-            });
-
-            console.error(
-                `error executing command ${unsimplified.name} from ${message.senderUsername} in ${channel} (time: ${message.serverTimestamp.toISOString()}) "${text}"`,
-            );
-            console.error(error);
         } finally {
             locks.release(message.senderUsername);
             cooldowns.addCooldown(message, unsimplified);
