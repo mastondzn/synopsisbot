@@ -21,8 +21,8 @@ importers:
         specifier: 0.21.4
         version: 0.21.4
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@types/node':
         specifier: 20.12.12
         version: 20.12.12
@@ -124,8 +124,8 @@ importers:
         version: 3.3.0(zod@3.23.8)
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -176,8 +176,8 @@ importers:
         version: 3.4.4
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -210,8 +210,8 @@ importers:
         version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -228,8 +228,8 @@ importers:
   packages/scopes:
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@synopsis/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -240,8 +240,8 @@ importers:
   packages/tsconfig:
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -334,14 +334,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@mastondzn/eslint':
-        specifier: 0.9.0
-        version: 0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
-      '@mastondzn/eslint-plugin-tailwindcss':
-        specifier: 3.15.1
-        version: 3.15.1(tailwindcss@3.4.3)
-      '@next/eslint-plugin-next':
-        specifier: 14.2.3
-        version: 14.2.3
+        specifier: 0.10.0
+        version: 0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))
       '@synopsis/bot':
         specifier: workspace:*
         version: link:../bot
@@ -375,6 +369,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: 0.4.7
         version: 0.4.7(eslint@8.57.0)
+      eslint-plugin-tailwindcss:
+        specifier: 3.17.0
+        version: 3.17.0(tailwindcss@3.4.3)
       postcss:
         specifier: 8.4.38
         version: 8.4.38
@@ -1183,16 +1180,9 @@ packages:
   '@mastondzn/dank-twitch-irc@7.1.0':
     resolution: {integrity: sha512-kb58tW4DruOj2oJ6XMaG1N9h/vgA+40ci5VFlxRUD3Qq9eA8pDdB53LaU210Drfbof0oaZ4u8FP+NlQkJ1/gPQ==}
 
-  '@mastondzn/eslint-plugin-tailwindcss@3.15.1':
-    resolution: {integrity: sha512-62bbP+T+4hpNB67BGRqhb9TOUamMXoFTcdcvT3YOc7O42lAlp7OVtq2W6GcbWr5zm1jnFgqDkRDQ0eVBtp6a+w==}
-    engines: {node: '>=14.0.0'}
+  '@mastondzn/eslint@0.10.0':
+    resolution: {integrity: sha512-6WqvkjOr+MPqXd9jBrwHiM/9SUvK/fx4flMtAyZc8pFGWdXhEByB9KFnBusYOvn18Pz+O0tsfe/pLBMGeZTyHg==}
     peerDependencies:
-      tailwindcss: ^3.4.0
-
-  '@mastondzn/eslint@0.9.0':
-    resolution: {integrity: sha512-0T1mWsunxi7E0yB3o+xPj0snO3HaDWIccwf62/c94AHR20NW4ml1gHlApiGyVHuyYUvzXa0z1AHjfHXAVsETQw==}
-    peerDependencies:
-      '@mastondzn/eslint-plugin-tailwindcss': ^3.14.1
       '@next/eslint-plugin-next': ^14.0.4
       '@unocss/eslint-plugin': '>=0.50.0'
       astro-eslint-parser: ^0.16.3
@@ -1203,12 +1193,11 @@ packages:
       eslint-plugin-react-hooks: ^4.6.0
       eslint-plugin-react-refresh: ^0.4.4
       eslint-plugin-svelte: ^2.34.1
+      eslint-plugin-tailwindcss: ^3.17.0
       prettier-plugin-astro: ^0.13.0
       prettier-plugin-slidev: ^1.0.5
       svelte-eslint-parser: ^0.33.1
     peerDependenciesMeta:
-      '@mastondzn/eslint-plugin-tailwindcss':
-        optional: true
       '@next/eslint-plugin-next':
         optional: true
       '@unocss/eslint-plugin':
@@ -1226,6 +1215,8 @@ packages:
       eslint-plugin-react-refresh:
         optional: true
       eslint-plugin-svelte:
+        optional: true
+      eslint-plugin-tailwindcss:
         optional: true
       prettier-plugin-astro:
         optional: true
@@ -2694,6 +2685,12 @@ packages:
     engines: {node: '>=4'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
+
+  eslint-plugin-tailwindcss@3.17.0:
+    resolution: {integrity: sha512-Ofl7tNh57a3W8BKHstKZSkD2gSCEkw54ycwZ958IK9zUR8TiNYdp8b0WGoLWLeyOAbeF1VPVJFBnlkJeIM2kVg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      tailwindcss: ^3.4.0
 
   eslint-plugin-toml@0.9.2:
     resolution: {integrity: sha512-ri0xf63PYf3pIq/WY9BIwrqxZmGTIwSkAO0bHddI0ajUwN4KGz6W8vOvdXFHOpRdRfzxlmXze/vfsY/aTEXESg==}
@@ -5629,13 +5626,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3)':
-    dependencies:
-      fast-glob: 3.3.2
-      postcss: 8.4.38
-      tailwindcss: 3.4.3
-
-  '@mastondzn/eslint@0.9.0(@mastondzn/eslint-plugin-tailwindcss@3.15.1(tailwindcss@3.4.3))(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))':
+  '@mastondzn/eslint@0.10.0(@next/eslint-plugin-next@14.2.3)(@vue/compiler-sfc@3.4.14)(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.0))(eslint-plugin-react-refresh@0.4.7(eslint@8.57.0))(eslint-plugin-react@7.34.1(eslint@8.57.0))(eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3))(eslint@8.57.0)(typescript@5.4.5)(vitest@1.6.0(@types/node@20.12.12))':
     dependencies:
       '@antfu/eslint-define-config': 1.23.0-2
       '@antfu/install-pkg': 0.3.1
@@ -5676,11 +5667,11 @@ snapshots:
       yaml-eslint-parser: 1.2.2
       yargs: 17.7.2
     optionalDependencies:
-      '@mastondzn/eslint-plugin-tailwindcss': 3.15.1(tailwindcss@3.4.3)
       '@next/eslint-plugin-next': 14.2.3
       eslint-plugin-react: 7.34.1(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
       eslint-plugin-react-refresh: 0.4.7(eslint@8.57.0)
+      eslint-plugin-tailwindcss: 3.17.0(tailwindcss@3.4.3)
     transitivePeerDependencies:
       - '@vue/compiler-sfc'
       - eslint-import-resolver-node
@@ -5696,6 +5687,7 @@ snapshots:
   '@next/eslint-plugin-next@14.2.3':
     dependencies:
       glob: 10.3.10
+    optional: true
 
   '@next/swc-darwin-arm64@14.2.3':
     optional: true
@@ -7274,7 +7266,7 @@ snapshots:
   eslint-plugin-es-x@7.5.0(eslint@8.57.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@eslint-community/regexpp': 4.9.1
+      '@eslint-community/regexpp': 4.10.0
       eslint: 8.57.0
       eslint-compat-utils: 0.1.2(eslint@8.57.0)
 
@@ -7282,7 +7274,7 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
       eslint: 8.57.0
-      ignore: 5.2.4
+      ignore: 5.3.1
 
   eslint-plugin-i@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.10.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
@@ -7369,7 +7361,7 @@ snapshots:
       eslint-plugin-es-x: 7.5.0(eslint@8.57.0)
       get-tsconfig: 4.7.5
       globals: 13.24.0
-      ignore: 5.2.4
+      ignore: 5.3.1
       is-builtin-module: 3.2.1
       is-core-module: 2.13.1
       minimatch: 3.1.2
@@ -7419,6 +7411,12 @@ snapshots:
       resolve: 2.0.0-next.5
       semver: 6.3.1
       string.prototype.matchall: 4.0.10
+
+  eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3):
+    dependencies:
+      fast-glob: 3.3.2
+      postcss: 8.4.38
+      tailwindcss: 3.4.3
 
   eslint-plugin-toml@0.9.2(eslint@8.57.0):
     dependencies:

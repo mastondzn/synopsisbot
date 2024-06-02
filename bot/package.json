@@ -45,7 +45,7 @@
         "zod-validation-error": "^3.3.0"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.9.0",
+        "@mastondzn/eslint": "0.10.0",
         "@synopsis/tsconfig": "workspace:*",
         "@types/node": "20.12.12",
         "@types/ramda": "0.30.0",

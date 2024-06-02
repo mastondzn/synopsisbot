@@ -10,7 +10,7 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@mastondzn/eslint": "0.9.0",
+        "@mastondzn/eslint": "0.10.0",
         "@synopsis/tsconfig": "workspace:*",
         "eslint": "^8.57.0"
     }
