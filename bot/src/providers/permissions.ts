@@ -2,7 +2,7 @@ import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import { type NewGlobalPermission, type NewLocalPermission, and, eq, schema } from '@synopsis/db';
 import { z } from 'zod';
 
-import { db } from '~/services';
+import { db } from '~/services/database';
 
 export const localLevels = [
     'broadcaster',

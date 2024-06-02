@@ -1,50 +1,40 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
-import { env } from '@synopsis/env/node';
 import locatePromise from 'p-locate';
 
-import { type BasicCommand, simplifyCommandPermissions } from '.';
-import { cooldowns, permissions } from '~/providers';
-import { cache, db, helix } from '~/services';
+import { CancellationError } from '~/errors/cancellation';
+import { simplifyCommandPermissions } from '~/helpers/command/permission';
+import type { BasicCommand } from '~/helpers/command/types';
+import { permissions } from '~/providers/permissions';
+import { helix } from '~/services/apis/helix';
+import { db } from '~/services/database';
 
 // checks should return true if they are ok
 
-export async function isValidChannelMode(message: PrivmsgMessage): Promise<boolean> {
+export async function ensureValidChannelMode(message: PrivmsgMessage): Promise<void> {
     // i don't think running the promises in parallel is worth it
     const mode = await db.find.channelModeById(message.channelID);
 
-    if (!mode || mode === 'readonly') return false;
-    if (mode === 'all') return true;
+    if (!mode || mode === 'readonly') {
+        throw new CancellationError();
+    }
+
+    if (mode === 'all') {
+        return;
+    }
 
     // TODO: should probably either cache or use eventsub
     const stream = await helix.streams.getStreamByUserId(message.channelID);
-    if (!stream && mode === 'offlineonly') return true;
-    if (stream && mode === 'liveonly') return true;
 
-    return false;
+    if (!stream && mode === 'offlineonly') return;
+    if (stream && mode === 'liveonly') return;
+
+    throw new CancellationError();
 }
 
-export function isNotOnCooldown(message: PrivmsgMessage): boolean {
-    return !cooldowns.isOnCooldown(message);
-}
-
-// if there is a development process running, don't reply to commands in default channels
-export async function developmentIsNotRunning(message: PrivmsgMessage): Promise<boolean> {
-    if (env.NODE_ENV !== 'production') return true;
-
-    const inDefaultChannel = [
-        env.TWITCH_BOT_OWNER_USERNAME, //
-        env.TWITCH_BOT_USERNAME,
-    ].includes(message.channelName);
-    if (!inDefaultChannel) return true;
-
-    const redisEntry = await cache.exists('dev-announce');
-    return !redisEntry;
-}
-
-export async function isPermitted(
+export async function ensurePermitted(
     message: PrivmsgMessage,
     command: BasicCommand,
-): Promise<boolean> {
+): Promise<void> {
     const wantedPermissions = simplifyCommandPermissions(command);
 
     const located = await locatePromise(
@@ -58,5 +48,7 @@ export async function isPermitted(
         (result) => result,
     );
 
-    return !!located;
+    if (!located) {
+        throw new CancellationError();
+    }
 }

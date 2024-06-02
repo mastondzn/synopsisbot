@@ -1,54 +1,40 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import { equals } from 'ramda';
 
-import type { Command } from '.';
+import { prefix } from './prefix';
+import type { BasicCommand, Command } from './types';
 
-export function parseParameters(message: string | PrivmsgMessage) {
-    const text = typeof message === 'string' ? message : message.messageText;
-
-    const split = text.split(/\s+/);
-    const [prefix, command = null, ...rest] = split;
-    if (!prefix || !command) {
-        throw new Error('Failed to parse command');
+/**
+ * Simplify a command by converting commands with subcommands to a basic command
+ * @param command The command to simplify
+ * @param message The IRC message to use for this simplification
+ * @param message.messageText The text of the IRC message
+ */
+export function simplifyCommand(
+    command: Command,
+    { messageText: text }: Pick<PrivmsgMessage, 'messageText'>,
+): BasicCommand | null {
+    if (!('subcommands' in command)) {
+        return command;
     }
 
-    return {
-        text: rest.join(' ') || null,
-        split,
-        command,
-        prefix,
-        rest,
-    };
-}
+    const { subcommands, ...rest } = command;
 
-export function parseCommand(command: Command, message: string | PrivmsgMessage) {
-    const text = typeof message === 'string' ? message : message.messageText;
+    // we want to match the longest possible path possible first
+    const sorted = subcommands.sort((a, b) => {
+        const length = { a: a.path?.length ?? 0, b: b.path?.length ?? 0 };
+        return length.b - length.a;
+    });
 
-    const parameters = parseParameters(text);
+    const messagePath = text.replace(prefix, '').split(/\s+/);
 
-    let path: string[] | null = null;
-    if ('subcommands' in command) {
-        const { subcommands, ...rest } = command;
-        const sorted = subcommands.sort((a, b) => b.path.length - a.path.length);
-        const subcommand = sorted.find(({ path }) =>
-            equals(path, parameters.rest.slice(0, path.length)),
-        );
+    const subcommand = sorted.find(({ path = [] }) => {
+        return equals(path, messagePath.slice(1, path.length + 1));
+    });
 
-        if (!subcommand) return null;
-
-        path = subcommand.path;
-        command = { ...rest, ...subcommand };
+    if (!subcommand) {
+        return null;
     }
 
-    return {
-        parameters: {
-            ...parameters,
-            text:
-                (path?.length ? parameters.rest.slice(path.length).join(' ') : parameters.text) ??
-                null,
-            rest: path?.length ? parameters.rest.slice(path.length) : parameters.rest,
-            path,
-        },
-        command,
-    };
+    return Object.assign(rest, subcommand);
 }

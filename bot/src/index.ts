@@ -2,10 +2,13 @@ import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { env } from '@synopsis/env/node';
 
+import { commands } from './commands';
 import { cronJobs } from './crons';
 import { eventHandlers } from './events';
 import { modules } from './modules';
-import { authProvider, chat, db } from './services';
+import { authProvider } from './services/auth';
+import { chat } from './services/chat';
+import { db } from './services/database';
 
 Sentry.init({
     dsn: 'https://87270fc0d3264875c1071ecfec1840ce@o4506493464805376.ingest.sentry.io/4506564237983744',
@@ -14,6 +17,8 @@ Sentry.init({
     tracesSampleRate: 1,
     profilesSampleRate: 1,
 });
+
+await commands.load();
 
 const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
 authProvider.addUser(

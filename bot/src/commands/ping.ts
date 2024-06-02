@@ -1,7 +1,7 @@
 import ms from 'pretty-ms';
 
-import { createCommand } from '~/helpers/command';
-import { chat } from '~/services';
+import { createCommand } from '~/helpers/command/define';
+import { chat } from '~/services/chat';
 
 export default createCommand({
     name: 'ping',

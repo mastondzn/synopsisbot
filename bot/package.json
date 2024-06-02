@@ -22,8 +22,8 @@
         "@discordjs/collection": "2.1.0",
         "@hono/node-server": "1.11.1",
         "@mastondzn/dank-twitch-irc": "7.1.0",
-        "@sentry/node": "8.2.1",
-        "@sentry/profiling-node": "8.2.1",
+        "@sentry/node": "7.115.0",
+        "@sentry/profiling-node": "7.115.0",
         "@synopsis/db": "workspace:*",
         "@synopsis/env": "workspace:*",
         "@synopsis/scopes": "workspace:*",
@@ -41,7 +41,8 @@
         "prom-client": "15.1.2",
         "ramda": "0.30.0",
         "semaphore-async-await": "1.5.1",
-        "zod": "3.23.8"
+        "zod": "3.23.8",
+        "zod-validation-error": "^3.3.0"
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.9.0",

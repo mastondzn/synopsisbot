@@ -2,8 +2,8 @@ import { type CommandUser, commandUsers, eq } from '@synopsis/db';
 import ms from 'pretty-ms';
 
 import { rollBeverageWithModifier } from './data';
-import { createCommand } from '~/helpers/command';
-import { db } from '~/services';
+import { createCommand } from '~/helpers/command/define';
+import { db } from '~/services/database';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
 

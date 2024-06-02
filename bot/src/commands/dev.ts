@@ -4,15 +4,16 @@ import { inspect } from 'node:util';
 import { Collection } from '@discordjs/collection';
 
 import { type CommandMetadata, commands } from '.';
-import { type Command, createCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command/define';
+import type { Command } from '~/helpers/command/types';
 
 export default createCommand({
     name: 'dev',
     description: 'Lets the owner do some things.',
+    permissions: { global: 'owner' },
     subcommands: [
         {
             path: ['eval'],
-            permissions: { global: 'owner' },
             run: async ({ parameters }) => {
                 if (!parameters.text) {
                     return { reply: 'No code to eval.' };
@@ -36,7 +37,6 @@ export default createCommand({
         },
         {
             path: ['reload'],
-            permissions: { global: 'owner' },
             run: async () => {
                 const old = commands.clone();
                 await commands.load(true);

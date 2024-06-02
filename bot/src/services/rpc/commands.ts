@@ -2,9 +2,7 @@ import { Hono } from 'hono';
 
 import { commands } from '~/commands';
 
-export const route = new Hono().get('/', async ({ json }) => {
-    await commands.load();
-
+export const route = new Hono().get('/', ({ json }) => {
     const list = commands.map((command) => {
         const hasSubcommands = 'subcommands' in command;
 

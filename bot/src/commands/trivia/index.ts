@@ -1,8 +1,8 @@
 import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/array';
-import { createCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command/define';
 import { TTLSet } from '~/helpers/ttl-set';
-import { chat } from '~/services';
+import { chat } from '~/services/chat';
 
 const active = new TTLSet<string>();
 

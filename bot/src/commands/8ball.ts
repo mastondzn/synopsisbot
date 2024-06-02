@@ -1,5 +1,5 @@
 import { pickOne } from '~/helpers/array';
-import { createCommand } from '~/helpers/command';
+import { createCommand } from '~/helpers/command/define';
 
 export default createCommand({
     name: '8ball',

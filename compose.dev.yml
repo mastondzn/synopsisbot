@@ -1,0 +1,53 @@
+services:
+    db:
+        image: postgres:15-alpine
+        container_name: db
+        restart: unless-stopped
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=${DB_USERNAME?err}
+            - POSTGRES_PASSWORD=${DB_PASSWORD?err}
+            - POSTGRES_DB=${DB_NAME?err}
+        volumes:
+            - ~/volumes/synopsisbot/db:/var/lib/postgresql/data
+
+    cache:
+        image: redis:7-alpine
+        container_name: cache
+        restart: unless-stopped
+        command: /bin/sh -c "redis-server --requirepass ${REDIS_PASSWORD?err}"
+        ports:
+            - 6379:6379
+        volumes:
+            - ~/volumes/synopsisbot/redis:/data
+
+    website:
+        # image: ghcr.io/mastondzn/synopsisbot-website:latest
+        container_name: website
+        build:
+            context: .
+            dockerfile: website/Dockerfile
+        env_file:
+            - .env
+        depends_on:
+            - db
+            - cache
+        restart: unless-stopped
+        ports:
+            - 3001:3001
+
+    bot:
+        # image: ghcr.io/mastondzn/synopsisbot:latest
+        container_name: bot
+        build:
+            context: .
+            dockerfile: bot/Dockerfile
+        ports:
+            - 3002:3002
+        env_file:
+            - .env
+        depends_on:
+            - db
+            - cache
+        restart: unless-stopped

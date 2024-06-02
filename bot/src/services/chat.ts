@@ -4,7 +4,8 @@ import {
     type PrivmsgMessage,
 } from '@mastondzn/dank-twitch-irc';
 
-import { LogMixin, RetryMixin } from '~/helpers/mixins';
+import { LogMixin } from '~/helpers/mixins/log';
+import { RetryMixin } from '~/helpers/mixins/retry';
 
 class BotClient extends ChatClient {
     public async login({

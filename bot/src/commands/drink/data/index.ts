@@ -67,5 +67,13 @@ export const beverageChances = beverages
     }))
     .sort((a, b) => b.chance - a.chance);
 
-export * from './types';
-export * from './list';
+export {
+    type Beverage,
+    type Modifier,
+    type SafeMultiplier,
+    type SafePoint,
+    safeMultipliers,
+    safePoints,
+} from './types';
+
+export { beveragesArray } from './list';
