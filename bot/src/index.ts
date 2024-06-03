@@ -22,27 +22,32 @@ Sentry.init({
 
 await commands.load();
 
-const botUser = await db.find.authedUserByIdThrows(env.TWITCH_BOT_ID);
+const bot = await db.query.authedUsers.findFirst({
+    where: ({ twitchId }, { eq }) => eq(twitchId, env.TWITCH_BOT_ID),
+});
+
+if (!bot) throw new Error('Bot not found in database');
+
 authProvider.addUser(
-    botUser.twitchId,
+    bot.twitchId,
     {
-        accessToken: botUser.accessToken,
-        refreshToken: botUser.refreshToken,
-        expiresIn: botUser.expiresAt.getTime() - Date.now(),
-        obtainmentTimestamp: botUser.obtainedAt.getTime(),
-        scope: botUser.scopes,
+        accessToken: bot.accessToken,
+        refreshToken: bot.refreshToken,
+        expiresIn: bot.expiresAt.getTime() - Date.now(),
+        obtainmentTimestamp: bot.obtainedAt.getTime(),
+        scope: bot.scopes,
     },
     ['chat'],
 );
 
-const botToken = await authProvider.getAccessTokenForIntent('chat');
-if (!botToken?.expiresIn) {
+const token = await authProvider.getAccessTokenForIntent('chat');
+if (!token?.expiresIn) {
     throw new Error('Bot token not found or no expiration');
 }
 
 await chat.login({
     username: env.TWITCH_BOT_USERNAME,
-    password: botToken.accessToken,
+    password: token.accessToken,
 });
 
 await eventHandlers.registerEvents(chat);

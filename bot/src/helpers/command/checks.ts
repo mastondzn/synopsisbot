@@ -12,21 +12,24 @@ import { db } from '~/services/database';
 
 export async function ensureValidChannelMode(message: PrivmsgMessage): Promise<void> {
     // i don't think running the promises in parallel is worth it
-    const mode = await db.find.channelModeById(message.channelID);
+    const channel = await db.query.channels.findFirst({
+        columns: { mode: true },
+        where: ({ twitchId }, { eq }) => eq(twitchId, message.channelID),
+    });
 
-    if (!mode || mode === 'readonly') {
+    if (!channel?.mode || channel.mode === 'readonly') {
         throw new CancellationError();
     }
 
-    if (mode === 'all') {
+    if (channel.mode === 'all') {
         return;
     }
 
     // TODO: should probably either cache or use eventsub
     const stream = await helix.streams.getStreamByUserId(message.channelID);
 
-    if (!stream && mode === 'offlineonly') return;
-    if (stream && mode === 'liveonly') return;
+    if (!stream && channel.mode === 'offlineonly') return;
+    if (stream && channel.mode === 'liveonly') return;
 
     throw new CancellationError();
 }

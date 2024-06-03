@@ -12,7 +12,10 @@ export default createCron({
     // every 30 minutes
     cronTime: '0 */30 * * * *',
     onTick: async () => {
-        const token = await db.find.authedUserById(env.TWITCH_BOT_ID);
+        const token = await db.query.authedUsers.findFirst({
+            where: ({ twitchId }, { eq }) => eq(twitchId, env.TWITCH_BOT_ID),
+        });
+
         if (!token?.expiresAt) {
             console.warn(prefixes.refresh, 'Token not found or no expiration');
             return;

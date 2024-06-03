@@ -1,3 +1,4 @@
+import { authedUsers, eq } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 import { RefreshingAuthProvider } from '@twurple/auth';
 
@@ -9,10 +10,16 @@ export const authProvider = new RefreshingAuthProvider({
 });
 
 authProvider.onRefresh((userId, token) => {
-    void db.edit.authedUserById(userId, {
-        accessToken: token.accessToken,
-        scopes: token.scope,
-        ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
-        ...(token.expiresIn ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) } : {}),
-    });
+    void db
+        .update(authedUsers)
+        .set({
+            accessToken: token.accessToken,
+            scopes: token.scope,
+            ...(token.refreshToken ? { refreshToken: token.refreshToken } : {}),
+            ...(token.expiresIn
+                ? { expiresAt: new Date(Date.now() + token.expiresIn * 1000) }
+                : {}),
+        })
+        .where(eq(authedUsers.twitchId, userId))
+        .execute();
 });
