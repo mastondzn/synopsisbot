@@ -17,13 +17,7 @@ export function createDatabase(options: DatabaseOptions): Database {
     return Object.assign(db, { ky, raw });
 }
 
-export type {
-    Database,
-    DatabaseOptions,
-    DatabaseClient,
-    DrizzleDatabase,
-    KyselyDatabase,
-} from './types';
+export type * from './types';
 export * from './schema';
 export * from 'drizzle-orm/postgres-js';
 export * from 'drizzle-orm';

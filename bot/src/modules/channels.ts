@@ -1,4 +1,4 @@
-import { prefixes } from '~/helpers/log-prefixes';
+import { logger } from '~/helpers/logger';
 import { createModule } from '~/helpers/module/define';
 import { helix } from '~/services/apis/helix';
 import { chat } from '~/services/chat';
@@ -19,13 +19,12 @@ export default createModule({
             .then((response) => response.map(({ name }) => name));
 
         if (channels.length !== channelIds.length) {
-            console.warn(
-                prefixes.channels,
+            logger.channels(
                 `missing ${channelIds.length - channels.length} channels after api call`,
             );
         }
 
-        console.log(prefixes.channels, `joining ${channels.length} channels`);
+        logger.channels(`joining ${channels.length} channels`);
         await chat.joinAll(channels);
     },
 });

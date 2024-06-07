@@ -7,13 +7,13 @@ export interface RetryOptions {
 }
 
 export async function retry<T>(
-    function_: () => PromiseLike<T> | T,
+    fn: () => PromiseLike<T> | T,
     { retries, delay, onRetry }: RetryOptions,
 ): Promise<Awaited<T>> {
     let lastError: Error | undefined;
     for (let index = 0; index < retries; index++) {
         try {
-            return await function_();
+            return await fn();
         } catch (error) {
             lastError = error instanceof Error ? error : new Error('Unknown error');
 

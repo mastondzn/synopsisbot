@@ -1,8 +1,8 @@
 import { env } from '@synopsis/env/node';
-import prettyMilliseconds from 'pretty-ms';
+import ms from 'pretty-ms';
 
 import { createCron } from '~/helpers/cron/define';
-import { prefixes } from '~/helpers/log-prefixes';
+import { logger } from '~/helpers/logger';
 import { authProvider } from '~/services/auth';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';
@@ -17,20 +17,20 @@ export default createCron({
         });
 
         if (!token?.expiresAt) {
-            console.warn(prefixes.refresh, 'Token not found or no expiration');
+            logger.refresh('Token not found or no expiration');
             return;
         }
 
         const expiresIn = token.expiresAt.getTime() - Date.now();
         // if it expires in more than 30 minutes, don't refresh
         if (expiresIn > 30 * 60 * 1000) {
-            let line = `Token does not need refreshing, expires at ${token.expiresAt.toISOString()}.`;
-            line += ` (in ${prettyMilliseconds(expiresIn)})`;
-            console.log(prefixes.refresh, line);
+            logger.refresh(
+                `Token does not need refreshing, expires at ${token.expiresAt.toISOString()}. (in ${ms(expiresIn)})`,
+            );
             return;
         }
 
-        console.log(prefixes.refresh, 'Refreshing bot token');
+        logger.refresh('Refreshing bot token...');
         const newToken = await authProvider.refreshAccessTokenForIntent('chat');
         chat.configuration.password = newToken.accessToken;
         for (const connection of chat.connections) {
@@ -38,6 +38,6 @@ export default createCron({
         }
 
         const line = `Bot token refreshed, expires in ${newToken.expiresIn} seconds.`;
-        console.log(prefixes.refresh, line);
+        logger.refresh(line);
     },
 });

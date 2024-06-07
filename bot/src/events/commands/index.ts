@@ -12,7 +12,7 @@ import { prefix } from '~/helpers/command/prefix';
 import { simplifyCommand } from '~/helpers/command/simplify';
 import type { CommandContext } from '~/helpers/command/types';
 import { createEventHandler } from '~/helpers/event';
-import { prefixes } from '~/helpers/log-prefixes';
+import { logger } from '~/helpers/logger';
 import { chat } from '~/services/chat';
 
 export default createEventHandler({
@@ -28,10 +28,7 @@ export default createEventHandler({
         const unsimplified = commands.findByName(wanted);
         if (!unsimplified) return;
 
-        console.log(
-            prefixes.commands,
-            `#${message.channelName} ${message.senderUsername}: ${text}`,
-        );
+        logger.commands(`#${message.channelName} ${message.senderUsername}: ${text}`);
 
         try {
             locks.ensure(message.senderUsername);

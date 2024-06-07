@@ -1,7 +1,7 @@
 import { createEventHandler } from '~/helpers/event';
-import { prefixes } from '~/helpers/log-prefixes';
+import { logger } from '~/helpers/logger';
 
 export default createEventHandler({
     event: 'connecting',
-    handler: () => console.log(prefixes.init, 'connecting to chat'),
+    handler: () => logger.init('connecting to chat'),
 });

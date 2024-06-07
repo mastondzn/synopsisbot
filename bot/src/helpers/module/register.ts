@@ -11,7 +11,7 @@ export async function registerModules(modules: Collection<string, BotModule>): P
         return a.priority < b.priority ? 1 : -1;
     });
 
-    for (const module of orderedModules) {
-        await module.register();
+    for (const m of orderedModules) {
+        await m.register();
     }
 }

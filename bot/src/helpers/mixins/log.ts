@@ -1,14 +1,11 @@
 import { type ChatClient, type ClientMixin, applyReplacements } from '@mastondzn/dank-twitch-irc';
 
-import { prefixes } from '../log-prefixes';
+import { logger } from '../logger';
 
 function createReplacement<TArguments extends string[]>(methodName: string) {
-    return (
-        oldFunction: (...arguments_: TArguments) => Promise<void>,
-        ...arguments_: TArguments
-    ) => {
-        console.log(prefixes.self, `${methodName}: [${arguments_.join(', ')}]`);
-        return oldFunction(...arguments_);
+    return (oldFunction: (...args: TArguments) => Promise<void>, ...args: TArguments) => {
+        logger.self(`${methodName}: [${args.join(', ')}]`);
+        return oldFunction(...args);
     };
 }
 

@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 
 import { route as commands } from './commands';
 import { route as metrics } from './metrics';
-import { prefixes } from '~/helpers/log-prefixes';
+import { logger } from '~/helpers/logger';
 
 export const rpcServer = new Hono() //
     .route('/metrics', metrics)
@@ -17,5 +17,5 @@ if (env.NODE_ENV !== 'test') {
         fetch: rpcServer.fetch,
         port: 3002,
     });
-    console.log(prefixes.rpc, 'rpc server listening on port 3002');
+    logger.rpc('rpc server listening on port 3002');
 }

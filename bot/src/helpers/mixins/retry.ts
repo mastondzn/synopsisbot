@@ -3,10 +3,10 @@ import { type ChatClient, type ClientMixin, applyReplacements } from '@mastondzn
 import { retry } from '~/helpers/retry';
 
 async function replacement<TArguments extends unknown[]>(
-    oldFunction: (...arguments_: TArguments) => Promise<void>,
-    ...arguments_: TArguments
+    oldFunction: (...args: TArguments) => Promise<void>,
+    ...args: TArguments
 ): Promise<void> {
-    await retry(() => oldFunction(...arguments_), {
+    await retry(() => oldFunction(...args), {
         retries: 3,
         delay: 150,
     });

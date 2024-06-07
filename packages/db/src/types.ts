@@ -1,4 +1,4 @@
-import type { AnyTable, DrizzleConfig, TableConfig } from 'drizzle-orm';
+import type { DrizzleConfig, Table } from 'drizzle-orm';
 import type { Kyselify } from 'drizzle-orm/kysely';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type { Kysely } from 'kysely';
@@ -8,7 +8,7 @@ import type { DatabaseSchema } from './schema';
 
 export type DrizzleDatabase = PostgresJsDatabase<DatabaseSchema>;
 export type KyselyDatabase = {
-    [T in keyof DatabaseSchema]: DatabaseSchema[T] extends AnyTable<TableConfig>
+    [T in keyof DatabaseSchema]: DatabaseSchema[T] extends Table
         ? Kyselify<DatabaseSchema[T]>
         : never;
 };

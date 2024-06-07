@@ -7,9 +7,17 @@ export default defineConfig({
         tsconfigPath: './tsconfig.json',
     },
 
-    javascript: {
-        overrides: {
-            'no-console': 'off',
-        },
+    rules: {
+        'no-console': 'off',
+        'unicorn/prevent-abbreviations': [
+            'error',
+            {
+                allowList: {
+                    args: true,
+                    fn: true,
+                    db: true,
+                },
+            },
+        ],
     },
 });
