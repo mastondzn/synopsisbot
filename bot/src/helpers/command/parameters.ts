@@ -38,7 +38,7 @@ export function parseParameters({
 
 export function parseParametersAndOptions(
     message: Pick<PrivmsgMessage, 'messageText'>,
-    command: BasicCommand,
+    command: Pick<BasicCommand, 'options'>,
 ): {
     options: Record<string, unknown>;
     parameters: CommandParameters;
