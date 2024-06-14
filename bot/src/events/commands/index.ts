@@ -40,17 +40,25 @@ export default createEventHandler({
             await ensureValidChannelMode(message);
 
             if (!command) {
-                throw new UserError({
-                    message:
-                        'No valid subcommand was provided. Please see the command info for the correct usage.',
-                });
+                throw new UserError(
+                    'No valid subcommand was provided. Please see the command info for the correct usage.',
+                );
             }
 
             await ensurePermitted(message, command);
 
-            const { options, parameters } = parseParametersAndOptions(message, command);
+            const { options, parameters } = await parseParametersAndOptions(message, command);
 
             const context: CommandContext = {
+                user: {
+                    id: message.senderUserID,
+                    login: message.senderUsername,
+                    displayName: message.displayName,
+                },
+                channel: {
+                    id: message.channelID,
+                    login: message.channelName,
+                },
                 message,
                 options,
                 parameters,
@@ -69,10 +77,7 @@ export default createEventHandler({
             if (error instanceof CancellationError) {
                 // do nothing
             } else if (error instanceof UserError) {
-                const response =
-                    error.options.message ??
-                    'Looks like you did something wrong :/ (no additional info was provided)';
-                await chat.reply(channel, message.messageID, response);
+                await chat.reply(channel, message.messageID, error.message);
             } else {
                 const id = captureException(error, {
                     tags: {

@@ -1,6 +1,5 @@
-export interface UserErrorOptions {
-    message?: string;
-}
+// eslint-disable-next-line ts/no-empty-interface
+export interface UserErrorOptions {}
 
 const defaults: UserErrorOptions = {};
 
@@ -10,8 +9,8 @@ const defaults: UserErrorOptions = {};
  */
 export class UserError extends Error {
     public readonly options: UserErrorOptions;
-    constructor(options?: UserErrorOptions) {
-        super('user command error');
+    constructor(message: string, options?: UserErrorOptions) {
+        super(message);
         this.options = { ...defaults, ...options };
         this.name = 'UserError';
     }

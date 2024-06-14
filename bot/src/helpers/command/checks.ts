@@ -2,6 +2,7 @@ import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import locatePromise from 'p-locate';
 
 import { CancellationError } from '~/errors/cancellation';
+import { UserError } from '~/errors/user';
 import { simplifyCommandPermissions } from '~/helpers/command/permission';
 import type { BasicCommand } from '~/helpers/command/types';
 import { permissions } from '~/providers/permissions';
@@ -52,6 +53,6 @@ export async function ensurePermitted(
     );
 
     if (!located) {
-        throw new CancellationError();
+        throw new UserError('You are not allowed to do that.');
     }
 }

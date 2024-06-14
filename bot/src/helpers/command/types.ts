@@ -28,8 +28,11 @@ export type CommandResult =
     | CommandFragment;
 
 export interface CommandContext {
+    /** @deprecated please don't use this as it will probably be unstable after eventsub */
     message: PrivmsgMessage;
     parameters: CommandParameters;
+    user: { id: string; login: string; displayName: string };
+    channel: { id: string; login: string };
     options: Record<string, unknown>;
 }
 
@@ -42,10 +45,11 @@ export type BasicCommand = CommandBase & {
     run: CommandFunction;
 };
 
-export type Subcommand = { path?: string[] } & {
+export interface Subcommand {
+    path?: string[];
     options?: CommandOptions;
     run: CommandFunction;
-};
+}
 
 export type SubcommandWithPermission = Subcommand & { permissions: CommandPermission };
 

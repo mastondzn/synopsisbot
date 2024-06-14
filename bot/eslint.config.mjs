@@ -16,7 +16,16 @@ export default defineConfig({
                     args: true,
                     fn: true,
                     db: true,
+                    str: true,
+                    acc: true,
                 },
+            },
+        ],
+        'unicorn/template-indent': [
+            'warn',
+            {
+                indent: 4,
+                tags: ['html', 'sql', 'trim'],
             },
         ],
     },
