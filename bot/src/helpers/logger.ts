@@ -24,10 +24,7 @@ const colors = [
     'gray',
 ] as const satisfies (keyof typeof chalk)[];
 
-const max = Object.values(entries).reduce(
-    (accumulator, prefix) => Math.max(accumulator, prefix.length),
-    0,
-);
+const max = Object.values(entries).reduce((acc, prefix) => Math.max(acc, prefix.length), 0);
 
 type Logger = {
     [key in keyof typeof entries]: {

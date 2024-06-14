@@ -12,8 +12,7 @@ export function weighedRoll<T extends { weight: number }>(
     collection: ReadonlyCollection<string, T>,
     totalWeight?: number,
 ) {
-    totalWeight =
-        totalWeight ?? collection.reduce((accumulator, item) => accumulator + item.weight, 0);
+    totalWeight = totalWeight ?? collection.reduce((acc, item) => acc + item.weight, 0);
     const roll = Math.random() * totalWeight;
 
     let weight = 0;
@@ -42,10 +41,7 @@ export function rollModifier(item: Beverage): Modifier | null {
     return null;
 }
 
-const beveragesTotalWeight = beverages.reduce(
-    (accumulator, beverage) => accumulator + beverage.weight,
-    0,
-);
+const beveragesTotalWeight = beverages.reduce((acc, beverage) => acc + beverage.weight, 0);
 
 export const rollBeverage = () => weighedRoll(beverages, beveragesTotalWeight);
 

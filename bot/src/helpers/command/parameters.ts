@@ -1,4 +1,5 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
+import { mapValues } from 'remeda';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
@@ -14,35 +15,33 @@ export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'me
 
 export interface CommandParameters {
     text: string | null;
+    /** This can be the command alias, which is why its useful */
     command: string;
     split: string[];
-    rest: string[];
 }
 
 export function parseParameters({
     messageText: text,
 }: Pick<PrivmsgMessage, 'messageText'>): CommandParameters {
-    const split = text.replace(prefix, '').split(/\s+/);
-    const [command, ...rest] = split;
+    const [command, ...split] = text.replace(prefix, '').split(/\s+/);
     if (!command) {
         throw new Error('Failed to parse command');
     }
 
     return {
-        text: rest.length === 0 ? null : rest.join(' '),
-        split,
+        text: split.length === 0 ? null : split.join(' '),
         command,
-        rest,
+        split,
     };
 }
 
-export function parseParametersAndOptions(
+export async function parseParametersAndOptions(
     message: Pick<PrivmsgMessage, 'messageText'>,
     command: Pick<BasicCommand, 'options'>,
-): {
+): Promise<{
     options: Record<string, unknown>;
     parameters: CommandParameters;
-} {
+}> {
     const parameters = parseParameters(message);
 
     if (!command.options) {
@@ -51,59 +50,42 @@ export function parseParametersAndOptions(
 
     const raw: Record<string, string> = {};
 
-    for (const [recordKey, { aliases: keyAliases }] of Object.entries(command.options)) {
-        const wantedKeys = keyAliases ? [recordKey, ...keyAliases] : [recordKey];
+    for (const [recordKey, { aliases }] of Object.entries(command.options)) {
+        const wantedKeys = aliases ? [recordKey, ...aliases] : [recordKey];
 
-        for (const word of parameters.rest) {
+        for (const [index, word] of parameters.split.entries()) {
             const [key, value] = word.split(':');
             // we want to accept empty strings as values
             if (!key || typeof value !== 'string') continue;
 
             if (wantedKeys.includes(key) && raw[recordKey] === undefined) {
                 raw[recordKey] = value;
-
-                // we want to edit the parameters as we go to cleanup the parameters,
-                // TODO: this is probably slow the way it is
-                let filtered = false;
-                parameters.rest = parameters.rest.filter((current) => {
-                    if (filtered) return true;
-                    if (current === word) {
-                        filtered = true;
-                        return false;
-                    }
-                    return true;
-                });
+                parameters.split.splice(index, 1);
             }
         }
     }
 
-    const schema = z.object(
-        Object.fromEntries(
-            Object.entries(command.options).map(([key, { schema }]) => [key, schema] as const),
-        ),
-    );
+    const schema = z.object(mapValues(command.options, ({ schema }) => schema));
 
-    const parsed = schema.safeParse(raw);
+    const parsed = await schema.safeParseAsync(raw);
 
     if (!parsed.success) {
         const human = fromZodError(parsed.error, {
             prefix: 'Could not parse options',
         }).message.replaceAll('received', 'got');
-        throw new UserError({
-            message:
-                human.length > 460
-                    ? 'Could not parse options, and too many errors to display in chat.'
-                    : human,
-        });
+        throw new UserError(
+            human.length > 460
+                ? 'Could not parse options, and too many errors to display in chat.'
+                : human,
+        );
     }
 
     return {
         options: parsed.data,
         parameters: {
-            text: parameters.rest.length === 0 ? null : parameters.rest.join(' '),
-            split: [parameters.command, ...parameters.rest],
+            text: parameters.split.length === 0 ? null : parameters.split.join(' '),
+            split: parameters.split,
             command: parameters.command,
-            rest: parameters.rest,
         },
     };
 }
@@ -126,7 +108,7 @@ export async function parseUserParameter(
     | { ok: false; reason: string }
     | { login: string; ok: true }
 > {
-    const user = context.parameters.rest
+    const user = context.parameters.split
         .at(index)
         ?.toLowerCase()
         .replace(/^(@|#)+/, '')
