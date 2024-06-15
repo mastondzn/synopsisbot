@@ -18,6 +18,7 @@ export default createCommand({
     ],
     options: {
         channel: {
+            aliases: ['c'],
             schema: schemas.twitch
                 .helixUser()
                 .refine(
@@ -41,7 +42,7 @@ export default createCommand({
                 mode,
             });
             await chat.join(channel.name);
-            return { reply: `Joined channel ${channel.name} in ${mode} mode.` };
+            return { reply: `Joined channel ${channel.displayName} in ${mode} mode.` };
         }
 
         if (existing.mode === mode) {

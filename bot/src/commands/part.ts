@@ -12,6 +12,7 @@ export default createCommand({
     usage: [['part channel:<channel>', 'Parts the specified channel']],
     options: {
         channel: {
+            aliases: ['c'],
             schema: schemas.twitch.loginOrId(),
         },
     },
