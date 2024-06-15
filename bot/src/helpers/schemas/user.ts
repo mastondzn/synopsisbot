@@ -23,7 +23,7 @@ export function login() {
 
         if (!/^[\dA-Za-z]\w{2,24}$/.test(value)) {
             addIssue({
-                message: 'Invalid twitch login',
+                message: 'Invalid Twitch login',
                 code: z.ZodIssueCode.custom,
             });
             return z.NEVER;
@@ -43,7 +43,7 @@ export function id() {
     return z.string().transform((value, { addIssue }) => {
         if (!/^id:\d+$/.test(value)) {
             addIssue({
-                message: 'Invalid user ID',
+                message: 'Invalid Twitch user ID',
                 code: z.ZodIssueCode.custom,
             });
             return z.NEVER;
@@ -71,7 +71,7 @@ export function loginOrId() {
  * - (at)login
  * - #login (if allowChannels is true)
  */
-export function helixUser() {
+export function helixLoginOrId() {
     return loginOrId().transform(async (user, { addIssue }) => {
         if ('id' in user) {
             return await helix.users.getUserById(user.id);
