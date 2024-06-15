@@ -144,4 +144,19 @@ describe('parseParametersAndOptions', () => {
             parseParametersAndOptions({ messageText: 'sb test key:123' }, command),
         ).rejects.toThrowError();
     });
+
+    it('should only split a key:value once', async () => {
+        const command = {
+            options: { key: { schema: z.string() } },
+        };
+
+        const { options } = await parseParametersAndOptions(
+            { messageText: 'sb test key:123:abc' },
+            command,
+        );
+
+        expect(options).toEqual({
+            key: '123:abc',
+        });
+    });
 });

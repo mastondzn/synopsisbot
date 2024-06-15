@@ -4,10 +4,10 @@ import { inspect } from 'node:util';
 import { Collection } from '@discordjs/collection';
 
 import { type CommandMetadata, commands } from '.';
-import { createCommand } from '~/helpers/command/define';
+import { createCommandWithSubcommands } from '~/helpers/command/define';
 import type { Command } from '~/helpers/command/types';
 
-export default createCommand({
+export default createCommandWithSubcommands({
     name: 'dev',
     description: 'Lets the owner do some things.',
     permissions: { global: 'owner' },

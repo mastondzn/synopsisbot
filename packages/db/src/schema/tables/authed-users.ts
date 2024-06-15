@@ -1,4 +1,4 @@
-import type { InferModel } from 'drizzle-orm';
+import type { InferSelectModel } from 'drizzle-orm';
 import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const authedUsers = pgTable('authed_users', {
@@ -11,6 +11,6 @@ export const authedUsers = pgTable('authed_users', {
     obtainedAt: timestamp('obtained_at').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 });
-export type AuthedUser = InferModel<typeof authedUsers>;
-export type NewAuthedUser = InferModel<typeof authedUsers, 'insert'>;
+export type AuthedUser = InferSelectModel<typeof authedUsers>;
+export type NewAuthedUser = InferSelectModel<typeof authedUsers>;
 export type UpdateAuthedUser = Partial<AuthedUser>;

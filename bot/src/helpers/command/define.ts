@@ -11,8 +11,6 @@ import type {
     SubcommandWithPermission,
 } from './types';
 
-export function createCommand(command: CommandWithSubcommands): CommandWithSubcommands;
-
 export function createCommand<T extends CommandOptions = CommandOptions>(
     command: Omit<BasicCommand, 'run' | 'options'> & {
         options?: T;
@@ -24,7 +22,11 @@ export function createCommand<T extends CommandOptions = CommandOptions>(
     },
 ): BasicCommand;
 
-export function createCommand(command: BasicCommand | CommandWithSubcommands): Command {
+export function createCommand(command: BasicCommand): Command {
+    return command;
+}
+
+export function createCommandWithSubcommands(command: CommandWithSubcommands): Command {
     return command;
 }
 

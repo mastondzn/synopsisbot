@@ -54,7 +54,7 @@ export async function parseParametersAndOptions(
         const wantedKeys = aliases ? [recordKey, ...aliases] : [recordKey];
 
         for (const [index, word] of parameters.split.entries()) {
-            const [key, value] = word.split(':');
+            const [key, value] = splitOnce(word, ':');
             // we want to accept empty strings as values
             if (!key || typeof value !== 'string') continue;
 

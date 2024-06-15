@@ -1,8 +1,8 @@
-import { createCommand } from '~/helpers/command/define';
+import { createCommandWithSubcommands } from '~/helpers/command/define';
 import { parseUserParameter } from '~/helpers/command/parameters';
 import { permissions } from '~/providers/permissions';
 
-export default createCommand({
+export default createCommandWithSubcommands({
     name: 'manage',
     description: 'Lets ambassadors manage the bot in their channels.',
     permissions: [{ local: 'ambassador' }, { global: 'owner' }],

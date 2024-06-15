@@ -1,4 +1,4 @@
-import type { InferModel } from 'drizzle-orm';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const commandUsers = pgTable('command_users', {
@@ -9,6 +9,6 @@ export const commandUsers = pgTable('command_users', {
     hydrationPoints: integer('hydration_points').notNull().default(0),
     hydratedAt: timestamp('hydrated_at'),
 });
-export type CommandUser = InferModel<typeof commandUsers>;
-export type NewCommandUser = InferModel<typeof commandUsers, 'insert'>;
+export type CommandUser = InferSelectModel<typeof commandUsers>;
+export type NewCommandUser = InferInsertModel<typeof commandUsers>;
 export type UpdateCommandUser = Partial<CommandUser>;
