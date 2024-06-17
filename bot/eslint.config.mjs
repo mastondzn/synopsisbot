@@ -19,6 +19,7 @@ export default defineConfig({
                     str: true,
                     acc: true,
                 },
+                checkFilenames: false,
             },
         ],
         'unicorn/template-indent': [

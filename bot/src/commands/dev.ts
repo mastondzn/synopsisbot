@@ -1,4 +1,3 @@
-// eslint-disable-next-line unicorn/prevent-abbreviations
 import { inspect } from 'node:util';
 
 import { Collection } from '@discordjs/collection';
