@@ -12,7 +12,7 @@ export interface CommandMetadata {
 }
 
 class Commands extends Collection<string, Command & { meta: CommandMetadata }> {
-    public async load(force = false): Promise<this> {
+    public async load({ force = false }: { force?: boolean } = {}): Promise<this> {
         const directory = (await readdir('./src/commands')).filter((path) => path !== 'index.ts');
 
         const version = new Date();
