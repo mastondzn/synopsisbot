@@ -53,14 +53,12 @@ export function id() {
     });
 }
 
-/**
- * Zod schema for either a user-specified twitch login or user ID.
- */
-export function loginOrId() {
-    return z.union([
-        login().transform((value) => ({ login: value })),
-        id().transform((value) => ({ id: value })),
-    ]);
+export function helixId() {
+    return id().transform(async (id) => await helix.users.getUserById(id));
+}
+
+export function helixLogin() {
+    return login().transform(async (login) => await helix.users.getUserByName(login));
 }
 
 /**
@@ -71,20 +69,6 @@ export function loginOrId() {
  * - (at)login
  * - #login (if allowChannels is true)
  */
-export function helixLoginOrId() {
-    return loginOrId().transform(async (user, { addIssue }) => {
-        if ('id' in user) {
-            return await helix.users.getUserById(user.id);
-        }
-
-        if ('login' in user) {
-            return await helix.users.getUserByName(user.login);
-        }
-
-        addIssue({
-            message: 'Invalid user',
-            code: z.ZodIssueCode.custom,
-        });
-        return z.NEVER;
-    });
+export function helixUser() {
+    return z.union([helixLogin(), helixId()]);
 }
