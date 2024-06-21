@@ -4,10 +4,9 @@ import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 import { prefix } from './prefix';
-import type { BasicCommand, CommandContext } from './types';
+import type { BasicCommand } from './types';
 import { splitOnce } from '../string';
 import { UserError } from '~/errors/user';
-import { helix } from '~/services/apis/helix';
 
 export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
     return splitOnce(text.replace(prefix, ''), ' ')[0];
@@ -20,7 +19,7 @@ export interface CommandParameters {
     split: string[];
 }
 
-export function parseParameters({
+export function simplyParseParameters({
     messageText: text,
 }: Pick<PrivmsgMessage, 'messageText'>): CommandParameters {
     const [command, ...split] = text.replace(prefix, '').split(/\s+/);
@@ -35,22 +34,20 @@ export function parseParameters({
     };
 }
 
-export async function parseParametersAndOptions(
+export async function parseParameters(
     message: Pick<PrivmsgMessage, 'messageText'>,
-    command: Pick<BasicCommand, 'options'>,
+    command: Pick<BasicCommand, 'options' | 'arguments'>,
 ): Promise<{
     options: Record<string, unknown>;
+    arguments: unknown[];
     parameters: CommandParameters;
 }> {
-    const parameters = parseParameters(message);
+    const { options = {}, arguments: args = [] } = command;
 
-    if (!command.options) {
-        return { options: {}, parameters };
-    }
+    const parameters = simplyParseParameters(message);
+    const rawOptions: Record<string, string> = {};
 
-    const raw: Record<string, string> = {};
-
-    for (const [recordKey, { aliases }] of Object.entries(command.options)) {
+    for (const [recordKey, { aliases }] of Object.entries(options)) {
         const wantedKeys = aliases ? [recordKey, ...aliases] : [recordKey];
 
         for (const [index, word] of parameters.split.entries()) {
@@ -58,74 +55,46 @@ export async function parseParametersAndOptions(
             // we want to accept empty strings as values
             if (!key || typeof value !== 'string') continue;
 
-            if (wantedKeys.includes(key) && raw[recordKey] === undefined) {
-                raw[recordKey] = value;
+            if (wantedKeys.includes(key) && rawOptions[recordKey] === undefined) {
+                rawOptions[recordKey] = value;
                 parameters.split.splice(index, 1);
             }
         }
     }
 
-    const schema = z.object(mapValues(command.options, ({ schema }) => schema));
+    const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
+    const argumentsSchema = z.tuple(args).rest(z.string());
 
-    const parsed = await schema.safeParseAsync(raw);
+    const [parsedOptions, parsedArguments] = await Promise.all([
+        optionsSchema.safeParseAsync(rawOptions),
+        argumentsSchema.safeParseAsync(parameters.split),
+    ]);
 
-    if (!parsed.success) {
-        const human = fromZodError(parsed.error, {
-            prefix: 'Could not parse options',
-        }).message.replaceAll('received', 'got');
+    if (!parsedOptions.success || !parsedArguments.success) {
+        let message = 'Could not parse options or arguments: ';
+
+        if (!parsedOptions.success) {
+            message += fromZodError(parsedOptions.error, { prefix: null }).message;
+        }
+
+        if (!parsedArguments.success) {
+            message += fromZodError(parsedArguments.error, { prefix: null }).message;
+        }
+
         throw new UserError(
-            human.length > 460
-                ? 'Could not parse options, and too many errors to display in chat.'
-                : human,
+            message.length > 460
+                ? 'Could not parse options or arguments, and too many errors to display in chat.'
+                : message,
         );
     }
 
     return {
-        options: parsed.data,
+        options: parsedOptions.data,
+        arguments: parsedArguments.data,
         parameters: {
             text: parameters.split.length === 0 ? null : parameters.split.join(' '),
             split: parameters.split,
             command: parameters.command,
         },
     };
-}
-
-export async function parseUserParameter(
-    context: CommandContext,
-    index: number,
-    withId: true,
-): Promise<{ id: string; login: string; ok: true } | { ok: false; reason: string }>;
-export async function parseUserParameter(
-    context: CommandContext,
-    index: number,
-): Promise<{ login: string; ok: true } | { ok: false; reason: string }>;
-export async function parseUserParameter(
-    context: CommandContext,
-    index: number,
-    withId?: boolean,
-): Promise<
-    | { id: string; login: string; ok: true }
-    | { ok: false; reason: string }
-    | { login: string; ok: true }
-> {
-    const user = context.parameters.split
-        .at(index)
-        ?.toLowerCase()
-        .replace(/^(@|#)+/, '')
-        .replace(/^_+$/, context.message.channelName);
-
-    if (!user || !/^\w+$/.test(user)) {
-        return { ok: false, reason: 'Missing user/channel parameter.' };
-    }
-
-    if (!withId) {
-        return { login: user, ok: true };
-    }
-
-    const helixUser = await helix.users.getUserByName(user);
-    if (!helixUser) {
-        return { ok: false, reason: 'Could not fetch user/channel.' };
-    }
-
-    return { id: helixUser.id, login: user, ok: true };
 }

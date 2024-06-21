@@ -4,19 +4,25 @@ import type {
     BasicCommand,
     Command,
     CommandContext,
-    CommandOptions,
     CommandResult,
     CommandWithSubcommands,
     Subcommand,
     SubcommandWithPermission,
+    ZodArguments,
+    ZodOptions,
 } from './types';
 
-export function createCommand<T extends CommandOptions = CommandOptions>(
-    command: Omit<BasicCommand, 'run' | 'options'> & {
-        options?: T;
+export function createCommand<
+    TOptions extends ZodOptions = ZodOptions,
+    TArguments extends ZodArguments = ZodArguments,
+>(
+    command: Omit<BasicCommand, 'run' | 'options' | 'arguments'> & {
+        options?: TOptions;
+        arguments?: TArguments;
         run: (
-            context: Omit<CommandContext, 'options'> & {
-                options: { [K in keyof T]: z.infer<T[K]['schema']> };
+            context: Omit<CommandContext, 'options' | 'arguments'> & {
+                options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
+                arguments: { [K in keyof TArguments]: z.infer<TArguments[K]> };
             },
         ) => CommandResult;
     },
@@ -30,23 +36,31 @@ export function createCommandWithSubcommands(command: CommandWithSubcommands): C
     return command;
 }
 
-export function createSubcommand<T extends CommandOptions = CommandOptions>(
-    subcommand: Omit<Subcommand, 'run' | 'options'> & {
-        options?: T;
+export function createSubcommand<
+    TOptions extends ZodOptions = ZodOptions,
+    TArguments extends ZodArguments = ZodArguments,
+>(
+    subcommand: Omit<Subcommand, 'run' | 'options' | 'arguments'> & {
+        options?: TOptions;
         run: (
-            context: Omit<CommandContext, 'options'> & {
-                options: { [K in keyof T]: z.infer<T[K]['schema']> };
+            context: Omit<CommandContext, 'options' | 'arguments'> & {
+                options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
+                arguments: { [K in keyof TArguments]: z.infer<TArguments[K]> };
             },
         ) => CommandResult;
     },
 ): Subcommand;
 
-export function createSubcommand<T extends CommandOptions = CommandOptions>(
-    subcommand: Omit<SubcommandWithPermission, 'run' | 'options'> & {
-        options?: T;
+export function createSubcommand<
+    TOptions extends ZodOptions = ZodOptions,
+    TArguments extends ZodArguments = ZodArguments,
+>(
+    subcommand: Omit<SubcommandWithPermission, 'run' | 'options' | 'arguments'> & {
+        options?: TOptions;
         run: (
-            context: Omit<CommandContext, 'options'> & {
-                options: { [K in keyof T]: z.infer<T[K]['schema']> };
+            context: Omit<CommandContext, 'options' | 'arguments'> & {
+                options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
+                arguments: { [K in keyof TArguments]: z.infer<TArguments[K]> };
             },
         ) => CommandResult;
     },

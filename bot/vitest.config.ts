@@ -7,4 +7,5 @@ export default defineConfig({
     resolve: {
         alias: { '~': resolve(dirname(fileURLToPath(import.meta.url)), './src') },
     },
+    test: { typecheck: {} },
 });

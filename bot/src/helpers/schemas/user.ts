@@ -53,6 +53,13 @@ export function id() {
     });
 }
 
+export function idOrLogin() {
+    return z.union([
+        id().transform((value) => ({ id: value })),
+        login().transform((value) => ({ login: value })),
+    ]);
+}
+
 export function helixId() {
     return id().transform(async (id) => await helix.users.getUserById(id));
 }

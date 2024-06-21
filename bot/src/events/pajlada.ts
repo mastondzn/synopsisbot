@@ -9,7 +9,7 @@ export default createEventHandler({
             message.channelName === 'pajlada' &&
             message.senderUsername === 'pajbot'
         ) {
-            await chat.say(message.channelName, '🚨 ALERTĂ pajaConcern');
+            await chat.say(message.channelName, '🚨 pajaConcern ALERTĂ');
         }
     },
 });

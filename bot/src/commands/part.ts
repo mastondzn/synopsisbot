@@ -13,7 +13,7 @@ export default createCommand({
     options: {
         channel: {
             aliases: ['c'],
-            schema: schemas.twitch.loginOrId(),
+            schema: schemas.twitch.idOrLogin(),
         },
     },
     run: async ({ options: { channel } }) => {

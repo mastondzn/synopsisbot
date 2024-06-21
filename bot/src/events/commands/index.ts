@@ -7,7 +7,7 @@ import { CancellationError } from '~/errors/cancellation';
 import { UserError } from '~/errors/user';
 import { ensurePermitted, ensureValidChannelMode } from '~/helpers/command/checks';
 import { consumeFragment } from '~/helpers/command/fragment';
-import { getWantedCommand, parseParametersAndOptions } from '~/helpers/command/parameters';
+import { getWantedCommand, parseParameters } from '~/helpers/command/parameters';
 import { prefix } from '~/helpers/command/prefix';
 import { simplifyCommand } from '~/helpers/command/simplify';
 import type { CommandContext } from '~/helpers/command/types';
@@ -47,7 +47,11 @@ export default createEventHandler({
 
             await ensurePermitted(message, command);
 
-            const { options, parameters } = await parseParametersAndOptions(message, command);
+            const {
+                options,
+                parameters,
+                arguments: args,
+            } = await parseParameters(message, command);
 
             const context: CommandContext = {
                 user: {
@@ -59,6 +63,7 @@ export default createEventHandler({
                     id: message.channelID,
                     login: message.channelName,
                 },
+                arguments: args,
                 message,
                 options,
                 parameters,

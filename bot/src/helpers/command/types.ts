@@ -13,7 +13,8 @@ export interface CommandBase {
     permissions?: CommandPermission[] | CommandPermission;
 }
 
-export type CommandOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
+export type ZodOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
+export type ZodArguments = [z.ZodType<unknown>, ...z.ZodType<unknown>[]];
 
 export type CommandFragment = (
     | { say: string }
@@ -34,6 +35,7 @@ export interface CommandContext {
     user: { id: string; login: string; displayName: string };
     channel: { id: string; login: string };
     options: Record<string, unknown>;
+    arguments: unknown[];
 }
 
 export type CommandFunction = (context: CommandContext) => CommandResult;
@@ -41,13 +43,15 @@ export type CommandFunction = (context: CommandContext) => CommandResult;
 export type CommandPermission = { local?: LocalLevel; global?: GlobalLevel } | { mode?: 'custom' };
 
 export type BasicCommand = CommandBase & {
-    options?: CommandOptions;
+    options?: ZodOptions;
+    arguments?: ZodArguments;
     run: CommandFunction;
 };
 
 export interface Subcommand {
     path?: string[];
-    options?: CommandOptions;
+    options?: ZodOptions;
+    arguments?: ZodArguments;
     run: CommandFunction;
 }
 

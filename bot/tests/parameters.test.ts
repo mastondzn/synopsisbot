@@ -1,36 +1,36 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { parseParameters, parseParametersAndOptions } from '~/helpers/command/parameters';
+import { parseParameters, simplyParseParameters } from '~/helpers/command/parameters';
 
-describe('parseParameters', () => {
+describe('simplyParseParameters', () => {
     it('should return null text if only the command was passed', () => {
-        expect(parseParameters({ messageText: 'sb test' }).text).toBe(null);
+        expect(simplyParseParameters({ messageText: 'sb test' }).text).toBe(null);
     });
 
     it('should return the text if it was passed', () => {
-        expect(parseParameters({ messageText: 'sb test test' }).text).toBe('test');
+        expect(simplyParseParameters({ messageText: 'sb test test' }).text).toBe('test');
     });
 
     it('should return split params if they were passed', () => {
-        const parameters = parseParameters({ messageText: 'sb test test1 test2' });
+        const parameters = simplyParseParameters({ messageText: 'sb test test1 test2' });
         expect(parameters.text).toBe('test1 test2');
         expect(parameters.split).toEqual(['test1', 'test2']);
     });
 
     it('should return the command name', () => {
-        expect(parseParameters({ messageText: 'sb command' }).command).toBe('command');
+        expect(simplyParseParameters({ messageText: 'sb command' }).command).toBe('command');
     });
 });
 
-describe('parseParametersAndOptions', () => {
+describe('parseParameters', () => {
     it('should return empty options if no options were passed', async () => {
-        const { options } = await parseParametersAndOptions({ messageText: 'sb test' }, {});
+        const { options } = await parseParameters({ messageText: 'sb test' }, {});
         expect(options).toEqual({});
     });
 
     it('should return the parameters', async () => {
-        const { parameters } = await parseParametersAndOptions({ messageText: 'sb test' }, {});
+        const { parameters } = await parseParameters({ messageText: 'sb test' }, {});
 
         expect(parameters).toEqual({
             text: null,
@@ -44,10 +44,7 @@ describe('parseParametersAndOptions', () => {
             options: { key: { schema: z.string() } },
         };
 
-        const { options } = await parseParametersAndOptions(
-            { messageText: 'sb test key:value' },
-            command,
-        );
+        const { options } = await parseParameters({ messageText: 'sb test key:value' }, command);
 
         expect(options).toEqual({ key: 'value' });
     });
@@ -60,7 +57,7 @@ describe('parseParametersAndOptions', () => {
             },
         };
 
-        const { options } = await parseParametersAndOptions(
+        const { options } = await parseParameters(
             { messageText: 'sb test key:value key2:value2' },
             command,
         );
@@ -75,10 +72,7 @@ describe('parseParametersAndOptions', () => {
             },
         };
 
-        const { options } = await parseParametersAndOptions(
-            { messageText: 'sb test k:value' },
-            command,
-        );
+        const { options } = await parseParameters({ messageText: 'sb test k:value' }, command);
 
         expect(options).toEqual({ key: 'value' });
     });
@@ -94,7 +88,7 @@ describe('parseParametersAndOptions', () => {
             },
         };
 
-        const { options } = await parseParametersAndOptions(
+        const { options } = await parseParameters(
             { messageText: 'sb test key:value key2:xd' },
             command,
         );
@@ -110,7 +104,7 @@ describe('parseParametersAndOptions', () => {
             },
         };
 
-        const { parameters } = await parseParametersAndOptions(
+        const { parameters } = await parseParameters(
             { messageText: 'sb foo key:value bar key2:value' },
             command,
         );
@@ -123,7 +117,7 @@ describe('parseParametersAndOptions', () => {
     });
 
     it('should keep parameters if they are unwanted key:value options', async () => {
-        const { parameters } = await parseParametersAndOptions(
+        const { parameters } = await parseParameters(
             { messageText: 'sb test key:value' },
             { options: {} },
         );
@@ -141,7 +135,7 @@ describe('parseParametersAndOptions', () => {
         };
 
         await expect(
-            parseParametersAndOptions({ messageText: 'sb test key:123' }, command),
+            parseParameters({ messageText: 'sb test key:123' }, command),
         ).rejects.toThrowError();
     });
 
@@ -150,10 +144,7 @@ describe('parseParametersAndOptions', () => {
             options: { key: { schema: z.string() } },
         };
 
-        const { options } = await parseParametersAndOptions(
-            { messageText: 'sb test key:123:abc' },
-            command,
-        );
+        const { options } = await parseParameters({ messageText: 'sb test key:123:abc' }, command);
 
         expect(options).toEqual({
             key: '123:abc',
