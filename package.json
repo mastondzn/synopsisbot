@@ -26,6 +26,7 @@
     "scripts": {
         "build": "turbo run build",
         "clean": "rimraf node_modules .turbo .vercel dist",
+        "deps": "taze --interactive --includeLocked --recursive",
         "db:check": "turbo run db:check",
         "db:generate": "turbo run db:generate",
         "db:migrate": "turbo run db:migrate",
@@ -51,6 +52,7 @@
         "only-allow": "1.2.1",
         "prettier": "3.2.5",
         "rimraf": "5.0.7",
+        "taze": "^0.13.8",
         "turbo": "2.0.1",
         "typescript": "5.4.5"
     }
