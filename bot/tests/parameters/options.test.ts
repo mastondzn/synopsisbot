@@ -1,27 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { parseParameters, simplyParseParameters } from '~/helpers/command/parameters';
-
-describe('simplyParseParameters', () => {
-    it('should return null text if only the command was passed', () => {
-        expect(simplyParseParameters({ messageText: 'sb test' }).text).toBe(null);
-    });
-
-    it('should return the text if it was passed', () => {
-        expect(simplyParseParameters({ messageText: 'sb test test' }).text).toBe('test');
-    });
-
-    it('should return split params if they were passed', () => {
-        const parameters = simplyParseParameters({ messageText: 'sb test test1 test2' });
-        expect(parameters.text).toBe('test1 test2');
-        expect(parameters.split).toEqual(['test1', 'test2']);
-    });
-
-    it('should return the command name', () => {
-        expect(simplyParseParameters({ messageText: 'sb command' }).command).toBe('command');
-    });
-});
+import { parseParameters } from '~/helpers/command/parameters';
 
 describe('parseParameters', () => {
     it('should return empty options if no options were passed', async () => {

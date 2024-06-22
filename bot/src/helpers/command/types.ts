@@ -14,7 +14,7 @@ export interface CommandBase {
 }
 
 export type ZodOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
-export type ZodArguments = [z.ZodType<unknown>, ...z.ZodType<unknown>[]];
+export type ZodArguments = z.ZodType<unknown>[];
 
 export type CommandFragment = (
     | { say: string }

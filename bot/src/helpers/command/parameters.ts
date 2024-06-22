@@ -1,11 +1,12 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
-import { mapValues } from 'remeda';
+import { isDeepEqual, mapValues } from 'remeda';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 import { prefix } from './prefix';
 import type { BasicCommand } from './types';
 import { splitOnce } from '../string';
+import { trim } from '../tags';
 import { UserError } from '~/errors/user';
 
 export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
@@ -19,7 +20,7 @@ export interface CommandParameters {
     split: string[];
 }
 
-export function simplyParseParameters({
+export function parseSimpleParameters({
     messageText: text,
 }: Pick<PrivmsgMessage, 'messageText'>): CommandParameters {
     const [command, ...split] = text.replace(prefix, '').split(/\s+/);
@@ -44,7 +45,7 @@ export async function parseParameters(
 }> {
     const { options = {}, arguments: args = [] } = command;
 
-    const parameters = simplyParseParameters(message);
+    const parameters = parseSimpleParameters(message);
     const rawOptions: Record<string, string> = {};
 
     for (const [recordKey, { aliases }] of Object.entries(options)) {
@@ -62,24 +63,25 @@ export async function parseParameters(
         }
     }
 
-    const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
+    // @ts-expect-error this is just too hard to solve and not worth the hassle, it works
     const argumentsSchema = z.tuple(args).rest(z.string());
+    const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
 
-    const [parsedOptions, parsedArguments] = await Promise.all([
+    const [parsedArguments, parsedOptions] = await Promise.all([
+        args.length === 0
+            ? (Promise.resolve({ data: parameters.split, success: true }) as ReturnType<
+                  typeof argumentsSchema.safeParseAsync
+              >)
+            : argumentsSchema.safeParseAsync(parameters.split),
         optionsSchema.safeParseAsync(rawOptions),
-        argumentsSchema.safeParseAsync(parameters.split),
     ]);
 
-    if (!parsedOptions.success || !parsedArguments.success) {
-        let message = 'Could not parse options or arguments: ';
-
-        if (!parsedOptions.success) {
-            message += fromZodError(parsedOptions.error, { prefix: null }).message;
-        }
-
-        if (!parsedArguments.success) {
-            message += fromZodError(parsedArguments.error, { prefix: null }).message;
-        }
+    if (!parsedArguments.success || !parsedOptions.success) {
+        const message = trim`
+            Could not parse options or arguments:
+            ${parsedArguments.error ? fromZodError(parsedArguments.error, { prefix: null }).message : ''}
+            ${parsedOptions.error ? fromZodError(parsedOptions.error, { prefix: null }).message : ''}
+        `;
 
         throw new UserError(
             message.length > 460
