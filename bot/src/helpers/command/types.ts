@@ -35,7 +35,7 @@ export interface CommandContext {
     user: { id: string; login: string; displayName: string };
     channel: { id: string; login: string };
     options: Record<string, unknown>;
-    arguments: unknown[];
+    args: unknown[];
 }
 
 export type CommandFunction = (context: CommandContext) => CommandResult;

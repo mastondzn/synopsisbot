@@ -45,7 +45,7 @@ describe('createCommand', () => {
             name: 'test',
             description: 'test',
             arguments: [z.string().transform(() => true)],
-            run: ({ arguments: args }) => {
+            run: ({ args }) => {
                 // we want the extra string tuple rest to be included
                 expectTypeOf(args).toEqualTypeOf<[boolean, ...string[]]>();
 
@@ -65,7 +65,7 @@ describe('createCommand', () => {
                 two: { schema: z.string() },
             },
             arguments: [z.string().transform(() => true)],
-            run: ({ options, arguments: args }) => {
+            run: ({ options, args }) => {
                 expectTypeOf(options).toMatchTypeOf<{
                     one: boolean;
                     two: string;
@@ -81,7 +81,7 @@ describe('createCommand', () => {
         createCommand({
             name: 'test',
             description: 'test',
-            run: ({ options, arguments: args }) => {
+            run: ({ options, args }) => {
                 expectTypeOf(options).toEqualTypeOf<Record<string, unknown>>();
                 expectTypeOf(args).toEqualTypeOf<string[]>();
 

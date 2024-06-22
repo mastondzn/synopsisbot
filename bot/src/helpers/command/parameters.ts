@@ -1,5 +1,5 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
-import { isDeepEqual, mapValues } from 'remeda';
+import { mapValues } from 'remeda';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
@@ -68,6 +68,7 @@ export async function parseParameters(
     const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
 
     const [parsedArguments, parsedOptions] = await Promise.all([
+        // if there are no arguments, we can skip the parsing
         args.length === 0
             ? (Promise.resolve({ data: parameters.split, success: true }) as ReturnType<
                   typeof argumentsSchema.safeParseAsync
@@ -78,7 +79,13 @@ export async function parseParameters(
 
     if (!parsedArguments.success || !parsedOptions.success) {
         const message = trim`
-            Could not parse options or arguments:
+            Could not parse ${
+                !parsedArguments.success && !parsedOptions.success
+                    ? 'options and arguments'
+                    : parsedArguments.success
+                      ? 'options'
+                      : 'arguments'
+            }:
             ${parsedArguments.error ? fromZodError(parsedArguments.error, { prefix: null }).message : ''}
             ${parsedOptions.error ? fromZodError(parsedOptions.error, { prefix: null }).message : ''}
         `;

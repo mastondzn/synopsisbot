@@ -63,7 +63,7 @@ export default createEventHandler({
                     id: message.channelID,
                     login: message.channelName,
                 },
-                arguments: args,
+                args,
                 message,
                 options,
                 parameters,

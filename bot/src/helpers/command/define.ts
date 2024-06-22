@@ -20,9 +20,9 @@ export function createCommand<
         options?: TOptions;
         arguments?: TArguments;
         run: (
-            context: Omit<CommandContext, 'options' | 'arguments'> & {
+            context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                arguments: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
+                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
                     ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
                     : string[];
             },
@@ -44,10 +44,11 @@ export function createSubcommand<
 >(
     subcommand: Omit<Subcommand, 'run' | 'options' | 'arguments'> & {
         options?: TOptions;
+        arguments?: TArguments;
         run: (
-            context: Omit<CommandContext, 'options' | 'arguments'> & {
+            context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                arguments: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
+                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
                     ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
                     : string[];
             },
@@ -61,10 +62,11 @@ export function createSubcommand<
 >(
     subcommand: Omit<SubcommandWithPermission, 'run' | 'options' | 'arguments'> & {
         options?: TOptions;
+        arguments?: TArguments;
         run: (
-            context: Omit<CommandContext, 'options' | 'arguments'> & {
+            context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                arguments: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
+                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
                     ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
                     : string[];
             },
@@ -72,6 +74,8 @@ export function createSubcommand<
     },
 ): SubcommandWithPermission;
 
-export function createSubcommand(subcommand: Subcommand | SubcommandWithPermission) {
+export function createSubcommand(
+    subcommand: Subcommand | SubcommandWithPermission,
+): SubcommandWithPermission | Subcommand {
     return subcommand;
 }
