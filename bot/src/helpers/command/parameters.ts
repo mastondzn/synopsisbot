@@ -9,8 +9,8 @@ import { splitOnce } from '../string';
 import { trim } from '../tags';
 import { UserError } from '~/errors/user';
 
-export function getWantedCommand({ messageText: text }: Pick<PrivmsgMessage, 'messageText'>) {
-    return splitOnce(text.replace(prefix, ''), ' ')[0];
+export function getWantedCommand({ messageText }: Pick<PrivmsgMessage, 'messageText'>) {
+    return splitOnce(messageText.replace(prefix, ''), ' ')[0];
 }
 
 export interface CommandParameters {
