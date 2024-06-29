@@ -24,7 +24,7 @@
         "@mastondzn/eslint": "0.10.0",
         "@synopsis/tsconfig": "workspace:*",
         "@t3-oss/env-nextjs": "0.10.1",
-        "eslint": "^8.57.0",
+        "eslint": "8.57.0",
         "zod": "3.23.8"
     }
 }
