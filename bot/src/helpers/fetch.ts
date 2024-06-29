@@ -25,7 +25,7 @@ export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>(
     json: () => Promise<z.infer<TSchema>>;
     text: () => Promise<string>;
 } {
-    const { schema, url, body, throwHttpErrors = true, ...rest } = options;
+    const { schema, url, body, throwHttpErrors, ...rest } = options;
 
     const promise = fetch(url, {
         ...rest,

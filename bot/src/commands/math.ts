@@ -1,5 +1,6 @@
 import { createCommand } from '~/helpers/command/define';
 import { zfetch } from '~/helpers/fetch';
+import { trim } from '~/helpers/tags';
 
 export default createCommand({
     name: 'math',
@@ -11,7 +12,15 @@ export default createCommand({
 
         const url = new URL('http://api.mathjs.org/v4/');
         url.searchParams.append('expr', text);
+        url.searchParams.append('precision', '4');
 
-        return { reply: await zfetch({ url }).text() };
+        const response = await zfetch({ url });
+
+        if (response.status !== 200) {
+            const error = (await response.text()).replace('Error: ', '');
+            return { reply: trim`Failed to evaluate the expression. ${error}` };
+        }
+
+        return { reply: await response.text() };
     },
 });
