@@ -43,7 +43,7 @@
         "remeda": "2.0.10",
         "semaphore-async-await": "1.5.1",
         "zod": "3.23.8",
-        "zod-validation-error": "^3.3.0"
+        "zod-validation-error": "3.3.0"
     },
     "devDependencies": {
         "@mastondzn/eslint": "0.10.0",
@@ -51,9 +51,9 @@
         "@types/node": "20.12.12",
         "dotenv-cli": "7.4.2",
         "eslint": "8.57.0",
-        "tsc-alias": "^1.8.10",
-        "tslib": "^2.6.2",
-        "tsx": "4.16.0",
+        "tsc-alias": "1.8.10",
+        "tslib": "2.6.2",
+        "tsx": "4.15.9",
         "typescript": "5.4.5",
         "vitest": "1.6.0"
     }
