@@ -5,7 +5,7 @@ import { createCommand } from '~/helpers/command/define';
 import type { Command } from '~/helpers/command/types';
 
 export default createCommand({
-    name: 'eval',
+    name: 'reload',
     description: 'Reloads commands.',
     permissions: {
         global: 'owner',
