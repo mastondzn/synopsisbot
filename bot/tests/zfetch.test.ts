@@ -12,15 +12,12 @@ describe('zfetch', () => {
                 schema: z.object({
                     foo: z.string(),
                 }),
-            });
+            }).json();
         };
 
-        expectTypeOf(usage).toEqualTypeOf<
+        expectTypeOf(usage).toMatchTypeOf<
             () => Promise<{
-                response: Response;
-                body: {
-                    foo: string;
-                };
+                foo: string;
             }>
         >();
     });

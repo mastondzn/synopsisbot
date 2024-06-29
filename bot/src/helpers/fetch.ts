@@ -1,40 +1,45 @@
 import type { z } from 'zod';
 
-type BaseOptions = Omit<RequestInit, 'body'> & {
+type ZFetchOptions<TSchema extends z.ZodTypeAny> = RequestInit & {
     url: string | URL;
     body?: unknown;
     throwHttpErrors?: boolean;
+    schema?: TSchema;
 };
 
-export async function jfetch({ url, throwHttpErrors, body, ...rest }: BaseOptions): Promise<{
+export type TypedResponse<T> = Response & {
+    json: () => Promise<T>;
+};
+
+export class HTTPError extends Error {
     response: Response;
-    body: unknown;
-}> {
-    const response = await fetch(url, {
-        ...rest,
-        body: typeof body === 'string' ? body : JSON.stringify(body),
-    });
-
-    if (throwHttpErrors && !response.ok) {
-        throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+    constructor(response: Response) {
+        super(`HTTP Error ${response.status}: ${response.statusText}`);
+        this.response = response;
     }
-
-    return {
-        response,
-        body: await response.json(),
-    };
 }
 
-export async function zfetch<TSchema extends z.ZodType>(
-    options: BaseOptions & { schema: TSchema },
-): Promise<{
-    response: Response;
-    body: z.infer<TSchema>;
-}> {
-    const { response, body } = await jfetch(options);
+export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>(
+    options: ZFetchOptions<TSchema>,
+): Promise<TypedResponse<z.infer<TSchema>>> & {
+    json: () => Promise<z.infer<TSchema>>;
+    text: () => Promise<string>;
+} {
+    const { schema, url, body, throwHttpErrors = true, ...rest } = options;
 
-    return {
-        response,
-        body: options.schema.parse(body) as z.infer<TSchema>,
-    };
+    const promise = fetch(url, {
+        ...rest,
+        body: typeof body === 'string' ? body : JSON.stringify(body),
+    }).then((response) => {
+        if (throwHttpErrors && !response.ok) throw new HTTPError(response);
+        const parse = response.json.bind(response);
+        return Object.assign(response, {
+            json: async () => (schema ? await schema.parseAsync(await parse()) : await parse()),
+        });
+    });
+
+    return Object.assign(promise, {
+        json: async () => await (await promise).json(),
+        text: async () => await (await promise).text(),
+    });
 }

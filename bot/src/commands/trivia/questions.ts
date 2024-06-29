@@ -15,16 +15,16 @@ const questionSchema = z.object({
 
 const responseSchema = z.object({
     response_code: z.literal(0),
-    results: z.tuple([questionSchema]),
+    results: z.tuple([questionSchema]).rest(z.unknown()),
 });
 
 export type Trivia = z.infer<typeof questionSchema>;
 
 export async function getTrivia(): Promise<Trivia> {
-    const { body } = await zfetch({
+    const json = await zfetch({
         url: 'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
         schema: responseSchema,
-    });
+    }).json();
 
-    return body.results[0];
+    return json.results[0];
 }
