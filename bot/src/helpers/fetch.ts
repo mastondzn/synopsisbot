@@ -1,13 +1,13 @@
 import type { z } from 'zod';
 
-type ZFetchOptions<TSchema extends z.ZodTypeAny> = RequestInit & {
+export type ZFetchOptions<TSchema extends z.ZodTypeAny> = RequestInit & {
     url: string | URL;
-    body?: unknown;
     throwHttpErrors?: boolean;
     schema?: TSchema;
+    json?: unknown;
 };
 
-export type TypedResponse<T> = Response & {
+export type TypedResponse<T = unknown> = Response & {
     json: () => Promise<T>;
 };
 
@@ -19,18 +19,23 @@ export class HTTPError extends Error {
     }
 }
 
-export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>(
-    options: ZFetchOptions<TSchema>,
-): Promise<TypedResponse<z.infer<TSchema>>> & {
+export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>({
+    schema,
+    url,
+    throwHttpErrors,
+    json,
+    ...rest
+}: ZFetchOptions<TSchema>): Promise<TypedResponse<z.infer<TSchema>>> & {
     json: () => Promise<z.infer<TSchema>>;
     text: () => Promise<string>;
 } {
-    const { schema, url, body, throwHttpErrors, ...rest } = options;
+    if (json) {
+        if (rest.body) throw new TypeError('Cannot specify both json and body options');
+        if (typeof json !== 'object') throw new TypeError('"json" option must be an object');
+        rest.body = JSON.stringify(json);
+    }
 
-    const promise = fetch(url, {
-        ...rest,
-        body: typeof body === 'string' ? body : JSON.stringify(body),
-    }).then((response) => {
+    const promise = fetch(url, rest).then((response) => {
         if (throwHttpErrors && !response.ok) throw new HTTPError(response);
         const parse = response.json.bind(response);
         return Object.assign(response, {

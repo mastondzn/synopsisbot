@@ -11,7 +11,7 @@ export default createCommand({
     run: async ({ parameters: { command } }) => {
         return {
             reply: trim`
-                ${command === 'pong' ? 'Ping' : 'Pong'}!
+                🏓 ${command === 'pong' ? 'Ping' : 'Pong'}!
                 Uptime is ${ms(process.uptime() * 1000, { unitCount: 2, secondsDecimalDigits: 0 })}.
                 Latency is ${await chat.getLatency()}ms.
                 Memory usage is ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB.
