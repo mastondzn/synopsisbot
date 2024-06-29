@@ -10,7 +10,7 @@ export interface CommandBase {
     usage?: [string, string][];
     aliases?: string[];
     cooldown?: number;
-    permissions?: CommandPermission[] | CommandPermission;
+    permissions?: CommandPermission;
 }
 
 export type ZodOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
@@ -40,7 +40,7 @@ export interface CommandContext {
 
 export type CommandFunction = (context: CommandContext) => CommandResult;
 
-export type CommandPermission = { local?: LocalLevel; global?: GlobalLevel } | { mode?: 'custom' };
+export type CommandPermission = { local?: LocalLevel; global?: GlobalLevel } | 'custom';
 
 export type BasicCommand = CommandBase & {
     options?: ZodOptions;

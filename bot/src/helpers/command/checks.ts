@@ -1,11 +1,9 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
-import locatePromise from 'p-locate';
 
 import { CancellationError } from '~/errors/cancellation';
-import { UserError } from '~/errors/user';
-import { simplifyCommandPermissions } from '~/helpers/command/permission';
-import type { BasicCommand } from '~/helpers/command/types';
-import { permissions } from '~/providers/permissions';
+import { PermissionError } from '~/errors/permission';
+import type { BasicCommand, CommandPermission } from '~/helpers/command/types';
+import { mapMessageToContext, permissions } from '~/providers/permissions';
 import { helix } from '~/services/apis/helix';
 import { db } from '~/services/database';
 
@@ -37,22 +35,35 @@ export async function ensureValidChannelMode(message: PrivmsgMessage): Promise<v
 
 export async function ensurePermitted(
     message: PrivmsgMessage,
-    command: BasicCommand,
+    command: Pick<BasicCommand, 'permissions'>,
 ): Promise<void> {
-    const wantedPermissions = simplifyCommandPermissions(command);
+    const defaults: Required<CommandPermission> = {
+        global: 'normal',
+        local: 'normal',
+    };
 
-    const located = await locatePromise(
-        wantedPermissions.map(async (permission) => {
-            // we allow it through when custom mode, we check for permissions in the command block itself
-            if ('mode' in permission) return true;
+    // custom means the command will handle permissions itself
+    if (command.permissions === 'custom') return;
 
-            // TODO: this can make multiple concurrent requests to the database, should probably be optimized
-            return permissions.pleasesPermissions(permission, message);
-        }),
-        (result) => result,
-    );
+    const context = mapMessageToContext(message);
 
-    if (!located) {
-        throw new UserError('You are not allowed to do that.');
+    const required = {
+        local: command.permissions?.local ?? defaults.local,
+        global: command.permissions?.global ?? defaults.global,
+    };
+
+    const { global, local } = await permissions.satisfiesPermissions(required, context);
+
+    if (!(global.satisfies && local.satisfies)) {
+        throw new PermissionError({
+            concatInfo: true,
+            announce: !(global.level === 'banned' || local.level === 'banned'),
+            ...(global.satisfies
+                ? { global: { required: required.global, current: global.level } }
+                : {}),
+            ...(local.satisfies
+                ? { local: { required: required.local, current: local.level } }
+                : {}),
+        });
     }
 }

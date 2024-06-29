@@ -61,22 +61,32 @@ export function determineHighestGlobalLevel(...levels: GlobalLevel[]): GlobalLev
     return level;
 }
 
-/**
- * @param wantedLevel The level the user wants to have
- * @param actualLevel The level the user actually has
- * @returns whether or not the user has a high enough level
- */
-export function pleasesLocal(wantedLevel: LocalLevel, actualLevel: LocalLevel): boolean {
-    return determineHighestLocalLevel(wantedLevel, actualLevel) === actualLevel;
-}
+export const satisfies = {
+    local: ({ required, current }: { required: LocalLevel; current: LocalLevel }): boolean => {
+        return determineHighestLocalLevel(required, current) === current;
+    },
+    global: ({ required, current }: { required: GlobalLevel; current: GlobalLevel }): boolean => {
+        return determineHighestGlobalLevel(required, current) === current;
+    },
+};
 
-/**
- * @param wantedLevel the level the user wants to have
- * @param actualLevel the level the user actually has
- * @returns whether or not the user has a high enough level
- */
-export function pleasesGlobal(wantedLevel: GlobalLevel, actualLevel: GlobalLevel): boolean {
-    return determineHighestGlobalLevel(wantedLevel, actualLevel) === actualLevel;
+export function mapMessageToContext(message: PrivmsgMessage): PermissionContext {
+    function getLocalPermissionFromMessage(): LocalLevelFromMessage | null {
+        const { isMod, channelName, senderUsername, badges } = message;
+        const isBroadcaster = channelName === senderUsername;
+        const isVip = badges.hasVIP;
+
+        if (isBroadcaster) return 'broadcaster';
+        if (isMod) return 'moderator';
+        if (isVip) return 'vip';
+        return null;
+    }
+
+    return {
+        user: { id: message.senderUserID, login: message.senderUsername },
+        channel: { id: message.channelID, login: message.channelName },
+        messageLevel: getLocalPermissionFromMessage(),
+    };
 }
 
 interface User {
@@ -92,83 +102,61 @@ interface Channel {
 export interface PermissionContext {
     user: User;
     channel: Channel;
+    messageLevel: LocalLevelFromMessage | null;
 }
 
 class PermissionsService {
-    async getDbLocalPermission(
-        channelId: string,
-        userId: string,
-    ): Promise<LocalLevelFromDatabase | null> {
-        const result = await db.query.localPermissions
-            .findFirst({
-                where: (localPermissions, { and, eq }) => {
-                    return and(
-                        eq(localPermissions.channelId, channelId),
-                        eq(localPermissions.userId, userId),
-                    );
-                },
-                columns: { permission: true },
-            })
-            .catch();
+    async getDbLocalPermission({
+        channel,
+        user,
+    }: Pick<PermissionContext, 'channel' | 'user'>): Promise<LocalLevelFromDatabase | null> {
+        const result = await db.query.localPermissions.findFirst({
+            where: (table, { and, eq }) => {
+                return and(eq(table.channelId, channel.id), eq(table.userId, user.id));
+            },
+            columns: { permission: true },
+        });
 
         return result?.permission ?? null;
     }
 
-    private async getDbGlobalPermission(userId: string): Promise<GlobalLevelFromDatabase | null> {
-        const result = await db.query.globalPermissions
-            .findFirst({
-                where: (globalPermissions, { eq }) => {
-                    return eq(globalPermissions.userId, userId);
-                },
-                columns: { permission: true },
-            })
-            .catch();
+    private async getDbGlobalPermission({
+        user,
+    }: Pick<PermissionContext, 'user'>): Promise<GlobalLevelFromDatabase | null> {
+        const result = await db.query.globalPermissions.findFirst({
+            where: (table, { eq }) => {
+                return eq(table.userId, user.id);
+            },
+            columns: { permission: true },
+        });
 
         return result?.permission ?? null;
     }
 
-    async getGlobalPermission(userId: string): Promise<GlobalLevel> {
-        const permission = (await this.getDbGlobalPermission(userId)) ?? 'normal';
-        return permission;
+    async getGlobalPermission(context: Pick<PermissionContext, 'user'>): Promise<GlobalLevel> {
+        return (await this.getDbGlobalPermission(context)) ?? 'normal';
     }
 
-    private getLocalPermissionFromMessage(message: PrivmsgMessage): LocalLevelFromMessage | null {
-        const { isMod, channelName, senderUsername, badges } = message;
-        const isBroadcaster = channelName === senderUsername;
-        const isVip = badges.hasVIP;
-
-        if (isBroadcaster) return 'broadcaster';
-        if (isMod) return 'moderator';
-        if (isVip) return 'vip';
-        return null;
-    }
-
-    async getLocalPermission(message: PrivmsgMessage): Promise<LocalLevel> {
-        const localFromMessage = this.getLocalPermissionFromMessage(message);
-        const localFromDatabase = await this.getDbLocalPermission(
-            message.channelID,
-            message.senderUserID,
-        );
+    async getLocalPermission(context: PermissionContext): Promise<LocalLevel> {
+        const localFromDatabase = await this.getDbLocalPermission(context);
 
         // if the user is banned, we don't care about the other permissions
-        if (localFromDatabase === 'banned') {
-            return 'banned';
+        if (localFromDatabase === 'banned') return 'banned';
+
+        if (localFromDatabase && context.messageLevel) {
+            return determineHighestLocalLevel(localFromDatabase, context.messageLevel);
         }
 
-        if (localFromDatabase && localFromMessage) {
-            return determineHighestLocalLevel(localFromDatabase, localFromMessage);
-        }
-
-        return localFromDatabase ?? localFromMessage ?? 'normal';
+        return localFromDatabase ?? context.messageLevel ?? 'normal';
     }
 
-    async getPermission(message: PrivmsgMessage): Promise<{
+    async getPermissions(context: PermissionContext): Promise<{
         local: LocalLevel;
         global: GlobalLevel;
     }> {
         const [local, global] = await Promise.all([
-            this.getLocalPermission(message),
-            this.getGlobalPermission(message.senderUserID),
+            this.getLocalPermission(context),
+            this.getGlobalPermission(context),
         ]);
 
         return { local, global };
@@ -176,9 +164,9 @@ class PermissionsService {
 
     async setLocalPermission(
         permission: LocalLevelFromDatabase | 'normal',
-        { channel, user }: PermissionContext,
+        context: Pick<PermissionContext, 'user' | 'channel'>,
     ): Promise<void> {
-        const existingDatabasePermission = await this.getDbLocalPermission(channel.id, user.id);
+        const existingDatabasePermission = await this.getDbLocalPermission(context);
         if (existingDatabasePermission === permission) {
             return;
         }
@@ -191,8 +179,8 @@ class PermissionsService {
                 .delete(schema.localPermissions)
                 .where(
                     and(
-                        eq(schema.localPermissions.channelId, channel.id),
-                        eq(schema.localPermissions.userId, user.id),
+                        eq(schema.localPermissions.channelId, context.channel.id),
+                        eq(schema.localPermissions.userId, context.user.id),
                     ),
                 );
 
@@ -200,10 +188,10 @@ class PermissionsService {
         }
 
         const databasePermission: NewLocalPermission = {
-            channelLogin: channel.login,
-            channelId: channel.id,
-            userId: user.id,
-            userLogin: user.login,
+            channelLogin: context.channel.login,
+            channelId: context.channel.id,
+            userId: context.user.id,
+            userLogin: context.user.login,
             permission,
         };
 
@@ -217,14 +205,14 @@ class PermissionsService {
             .set(databasePermission)
             .where(
                 and(
-                    eq(schema.localPermissions.channelId, channel.id),
-                    eq(schema.localPermissions.userId, user.id),
+                    eq(schema.localPermissions.channelId, context.channel.id),
+                    eq(schema.localPermissions.userId, context.user.id),
                 ),
             );
     }
 
-    async setGlobalPermission(permission: GlobalLevel, { user }: { user: User }) {
-        const existingDatabasePermission = await this.getDbGlobalPermission(user.id);
+    async setGlobalPermission(permission: GlobalLevel, context: Pick<PermissionContext, 'user'>) {
+        const existingDatabasePermission = await this.getDbGlobalPermission(context);
 
         if (permission === 'normal') {
             if (!existingDatabasePermission) {
@@ -232,14 +220,14 @@ class PermissionsService {
             }
             await db
                 .delete(schema.globalPermissions)
-                .where(eq(schema.globalPermissions.userId, user.id));
+                .where(eq(schema.globalPermissions.userId, context.user.id));
             return;
         }
 
         const databasePermission: NewGlobalPermission = {
             permission,
-            userId: user.id,
-            userLogin: user.login,
+            userId: context.user.id,
+            userLogin: context.user.login,
         };
 
         if (!existingDatabasePermission) {
@@ -250,29 +238,35 @@ class PermissionsService {
         await db
             .update(schema.globalPermissions)
             .set(databasePermission)
-            .where(eq(schema.globalPermissions.userId, user.id));
+            .where(eq(schema.globalPermissions.userId, context.user.id));
     }
 
-    async pleasesLocal(wantedPermission: LocalLevel, message: PrivmsgMessage): Promise<boolean> {
-        const current = await this.getLocalPermission(message);
-        return pleasesLocal(wantedPermission, current);
+    async satisfiesLocal(required: LocalLevel, context: PermissionContext) {
+        const current = await this.getLocalPermission(context);
+        return {
+            level: current,
+            satisfies: satisfies.local({ required, current }),
+        };
     }
 
-    async pleasesGlobal(wantedPermission: GlobalLevel, userId: string): Promise<boolean> {
-        const current = await this.getGlobalPermission(userId);
-        return pleasesGlobal(wantedPermission, current);
+    async satisfiesGlobal(required: GlobalLevel, context: Pick<PermissionContext, 'user'>) {
+        const current = await this.getGlobalPermission(context);
+        return {
+            level: current,
+            satisfies: satisfies.global({ required, current }),
+        };
     }
 
-    async pleasesPermissions(
-        wanted: { global: GlobalLevel; local: LocalLevel },
-        message: PrivmsgMessage,
-    ): Promise<boolean> {
+    async satisfiesPermissions(
+        required: { global: GlobalLevel; local: LocalLevel },
+        context: PermissionContext,
+    ) {
         const [global, local] = await Promise.all([
-            this.pleasesGlobal(wanted.global, message.senderUserID),
-            this.pleasesLocal(wanted.local, message),
+            this.satisfiesGlobal(required.global, context),
+            this.satisfiesLocal(required.local, context),
         ]);
 
-        return global && local;
+        return { global, local };
     }
 }
 

@@ -67,13 +67,14 @@ export async function parseParameters(
     const argumentsSchema = z.tuple(args).rest(z.string());
     const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
 
-    const [parsedArguments, parsedOptions] = await Promise.all([
-        // if there are no arguments, we can skip the parsing
+    // if there are no arguments, we can skip the parsing
+    const argumentsPromise: ReturnType<typeof argumentsSchema.safeParseAsync> =
         args.length === 0
-            ? (Promise.resolve({ data: parameters.split, success: true }) as ReturnType<
-                  typeof argumentsSchema.safeParseAsync
-              >)
-            : argumentsSchema.safeParseAsync(parameters.split),
+            ? Promise.resolve({ data: parameters.split, success: true })
+            : argumentsSchema.safeParseAsync(parameters.split);
+
+    const [parsedArguments, parsedOptions] = await Promise.all([
+        argumentsPromise,
         optionsSchema.safeParseAsync(rawOptions),
     ]);
 

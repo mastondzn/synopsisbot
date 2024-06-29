@@ -4,6 +4,7 @@ import { cooldowns } from './cooldowns';
 import { locks } from './locks';
 import { commands } from '~/commands';
 import { CancellationError } from '~/errors/cancellation';
+import { PermissionError } from '~/errors/permission';
 import { UserError } from '~/errors/user';
 import { ensurePermitted, ensureValidChannelMode } from '~/helpers/command/checks';
 import { consumeFragment } from '~/helpers/command/fragment';
@@ -83,6 +84,10 @@ export default createEventHandler({
                 // do nothing
             } else if (error instanceof UserError) {
                 await chat.reply(channel, message.messageID, error.message);
+            } else if (error instanceof PermissionError) {
+                if (error.options.announce)
+                    await chat.reply(channel, message.messageID, error.message);
+                // do nothing otherwise
             } else {
                 const id = captureException(error, {
                     tags: {

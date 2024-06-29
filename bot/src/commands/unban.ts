@@ -1,15 +1,13 @@
+import { PermissionError } from '~/errors/permission';
 import { createCommand } from '~/helpers/command/define';
 import { schemas } from '~/helpers/schemas';
-import { permissions } from '~/providers/permissions';
+import { type PermissionContext, permissions } from '~/providers/permissions';
 import { helix } from '~/services/apis/helix';
 
 export default createCommand({
     name: 'unban',
     description: 'Unbans a user from using the bot.',
-    permissions: [
-        { local: 'ambassador' }, //
-        { global: 'owner' },
-    ],
+    permissions: 'custom',
     usage: [
         ['unban <user>', 'Unbans the user from using the bot, in the current channel.'],
         [
@@ -38,27 +36,47 @@ export default createCommand({
             return { reply: 'User not found.' };
         }
 
-        const targetIsSelf = user.login === target;
-        if (targetIsSelf) {
+        const context: PermissionContext = {
+            channel: { id: wantedChannel.id, login: wantedChannel.name },
+            user: { id: user.id, login: user.login },
+            messageLevel: null,
+        };
+
+        const required = {
+            global: 'owner',
+            local: 'ambassador',
+        } as const;
+
+        const { global, local } = await permissions.satisfiesPermissions(required, context);
+
+        // we want to satisfy either one of the permissions
+        const isBanned = global.level === 'banned' || local.level === 'banned';
+        if ((!global.satisfies && !local.satisfies) || isBanned) {
+            throw new PermissionError({
+                message: `You don\'t have the permission to do that ${options.channel ? 'there' : 'here'}.`,
+                announce: !(global.level === 'banned' || local.level === 'banned'),
+                global: { required: required.global, current: global.level },
+                local: { required: required.local, current: local.level },
+            });
+        }
+
+        if (user.login === target) {
             return { reply: "You can't unban yourself." };
         }
 
-        const targetIsBroadcaster = target === wantedChannel.name;
-        if (targetIsBroadcaster) {
+        if (target === wantedChannel.name) {
             return { reply: "You can't unban the broadcaster." };
         }
 
-        const targetIsBotOwner = (await permissions.getGlobalPermission(targetUser.id)) === 'owner';
-        if (targetIsBotOwner) {
-            return { reply: `You can't ban ${targetUser.displayName}, as they are a bot owner.` };
-        }
+        const targetPermissions = await permissions.getPermissions({
+            channel: { id: wantedChannel.id, login: wantedChannel.name },
+            user: { id: targetUser.id, login: targetUser.name },
+            messageLevel: null,
+        });
 
-        const currentTargetPermission =
-            (await permissions.getDbLocalPermission(wantedChannel.id, targetUser.id)) ?? 'normal';
-
-        if (currentTargetPermission !== 'banned') {
+        if (targetPermissions.local !== 'banned') {
             return {
-                reply: `You can't unban ${targetUser.displayName} as they are not banned from using the bot locally.`,
+                reply: `You can't unban ${targetUser.displayName} as they are not banned locally.`,
             };
         }
 

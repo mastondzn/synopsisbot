@@ -29,7 +29,7 @@ export function login() {
             return z.NEVER;
         }
 
-        return value;
+        return value.toLowerCase();
     });
 }
 
