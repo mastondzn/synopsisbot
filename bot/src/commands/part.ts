@@ -10,13 +10,9 @@ export default createCommand({
     description: 'Make the bot part a channel',
     permissions: { global: 'owner' },
     usage: [['part channel:<channel>', 'Parts the specified channel']],
-    options: {
-        channel: {
-            aliases: ['c'],
-            schema: schemas.twitch.idOrLogin(),
-        },
-    },
-    run: async ({ options: { channel } }) => {
+
+    arguments: [schemas.twitch.idOrLogin()],
+    run: async ({ args: [channel] }) => {
         const existing = await db.query.channels.findFirst({
             where: (channels, { eq }) =>
                 'id' in channel

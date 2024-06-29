@@ -17,20 +17,19 @@ export default createCommand({
         ['join channel:<channel> mode:<mode>', 'Joins the specified channel in the specified mode'],
     ],
     options: {
-        channel: {
-            aliases: ['c'],
-            schema: schemas.twitch
-                .helixUser()
-                .refine(
-                    (channel): channel is HelixUser => channel !== null,
-                    'Channel could not be found',
-                ),
-        },
         mode: {
             schema: z.enum(['readonly', 'all', 'offlineonly', 'liveonly']).default('all'),
         },
     },
-    run: async ({ options: { channel, mode } }) => {
+    arguments: [
+        schemas.twitch
+            .helixUser()
+            .refine(
+                (channel): channel is HelixUser => channel !== null,
+                'Channel could not be found',
+            ),
+    ],
+    run: async ({ options: { mode }, args: [channel] }) => {
         const existing = await db.query.channels.findFirst({
             where: (channels, { eq }) => eq(channels.twitchId, channel.id),
         });
