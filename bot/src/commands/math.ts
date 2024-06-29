@@ -16,9 +16,9 @@ export default createCommand({
 
         const response = await zfetch({ url });
 
-        if (response.status !== 200) {
+        if (!response.ok) {
             const error = (await response.text()).replace('Error: ', '');
-            return { reply: trim`Failed to evaluate the expression. ${error}` };
+            return { reply: trim`Failed to evaluate the expression. ${error ? `(${error})` : ''}` };
         }
 
         return { reply: await response.text() };
