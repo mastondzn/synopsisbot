@@ -52,7 +52,7 @@
         "only-allow": "1.2.1",
         "prettier": "3.2.5",
         "rimraf": "5.0.7",
-        "taze": "0.13.8",
+        "taze": "0.13.9",
         "turbo": "2.0.1",
         "typescript": "5.4.5"
     }
