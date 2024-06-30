@@ -28,6 +28,8 @@ export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>(
 }: ZFetchOptions<TSchema>): Promise<TypedResponse<z.infer<TSchema>>> & {
     json: () => Promise<z.infer<TSchema>>;
     text: () => Promise<string>;
+    arrayBuffer: () => Promise<ArrayBuffer>;
+    blob: () => Promise<Blob>;
 } {
     if (json) {
         if (rest.body) throw new TypeError('Cannot specify both json and body options');
@@ -46,5 +48,7 @@ export function zfetch<TSchema extends z.ZodType<unknown> = z.ZodType<unknown>>(
     return Object.assign(promise, {
         json: async () => await (await promise).json(),
         text: async () => await (await promise).text(),
+        blob: async () => await (await promise).blob(),
+        arrayBuffer: async () => await (await promise).arrayBuffer(),
     });
 }
