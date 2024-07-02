@@ -18,7 +18,9 @@ export default createCommand({
 
         if (!response.ok) {
             const error = (await response.text()).replace('Error: ', '');
-            return { reply: trim`Failed to evaluate the expression. ${error ? `(${error})` : ''}` };
+            return {
+                reply: trim`Failed to evaluate the expression. ${error ? `(${error})` : ''}`,
+            };
         }
 
         return { reply: await response.text() };
