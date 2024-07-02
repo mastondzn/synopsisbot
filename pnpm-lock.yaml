@@ -139,8 +139,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       tsx:
-        specifier: 4.10.5
-        version: 4.10.5
+        specifier: 4.15.7
+        version: 4.15.7
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -4635,8 +4635,13 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  tsx@4.15.9:
-    resolution: {integrity: sha512-OEw8VSS5Ug88pj3YhOic1Zmg+mKOuJOcBdpxl402C0D4TjRxu/LTIrr+slbc8nKQA+b7YC9SoHTZAEeQQPBwFw==}
+  tsx@4.15.7:
+    resolution: {integrity: sha512-u3H0iSFDZM3za+VxkZ1kywdCeHCn+8/qHQS1MNoO2sONDgD95HlWtt8aB23OzeTmFP9IU4/8bZUdg58Uu5J4cg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
+  tsx@4.15.8:
+    resolution: {integrity: sha512-B8dMlbbkZPW0GQ7wafyy2TGXyoGYW0IURfWkM1h/WzgG5lxxRoeDU2VbMURmmjwGaCsoKROVTLmQQPe/s2TnLw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7789,7 +7794,7 @@ snapshots:
       jiti: 1.21.6
       pathe: 1.1.2
       pkg-types: 1.1.1
-      tsx: 4.15.9
+      tsx: 4.15.8
     transitivePeerDependencies:
       - supports-color
 
@@ -9306,7 +9311,14 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  tsx@4.15.9:
+  tsx@4.15.7:
+    dependencies:
+      esbuild: 0.21.5
+      get-tsconfig: 4.7.5
+    optionalDependencies:
+      fsevents: 2.3.3
+
+  tsx@4.15.8:
     dependencies:
       esbuild: 0.21.5
       get-tsconfig: 4.7.5
