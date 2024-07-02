@@ -7,7 +7,7 @@ export default createCommand({
     description: 'Flips a coin.',
     aliases: ['cf'],
     run: () => {
-        const result = randomInt(0, 1) === 0;
+        const result = Math.random() < 0.5;
 
         const coin = result ? 'heads' : 'tails';
         const answer = result ? 'yes' : 'no';
