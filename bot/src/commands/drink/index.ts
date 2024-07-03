@@ -16,7 +16,7 @@ function hydratedRecently(
     return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
 }
 
-export default create.command.withSubcommands({
+export default create.command({
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [

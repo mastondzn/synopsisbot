@@ -28,11 +28,9 @@ export function createCommand<
     },
 ): BasicCommand;
 
-export function createCommand(command: BasicCommand): Command {
-    return command;
-}
+export function createCommand(command: CommandWithSubcommands): Command;
 
-export function createCommandWithSubcommands(command: CommandWithSubcommands): Command {
+export function createCommand(command: BasicCommand | CommandWithSubcommands): Command {
     return command;
 }
 
