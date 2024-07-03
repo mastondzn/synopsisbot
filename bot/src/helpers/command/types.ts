@@ -14,7 +14,15 @@ export interface CommandBase {
 }
 
 export type ZodOptions = Record<string, { schema: z.ZodType<unknown>; aliases?: string[] }>;
-export type ZodArguments = z.ZodType<unknown>[];
+
+export type ZodArgumentTuple = z.ZodTuple<
+    [z.ZodType<unknown>, ...z.ZodType<unknown>[]] | [],
+    // The rest of the arguments
+    null | z.ZodType<unknown>
+>;
+export type ZodArgumentUnion = z.ZodUnion<[ZodArgumentTuple, ...ZodArgumentTuple[]]>;
+export type ZodArgumentArray = z.ZodArray<z.ZodType<unknown>, z.ArrayCardinality>;
+export type ZodArguments = ZodArgumentTuple | ZodArgumentUnion | ZodArgumentArray;
 
 export type CommandFragment = (
     | { say: string }

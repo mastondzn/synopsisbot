@@ -1,10 +1,10 @@
 import type { PrivmsgMessage } from '@mastondzn/dank-twitch-irc';
 import { mapValues } from 'remeda';
-import { z } from 'zod';
+import { ZodFirstPartyTypeKind, z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
 import { prefix } from './prefix';
-import type { BasicCommand } from './types';
+import type { BasicCommand, ZodArgumentArray, ZodArgumentTuple, ZodArguments } from './types';
 import { splitOnce } from '../string';
 import { trim } from '../tags';
 import { UserError } from '~/errors/user';
@@ -43,7 +43,12 @@ export async function parseParameters(
     arguments: unknown[];
     parameters: CommandParameters;
 }> {
-    const { options = {}, arguments: args = [] } = command;
+    const { options = {}, arguments: args } = command;
+
+    const schemas = {
+        options: z.object(mapValues(options, ({ schema }) => schema)),
+        arguments: args ?? z.tuple([]),
+    };
 
     const parameters = parseSimpleParameters(message);
     const rawOptions: Record<string, string> = {};
@@ -63,19 +68,15 @@ export async function parseParameters(
         }
     }
 
-    // @ts-expect-error this is just too hard to solve and not worth the hassle, it works
-    const argumentsSchema = z.tuple(args).rest(z.string());
-    const optionsSchema = z.object(mapValues(options, ({ schema }) => schema));
+    const countToInclude = getArgumentCount(schemas.arguments, parameters.split);
 
-    // if there are no arguments, we can skip the parsing
-    const argumentsPromise: ReturnType<typeof argumentsSchema.safeParseAsync> =
-        args.length === 0
-            ? Promise.resolve({ data: parameters.split, success: true })
-            : argumentsSchema.safeParseAsync(parameters.split);
-
-    const [parsedArguments, parsedOptions] = await Promise.all([
-        argumentsPromise,
-        optionsSchema.safeParseAsync(rawOptions),
+    const [parsedOptions, parsedArguments] = await Promise.all([
+        schemas.options.safeParseAsync(rawOptions),
+        schemas.arguments.safeParseAsync(
+            typeof countToInclude === 'number'
+                ? parameters.split.slice(0, countToInclude)
+                : parameters.split,
+        ),
     ]);
 
     if (!parsedArguments.success || !parsedOptions.success) {
@@ -87,8 +88,14 @@ export async function parseParameters(
                       ? 'options'
                       : 'arguments'
             }:
-            ${parsedArguments.error ? fromZodError(parsedArguments.error, { prefix: null }).message : ''}
-            ${parsedOptions.error ? fromZodError(parsedOptions.error, { prefix: null }).message : ''}
+            ${
+                (parsedArguments.error
+                    ? fromZodError(parsedArguments.error, { prefix: null }).message
+                    : '') +
+                (parsedOptions.error
+                    ? fromZodError(parsedOptions.error, { prefix: null }).message
+                    : '')
+            }.
         `;
 
         throw new UserError(
@@ -107,4 +114,35 @@ export async function parseParameters(
             command: parameters.command,
         },
     };
+}
+
+function isArray(schema: ZodArguments): schema is ZodArgumentArray {
+    return schema._def.typeName === ZodFirstPartyTypeKind.ZodArray;
+}
+
+function isTuple(schema: ZodArguments): schema is ZodArgumentTuple {
+    return schema._def.typeName === ZodFirstPartyTypeKind.ZodTuple;
+}
+
+function getArgumentCount(schema: ZodArguments, parameters: string[]): number | null {
+    if (isArray(schema)) {
+        // null means include all (no split)
+        return null;
+    } else if (isTuple(schema)) {
+        // null (include all) if it has rest
+        return schema._def.rest ? null : schema._def.items.length;
+    } else {
+        // we need to loop through the members of the union to find a desirable length
+        for (const tuple of schema._def.options) {
+            if (parameters.length >= tuple.items.length) {
+                // if it also has rest, we can include all
+                if (tuple._def.rest) return null;
+                return tuple.items.length;
+            }
+        }
+
+        // if we reach this point, it means that the parameters are less than the minimum,
+        // (this schema is bound to fail anyway atp)
+        return schema._def.options[0]._def.items.length;
+    }
 }

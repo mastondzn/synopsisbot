@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { PermissionError } from '~/errors/permission';
 import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
@@ -15,13 +17,15 @@ export default create.command({
             'Unbans the user from using the bot, in the specified channel.',
         ],
     ],
+
     options: {
         channel: {
             schema: schemas.twitch.login().optional(),
             aliases: ['in', 'c'],
         },
     },
-    arguments: [schemas.twitch.login()],
+    arguments: z.tuple([schemas.twitch.login()]),
+
     run: async ({ user, channel, options, args: [target] }) => {
         const [wantedChannel, targetUser] = await Promise.all([
             helix.users.getUserByName(options.channel ?? channel.login),

@@ -13,8 +13,8 @@ import type {
 } from './types';
 
 export function createCommand<
-    const TOptions extends ZodOptions = ZodOptions,
-    const TArguments extends ZodArguments = ZodArguments,
+    const TOptions extends ZodOptions = Record<never, never>,
+    const TArguments extends ZodArguments = z.ZodTuple<[]>,
 >(
     command: Omit<BasicCommand, 'run' | 'options' | 'arguments'> & {
         options?: TOptions;
@@ -22,9 +22,7 @@ export function createCommand<
         run: (
             context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
-                    ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
-                    : string[];
+                args: z.infer<TArguments>;
             },
         ) => CommandResult;
     },
@@ -39,8 +37,8 @@ export function createCommandWithSubcommands(command: CommandWithSubcommands): C
 }
 
 export function createSubcommand<
-    const TOptions extends ZodOptions = ZodOptions,
-    const TArguments extends ZodArguments = ZodArguments,
+    const TOptions extends ZodOptions = Record<never, never>,
+    const TArguments extends ZodArguments = z.ZodTuple<[]>,
 >(
     subcommand: Omit<Subcommand, 'run' | 'options' | 'arguments'> & {
         options?: TOptions;
@@ -48,17 +46,15 @@ export function createSubcommand<
         run: (
             context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
-                    ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
-                    : string[];
+                args: z.infer<TArguments>;
             },
         ) => CommandResult;
     },
 ): Subcommand;
 
 export function createSubcommand<
-    const TOptions extends ZodOptions = ZodOptions,
-    const TArguments extends ZodArguments = ZodArguments,
+    const TOptions extends ZodOptions = Record<never, never>,
+    const TArguments extends ZodArguments = z.ZodTuple<[]>,
 >(
     subcommand: Omit<SubcommandWithPermission, 'run' | 'options' | 'arguments'> & {
         options?: TOptions;
@@ -66,9 +62,7 @@ export function createSubcommand<
         run: (
             context: Omit<CommandContext, 'options' | 'args'> & {
                 options: { [K in keyof TOptions]: z.infer<TOptions[K]['schema']> };
-                args: TArguments extends [z.ZodType<unknown>, ...z.ZodType<unknown>[]]
-                    ? z.infer<z.ZodTuple<TArguments, z.ZodType<string>>>
-                    : string[];
+                args: z.infer<TArguments>;
             },
         ) => CommandResult;
     },

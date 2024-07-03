@@ -1,4 +1,5 @@
 import { channels, eq } from '@synopsis/db';
+import { z } from 'zod';
 
 import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
@@ -11,7 +12,8 @@ export default create.command({
     permissions: { global: 'owner' },
     usage: [['part channel:<channel>', 'Parts the specified channel']],
 
-    arguments: [schemas.twitch.idOrLogin()],
+    arguments: z.tuple([schemas.twitch.idOrLogin()]),
+
     run: async ({ args: [channel] }) => {
         const existing = await db.query.channels.findFirst({
             where: (channels, { eq }) =>

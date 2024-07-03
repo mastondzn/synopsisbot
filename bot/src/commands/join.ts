@@ -1,5 +1,4 @@
 import { channels, eq } from '@synopsis/db';
-import type { HelixUser } from '@twurple/api';
 import { z } from 'zod';
 
 import { create } from '~/helpers/creators';
@@ -16,20 +15,21 @@ export default create.command({
         ['join channel:<channel>', 'Joins the specified channel'],
         ['join channel:<channel> mode:<mode>', 'Joins the specified channel in the specified mode'],
     ],
+
     options: {
         mode: {
             schema: z.enum(['readonly', 'all', 'offlineonly', 'liveonly']).default('all'),
         },
     },
-    arguments: [
-        schemas.twitch
-            .helixUser()
-            .refine(
-                (channel): channel is HelixUser => channel !== null,
-                'Channel could not be found',
-            ),
-    ],
+    arguments: z.tuple([schemas.twitch.helixUser()]),
+
     run: async ({ options: { mode }, args: [channel] }) => {
+        if (!channel) {
+            return {
+                reply: 'Channel not found.',
+            };
+        }
+
         const existing = await db.query.channels.findFirst({
             where: (channels, { eq }) => eq(channels.twitchId, channel.id),
         });
