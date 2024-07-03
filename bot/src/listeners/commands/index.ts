@@ -12,13 +12,13 @@ import { getWantedCommand, parseParameters } from '~/helpers/command/parameters'
 import { prefix } from '~/helpers/command/prefix';
 import { simplifyCommand } from '~/helpers/command/simplify';
 import type { CommandContext } from '~/helpers/command/types';
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 import { logger } from '~/helpers/logger';
 import { chat } from '~/services/chat';
 
-export default createEventHandler({
+export default create.listener({
     event: 'PRIVMSG',
-    handler: async (message) => {
+    listener: async (message) => {
         const text = message.messageText;
         const channel = message.channelName;
         if (!text.startsWith(prefix)) return;

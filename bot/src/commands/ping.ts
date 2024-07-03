@@ -1,10 +1,10 @@
 import ms from 'pretty-ms';
 
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { trim } from '~/helpers/tags';
 import { chat } from '~/services/chat';
 
-export default createCommand({
+export default create.command({
     name: 'ping',
     description: 'Replies with pong! To ensure the bot is alive.',
     aliases: ['pong'],

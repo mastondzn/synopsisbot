@@ -1,10 +1,8 @@
-import { randomInt } from 'node:crypto';
+import { create } from '~/helpers/creators';
 
-import { createCommand } from '~/helpers/command/define';
-
-export default createCommand({
+export default create.command({
     name: 'coinflip',
-    description: 'Flips a coin.',
+    description: 'Flips a coin!',
     aliases: ['cf'],
     run: () => {
         const result = Math.random() < 0.5;

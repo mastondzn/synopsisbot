@@ -1,12 +1,12 @@
 import { PermissionError } from '~/errors/permission';
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
 import { type PermissionContext, permissions } from '~/providers/permissions';
 import { helix } from '~/services/apis/helix';
 
-export default createCommand({
+export default create.command({
     name: 'ban',
-    description: 'Bans a user from using the bot.',
+    description: 'Bans a user f rom using the bot.',
     permissions: 'custom',
     usage: [
         ['ban <user>', 'Bans the user from using the bot, in the current channel.'],

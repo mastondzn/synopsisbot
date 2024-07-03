@@ -1,11 +1,11 @@
 import { env } from '@synopsis/env/node';
 
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 import { logger } from '~/helpers/logger';
 
-export default createEventHandler({
+export default create.listener({
     event: 'PART',
-    handler: (message) => {
+    listener: (message) => {
         if (message.partedUsername !== env.TWITCH_BOT_USERNAME) {
             return;
         }

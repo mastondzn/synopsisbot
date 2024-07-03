@@ -4,7 +4,7 @@ import { env } from '@synopsis/env/node';
 
 import { commands } from './commands';
 import { cronJobs } from './crons';
-import { eventHandlers } from './events';
+import { eventHandlers } from './listeners';
 import { modules } from './modules';
 import { authProvider } from './services/auth';
 import { chat } from './services/chat';

@@ -1,8 +1,8 @@
 import { inspect } from 'node:util';
 
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 
-export default createCommand({
+export default create.command({
     name: 'eval',
     description: 'Unsafely evals code.',
     permissions: {

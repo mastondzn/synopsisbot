@@ -28,7 +28,7 @@ class Crons extends Collection<string, Cron & { job?: CronJob }> {
     async start(): Promise<void> {
         await this.load();
 
-        for (const [, cron] of this) {
+        for (const cron of this.values()) {
             cron.job?.stop();
             cron.job = CronJob.from({ ...cron, start: true });
         }

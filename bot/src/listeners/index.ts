@@ -3,9 +3,9 @@ import { readdir } from 'node:fs/promises';
 import { Collection } from '@discordjs/collection';
 import type { ChatClient } from '@mastondzn/dank-twitch-irc';
 
-import type { BotEventHandler } from '~/helpers/event';
+import type { BotEventListener } from '~/helpers/event';
 
-class EventHandlers extends Collection<string, BotEventHandler> {
+class EventHandlers extends Collection<string, BotEventListener> {
     public async load(): Promise<this> {
         const directory = (await readdir('./src/events')).filter((path) => path !== 'index.ts');
 
@@ -15,9 +15,9 @@ class EventHandlers extends Collection<string, BotEventHandler> {
                 const existing = this.get(importable);
                 if (existing) return;
 
-                const imported = (await import(`./${file}`)) as { default: BotEventHandler };
+                const imported = (await import(`./${file}`)) as { default: BotEventListener };
                 // eslint-disable-next-line ts/no-unnecessary-condition
-                if (!imported.default.handler) {
+                if (!imported.default.listener) {
                     throw new TypeError(`Invalid cron ${file}`);
                 }
                 this.set(file, imported.default);
@@ -30,10 +30,10 @@ class EventHandlers extends Collection<string, BotEventHandler> {
     async registerEvents(chat: ChatClient): Promise<void> {
         await this.load();
 
-        for (const [, { event, handler }] of this) {
+        for (const { event, listener } of this.values()) {
             chat.on(event, (...parameters) => {
                 // @ts-expect-error ts cant realize this is fine
-                return void handler(...parameters);
+                return void listener(...parameters);
             });
         }
     }

@@ -1,12 +1,12 @@
 import { type Trivia, getTrivia } from './questions';
 import { shuffle } from '~/helpers/array';
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { TTLSet } from '~/helpers/ttl-set';
 import { chat } from '~/services/chat';
 
 const active = new TTLSet<string>();
 
-export default createCommand({
+export default create.command({
     name: 'trivia',
     description: 'Starts a multiple choice trivia session in chat.',
 

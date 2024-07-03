@@ -1,8 +1,8 @@
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { zfetch } from '~/helpers/fetch';
 import { trim } from '~/helpers/tags';
 
-export default createCommand({
+export default create.command({
     name: 'math',
     description: 'Uses math.js to evaluate a math expression.',
     run: async ({ parameters: { text } }) => {

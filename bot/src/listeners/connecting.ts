@@ -1,7 +1,7 @@
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 import { logger } from '~/helpers/logger';
 
-export default createEventHandler({
+export default create.listener({
     event: 'connecting',
-    handler: () => logger.init('connecting to chat'),
+    listener: () => logger.init('connecting to chat'),
 });

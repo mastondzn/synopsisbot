@@ -1,10 +1,10 @@
 import { captureException } from '@sentry/node';
 
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 
-export default createEventHandler({
+export default create.listener({
     event: 'error',
-    handler: (error) => {
+    listener: (error) => {
         console.error(error);
         captureException(error);
     },

@@ -1,10 +1,10 @@
 import { Collection } from '@discordjs/collection';
 
 import { type CommandMetadata, commands } from '.';
-import { createCommand } from '~/helpers/command/define';
 import type { Command } from '~/helpers/command/types';
+import { create } from '~/helpers/creators';
 
-export default createCommand({
+export default create.command({
     name: 'reload',
     description: 'Reloads commands.',
     permissions: {

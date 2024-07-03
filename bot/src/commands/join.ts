@@ -2,13 +2,13 @@ import { channels, eq } from '@synopsis/db';
 import type { HelixUser } from '@twurple/api';
 import { z } from 'zod';
 
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
 import { trim } from '~/helpers/tags';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';
 
-export default createCommand({
+export default create.command({
     name: 'join',
     description: 'Make the bot join a channel',
     permissions: { global: 'owner' },

@@ -1,13 +1,13 @@
 import { env } from '@synopsis/env/node';
 import ms from 'pretty-ms';
 
-import { createCron } from '~/helpers/cron/define';
+import { create } from '~/helpers/creators';
 import { logger } from '~/helpers/logger';
 import { authProvider } from '~/services/auth';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';
 
-export default createCron({
+export default create.cron({
     name: 'refresh',
     // every 30 minutes
     cronTime: '0 */30 * * * *',

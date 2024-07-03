@@ -1,9 +1,9 @@
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 import { chat } from '~/services/chat';
 
-export default createEventHandler({
+export default create.listener({
     event: 'PRIVMSG',
-    handler: async (message) => {
+    listener: async (message) => {
         if (
             message.messageText === 'pajaS 🚨 ALERT' &&
             message.channelName === 'pajlada' &&

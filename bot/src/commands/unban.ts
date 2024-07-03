@@ -1,10 +1,10 @@
 import { PermissionError } from '~/errors/permission';
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
 import { type PermissionContext, permissions } from '~/providers/permissions';
 import { helix } from '~/services/apis/helix';
 
-export default createCommand({
+export default create.command({
     name: 'unban',
     description: 'Unbans a user from using the bot.',
     permissions: 'custom',

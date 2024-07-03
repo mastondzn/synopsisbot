@@ -2,7 +2,7 @@ import { type CommandUser, commandUsers, eq } from '@synopsis/db';
 import ms from 'pretty-ms';
 
 import { rollBeverageWithModifier } from './data';
-import { createCommandWithSubcommands } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { db } from '~/services/database';
 
 const defaultCooldown = 3 * 60 * 60 * 1000; // 3 hours
@@ -16,16 +16,15 @@ function hydratedRecently(
     return Date.now() - commandUser.hydratedAt.getTime() < defaultCooldown;
 }
 
-export default createCommandWithSubcommands({
+export default create.command.withSubcommands({
     name: 'drink',
     description: 'Get a random drink and gain hydration points!',
     usage: [
         ['drink', 'Get a random drink and gain hydration points!'],
         ['drink points', 'Check how many hydration points you have.'],
     ],
-
     subcommands: [
-        {
+        create.subcommand({
             path: ['points'],
             run: async ({ message }) => {
                 const user = await db.query.commandUsers.findFirst({
@@ -43,8 +42,8 @@ export default createCommandWithSubcommands({
                     reply: `You have ${user.hydrationPoints} hydration points!`,
                 };
             },
-        },
-        {
+        }),
+        create.subcommand({
             path: [],
             run: async ({ message }) => {
                 let user = await db.query.commandUsers.findFirst({
@@ -104,6 +103,6 @@ export default createCommandWithSubcommands({
 
                 return { reply: lines.join(' ') };
             },
-        },
+        }),
     ],
 });

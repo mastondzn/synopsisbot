@@ -1,7 +1,7 @@
 import { pickOne } from '~/helpers/array';
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 
-export default createCommand({
+export default create.command({
     name: '8ball',
     description: 'Ask the magic 8ball a question!',
     aliases: ['8b'],

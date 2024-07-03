@@ -1,11 +1,11 @@
 import { channels, eq } from '@synopsis/db';
 
-import { createCommand } from '~/helpers/command/define';
+import { create } from '~/helpers/creators';
 import { schemas } from '~/helpers/schemas';
 import { chat } from '~/services/chat';
 import { db } from '~/services/database';
 
-export default createCommand({
+export default create.command({
     name: 'part',
     description: 'Make the bot part a channel',
     permissions: { global: 'owner' },

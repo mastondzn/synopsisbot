@@ -1,7 +1,7 @@
-import { createEventHandler } from '~/helpers/event';
+import { create } from '~/helpers/creators';
 import { logger } from '~/helpers/logger';
 
-export default createEventHandler({
+export default create.listener({
     event: 'JOIN',
-    handler: (message) => logger.joins(`${message.joinedUsername} joined ${message.channelName}`),
+    listener: (message) => logger.joins(`${message.joinedUsername} joined ${message.channelName}`),
 });
