@@ -81,7 +81,7 @@ export async function parseParameters(
 
     if (!parsedArguments.success || !parsedOptions.success) {
         const message = trim`
-            Could not parse ${
+            Bad ${
                 !parsedArguments.success && !parsedOptions.success
                     ? 'options and arguments'
                     : parsedArguments.success
@@ -100,7 +100,7 @@ export async function parseParameters(
 
         throw new UserError(
             message.length > 460
-                ? 'Could not parse options or arguments, and too many errors to display in chat.'
+                ? 'Bad options or arguments, and too many errors to display in chat.'
                 : message,
         );
     }
