@@ -7,4 +7,7 @@ export const db = createDatabase({
     user: env.DB_USERNAME,
     password: env.DB_PASSWORD,
     database: env.DB_NAME,
+    // disables some logs (during migrations for example)
+    // eslint-disable-next-line ts/no-empty-function
+    onnotice: () => {},
 });
