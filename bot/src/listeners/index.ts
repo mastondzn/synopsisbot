@@ -7,7 +7,7 @@ import type { BotEventListener } from '~/helpers/event';
 
 class EventHandlers extends Collection<string, BotEventListener> {
     public async load(): Promise<this> {
-        const directory = (await readdir('./src/events')).filter((path) => path !== 'index.ts');
+        const directory = (await readdir('./src/listeners')).filter((path) => path !== 'index.ts');
 
         await Promise.all(
             directory.map(async (file) => {

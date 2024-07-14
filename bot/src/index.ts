@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { migrate, seed } from '@synopsis/db';
 import { env } from '@synopsis/env/node';
 
 import { commands } from './commands';
 import { cronJobs } from './crons';
+import { logger } from './helpers/logger';
 import { eventHandlers } from './listeners';
 import { modules } from './modules';
 import { authProvider } from './services/auth';
@@ -11,6 +13,12 @@ import { chat } from './services/chat';
 import { db } from './services/database';
 
 import './services/rpc';
+
+logger.info('Migrating database...');
+await migrate(db);
+
+logger.info('Seeding database...');
+await seed(db, env);
 
 Sentry.init({
     dsn: 'https://87270fc0d3264875c1071ecfec1840ce@o4506493464805376.ingest.sentry.io/4506564237983744',
