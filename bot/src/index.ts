@@ -14,10 +14,10 @@ import { db } from './services/database';
 
 import './services/rpc';
 
-logger.info('Migrating database...');
+logger.info('migrating database...');
 await migrate(db);
 
-logger.info('Seeding database...');
+logger.info('seeding database...');
 await seed(db, env);
 
 Sentry.init({
