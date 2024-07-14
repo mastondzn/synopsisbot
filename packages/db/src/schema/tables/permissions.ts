@@ -1,5 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core';
+
+import { defaults } from '../utils/defaults';
 
 export const localPermissions = pgTable(
     'local_permissions',
@@ -16,10 +18,11 @@ export const localPermissions = pgTable(
             enum: ['banned', 'ambassador'],
         }).notNull(),
 
-        createdAt: timestamp('created_at').notNull().defaultNow(),
+        ...defaults(),
     },
     (table) => ({ cpk: primaryKey({ columns: [table.channelId, table.userId] }) }),
 );
+
 export type LocalPermission = InferSelectModel<typeof localPermissions>;
 export type NewLocalPermission = InferInsertModel<typeof localPermissions>;
 export type UpdateLocalPermission = Partial<LocalPermission>;
@@ -29,8 +32,9 @@ export const globalPermissions = pgTable('global_permissions', {
     userId: varchar('user_id', { length: 256 }).primaryKey(),
     userLogin: varchar('user_login', { length: 256 }).notNull(),
     permission: varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
+    ...defaults(),
 });
+
 export type GlobalPermission = InferSelectModel<typeof globalPermissions>;
 export type NewGlobalPermission = InferInsertModel<typeof globalPermissions>;
 export type UpdateGlobalPermission = Partial<GlobalPermission>;

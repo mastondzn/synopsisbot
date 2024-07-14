@@ -5,9 +5,9 @@
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "check": "pnpm with-env drizzle-kit check:pg --config=drizzle.config.ts",
+        "check": "pnpm with-env drizzle-kit check --config=drizzle.config.ts",
         "drop": "pnpm with-env drizzle-kit drop --config=drizzle.config.ts",
-        "generate": "pnpm with-env drizzle-kit generate:pg --config=drizzle.config.ts",
+        "generate": "pnpm with-env drizzle-kit generate --config=drizzle.config.ts",
         "migrate": "pnpm with-env tsx scripts/migrate.ts",
         "seed": "pnpm with-env tsx scripts/seed.ts",
         "db:check": "pnpm check",

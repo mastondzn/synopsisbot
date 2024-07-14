@@ -1,10 +1,10 @@
 import type { Environment } from '@synopsis/env';
 
-import { schema } from './schema';
+import { type NewChannel, type NewGlobalPermission, schema } from './schema';
 import type { Database } from './types';
 
 export async function seed(db: Database, environment: Environment) {
-    const channels = [
+    const channels: NewChannel[] = [
         {
             mode: 'all' as const,
             twitchId: environment.TWITCH_BOT_OWNER_ID,
@@ -17,9 +17,9 @@ export async function seed(db: Database, environment: Environment) {
         },
     ];
 
-    const globalPermissions = [
+    const globalPermissions: NewGlobalPermission[] = [
         {
-            permission: 'owner' as const,
+            permission: 'owner',
             userId: environment.TWITCH_BOT_OWNER_ID,
             userLogin: environment.TWITCH_BOT_OWNER_USERNAME,
         },
