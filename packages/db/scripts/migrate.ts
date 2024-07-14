@@ -1,25 +1,16 @@
 import { env } from '@synopsis/env/node';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
-import { createDatabase } from '~/index';
+import { createDatabase } from '../src';
+import { migrate } from '../src/migrate';
 
-async function main() {
-    const db = createDatabase({
-        host: 'localhost',
-        user: env.DB_USERNAME,
-        password: env.DB_PASSWORD,
-        database: env.DB_NAME,
-        logger: true,
-        max: 1,
-    });
+const db = createDatabase({
+    host: 'localhost',
+    user: env.DB_USERNAME,
+    password: env.DB_PASSWORD,
+    database: env.DB_NAME,
+    logger: true,
+    max: 1,
+});
 
-    console.log('Migrating...');
-    await migrate(db, {
-        migrationsFolder: './migrations',
-    });
-    console.log('Migrations complete!');
-
-    await db.raw.end();
-}
-
-void main();
+await migrate(db);
+await db.raw.end();

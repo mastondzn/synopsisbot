@@ -17,6 +17,8 @@ export function createDatabase(options: DatabaseOptions): Database {
     return Object.assign(db, { ky, raw });
 }
 
+export { migrate } from './migrate';
+export { seed } from './seed';
 export type * from './types';
 export * from './schema';
 export * from 'drizzle-orm/postgres-js';
