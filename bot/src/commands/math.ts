@@ -1,5 +1,6 @@
+import { netter } from 'netter';
+
 import { create } from '~/helpers/creators';
-import { zfetch } from '~/helpers/fetch';
 import { trim } from '~/helpers/tags';
 
 export default create.command({
@@ -7,14 +8,16 @@ export default create.command({
     description: 'Uses math.js to evaluate a math expression.',
     run: async ({ parameters: { text } }) => {
         if (!text) {
-            return { reply: "You didn't provide a expression to evaluate. :/" };
+            return {
+                reply: "You didn't provide a expression to evaluate. :/",
+            };
         }
 
         const url = new URL('http://api.mathjs.org/v4/');
         url.searchParams.append('expr', text);
         url.searchParams.append('precision', '4');
 
-        const response = await zfetch({ url });
+        const response = await netter(url);
 
         if (!response.ok) {
             const error = (await response.text()).replace('Error: ', '');
@@ -23,6 +26,8 @@ export default create.command({
             };
         }
 
-        return { reply: await response.text() };
+        return {
+            reply: await response.text(),
+        };
     },
 });

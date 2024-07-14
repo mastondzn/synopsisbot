@@ -1,6 +1,5 @@
+import { netter } from 'netter';
 import { z } from 'zod';
-
-import { zfetch } from '~/helpers/fetch';
 
 const decoded = z.string().transform((string) => decodeURIComponent(string));
 
@@ -21,9 +20,8 @@ const responseSchema = z.object({
 export type Trivia = z.infer<typeof questionSchema>;
 
 export async function getTrivia(): Promise<Trivia> {
-    const json = await zfetch({
-        url: 'https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986',
-        schema: responseSchema,
+    const json = await netter('https://opentdb.com/api.php?amount=1&type=multiple&encode=url3986', {
+        parse: (data) => responseSchema.parse(data),
     }).json();
 
     return json.results[0];
