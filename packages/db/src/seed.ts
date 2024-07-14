@@ -3,25 +3,26 @@ import type { Environment } from '@synopsis/env';
 import { type NewChannel, type NewGlobalPermission, schema } from './schema';
 import type { Database } from './types';
 
-export async function seed(db: Database, environment: Environment) {
+// eslint-disable-next-line unicorn/prevent-abbreviations
+export async function seed(db: Database, env: Environment) {
     const channels: NewChannel[] = [
         {
             mode: 'all' as const,
-            twitchId: environment.TWITCH_BOT_OWNER_ID,
-            twitchLogin: environment.TWITCH_BOT_OWNER_USERNAME,
+            twitchId: env.TWITCH_BOT_OWNER_ID,
+            twitchLogin: env.TWITCH_BOT_OWNER_USERNAME,
         },
         {
             mode: 'all' as const,
-            twitchId: environment.TWITCH_BOT_ID,
-            twitchLogin: environment.TWITCH_BOT_USERNAME,
+            twitchId: env.TWITCH_BOT_ID,
+            twitchLogin: env.TWITCH_BOT_USERNAME,
         },
     ];
 
     const globalPermissions: NewGlobalPermission[] = [
         {
             permission: 'owner',
-            userId: environment.TWITCH_BOT_OWNER_ID,
-            userLogin: environment.TWITCH_BOT_OWNER_USERNAME,
+            userId: env.TWITCH_BOT_OWNER_ID,
+            userLogin: env.TWITCH_BOT_OWNER_USERNAME,
         },
     ];
 
