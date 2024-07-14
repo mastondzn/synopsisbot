@@ -6,6 +6,8 @@ import { defaults } from '../utils/defaults';
 export const localPermissions = pgTable(
     'local_permissions',
     {
+        ...defaults,
+
         channelId: varchar('channel_id', { length: 256 }).notNull(),
         channelLogin: varchar('channel_login', { length: 256 }).notNull(),
 
@@ -17,8 +19,6 @@ export const localPermissions = pgTable(
             length: 64,
             enum: ['banned', 'ambassador'],
         }).notNull(),
-
-        ...defaults(),
     },
     (table) => ({ cpk: primaryKey({ columns: [table.channelId, table.userId] }) }),
 );
@@ -29,10 +29,11 @@ export type UpdateLocalPermission = Partial<LocalPermission>;
 export type DatabaseLocalPermission = LocalPermission['permission'];
 
 export const globalPermissions = pgTable('global_permissions', {
+    ...defaults,
+
     userId: varchar('user_id', { length: 256 }).primaryKey(),
     userLogin: varchar('user_login', { length: 256 }).notNull(),
     permission: varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
-    ...defaults(),
 });
 
 export type GlobalPermission = InferSelectModel<typeof globalPermissions>;

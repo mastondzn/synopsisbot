@@ -4,6 +4,8 @@ import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { defaults } from '../utils/defaults';
 
 export const authedUsers = pgTable('authed_users', {
+    ...defaults,
+
     twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
     twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
     scopes: varchar('scopes', { length: 256 }).array().notNull(),
@@ -11,7 +13,6 @@ export const authedUsers = pgTable('authed_users', {
     refreshToken: varchar('refresh_token', { length: 256 }).notNull(),
     expiresAt: timestamp('expires_at').notNull(),
     obtainedAt: timestamp('obtained_at').notNull(),
-    ...defaults(),
 });
 
 export type AuthedUser = InferSelectModel<typeof authedUsers>;
