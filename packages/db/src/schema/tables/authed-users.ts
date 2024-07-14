@@ -10,6 +10,7 @@ export const authedUsers = pgTable('authed_users', {
     accessToken: varchar('access_token', { length: 256 }).notNull(),
     refreshToken: varchar('refresh_token', { length: 256 }).notNull(),
     expiresAt: timestamp('expires_at').notNull(),
+    obtainedAt: timestamp('obtained_at').notNull(),
     ...defaults(),
 });
 
