@@ -1,17 +1,16 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { pgTable, varchar } from 'drizzle-orm/pg-core';
 
-import { defaults } from '../utils/defaults';
+import { columns, table } from '../utils';
 
-export const channels = pgTable('channels', {
-    ...defaults,
-
-    twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
-    twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
-    mode: varchar('mode', {
-        length: 256,
-        enum: ['readonly', 'all', 'offlineonly', 'liveonly'],
-    }).notNull(),
+export const channels = table('channels', {
+    twitchId: columns.varchar('twitch_id', { length: 256 }).primaryKey(),
+    twitchLogin: columns.varchar('twitch_login', { length: 256 }).notNull(),
+    mode: columns
+        .varchar('mode', {
+            length: 256,
+            enum: ['readonly', 'all', 'offlineonly', 'liveonly'],
+        })
+        .notNull(),
 });
 
 export type Channel = InferSelectModel<typeof channels>;

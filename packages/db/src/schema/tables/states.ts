@@ -1,9 +1,9 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
-export const states = pgTable('auth_states', {
-    state: varchar('state', { length: 64 }).primaryKey(),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
+import { columns, table } from '../utils';
+
+export const states = table('auth_states', {
+    state: columns.varchar('state', { length: 64 }).primaryKey(),
 });
 
 export type State = InferSelectModel<typeof states>;

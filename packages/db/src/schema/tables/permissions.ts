@@ -1,24 +1,21 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { pgTable, primaryKey, varchar } from 'drizzle-orm/pg-core';
+import { primaryKey } from 'drizzle-orm/pg-core';
 
-import { defaults } from '../utils/defaults';
+import { columns, table } from '../utils';
 
-export const localPermissions = pgTable(
+export const localPermissions = table(
     'local_permissions',
     {
-        ...defaults,
+        channelId: columns.varchar('channel_id', { length: 256 }).notNull(),
+        channelLogin: columns.varchar('channel_login', { length: 256 }).notNull(),
 
-        channelId: varchar('channel_id', { length: 256 }).notNull(),
-        channelLogin: varchar('channel_login', { length: 256 }).notNull(),
-
-        userId: varchar('user_id', { length: 256 }).notNull(),
-        userLogin: varchar('user_login', { length: 256 }).notNull(),
+        userId: columns.varchar('user_id', { length: 256 }).notNull(),
+        userLogin: columns.varchar('user_login', { length: 256 }).notNull(),
 
         // other permissions are determined by the incoming irc tags
-        permission: varchar('permission', {
-            length: 64,
-            enum: ['banned', 'ambassador'],
-        }).notNull(),
+        permission: columns
+            .varchar('permission', { length: 64, enum: ['banned', 'ambassador'] })
+            .notNull(),
     },
     (table) => ({ cpk: primaryKey({ columns: [table.channelId, table.userId] }) }),
 );
@@ -28,12 +25,10 @@ export type NewLocalPermission = InferInsertModel<typeof localPermissions>;
 export type UpdateLocalPermission = Partial<LocalPermission>;
 export type DatabaseLocalPermission = LocalPermission['permission'];
 
-export const globalPermissions = pgTable('global_permissions', {
-    ...defaults,
-
-    userId: varchar('user_id', { length: 256 }).primaryKey(),
-    userLogin: varchar('user_login', { length: 256 }).notNull(),
-    permission: varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
+export const globalPermissions = table('global_permissions', {
+    userId: columns.varchar('user_id', { length: 256 }).primaryKey(),
+    userLogin: columns.varchar('user_login', { length: 256 }).notNull(),
+    permission: columns.varchar('permission', { length: 64, enum: ['banned', 'owner'] }).notNull(),
 });
 
 export type GlobalPermission = InferSelectModel<typeof globalPermissions>;

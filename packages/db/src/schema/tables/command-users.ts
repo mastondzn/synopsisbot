@@ -1,11 +1,9 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { pgTable, varchar } from 'drizzle-orm/pg-core';
+import { varchar } from 'drizzle-orm/pg-core';
 
-import { defaults } from '../utils/defaults';
+import { table } from '../utils';
 
-export const commandUsers = pgTable('command_users', {
-    ...defaults,
-
+export const commandUsers = table('command_users', {
     twitchId: varchar('twitch_id', { length: 256 }).primaryKey(),
     twitchLogin: varchar('twitch_login', { length: 256 }).notNull(),
 });
