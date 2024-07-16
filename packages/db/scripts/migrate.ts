@@ -1,10 +1,11 @@
 import { env } from '@synopsis/env/node';
+import isDocker from 'is-docker';
 
 import { createDatabase } from '../src';
 import { migrate } from '../src/migrate';
 
 const db = createDatabase({
-    host: 'localhost',
+    host: isDocker() ? 'db' : 'localhost',
     user: env.DB_USERNAME,
     password: env.DB_PASSWORD,
     database: env.DB_NAME,
