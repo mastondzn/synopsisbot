@@ -21,6 +21,8 @@ export const serverEnvironmentSchema = z.object({
     // our own secret, also used for JWT signing
     APP_SECRET: z.string(),
     DOMAIN_NAME: z.string(),
+
+    OPENROUTER_API_KEY: z.string().optional(),
 });
 
 export const publicEnvironmentSchema = z.object({

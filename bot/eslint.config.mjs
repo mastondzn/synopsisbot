@@ -26,7 +26,7 @@ export default defineConfig({
             'warn',
             {
                 indent: 4,
-                tags: ['html', 'sql', 'trim'],
+                tags: ['html', 'sql', 'trim', 'dedent'],
             },
         ],
     },
