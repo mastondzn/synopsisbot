@@ -34,7 +34,7 @@
         "hono": "4.3.9",
         "ioredis": "5.4.1",
         "is-docker": "3.0.0",
-        "netter": "^0.0.3",
+        "netter": "0.0.3",
         "pretty-ms": "9.0.0",
         "prom-client": "15.1.2",
         "remeda": "2.0.10",
