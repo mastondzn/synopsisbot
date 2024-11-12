@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@discordjs/collection": "2.1.0",
-        "@hono/node-server": "1.11.1",
+        "@hono/node-server": "1.13.7",
         "@mastondzn/dank-twitch-irc": "7.1.0",
         "@sentry/node": "7.115.0",
         "@sentry/profiling-node": "7.115.0",
