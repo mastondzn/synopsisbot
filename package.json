@@ -16,7 +16,7 @@
         "url": "https://github.com/mastondzn/bot/issues"
     },
     "engines": {
-        "node": ">=20 <21"
+        "node": "20.18.1"
     },
     "workspaces": [
         "bot",
